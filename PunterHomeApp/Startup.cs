@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PunterHomeApp.DataAdapters;
+using PunterHomeApp.Interfaces;
+using PunterHomeApp.Services;
 
 namespace PunterHomeApp
 {
@@ -21,10 +24,23 @@ namespace PunterHomeApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddSingleton<IProductService, ProductService>();
+            services.AddSingleton<IProductDataAdapter, ProductDataAdapter>();
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
+            });
+
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "Punter Home Api",
+                    Version = "v1"
+                });
             });
         }
 
@@ -41,6 +57,12 @@ namespace PunterHomeApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger v1");
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
