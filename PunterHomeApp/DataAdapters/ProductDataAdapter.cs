@@ -18,6 +18,11 @@ namespace PunterHomeApp.DataAdapters
             }
         };
 
+        public void AddProduct(IProduct product)
+        {
+            myProducts.Add(product);
+        }
+
         public IEnumerable<IProduct> GetProducts()
         {
             return myProducts;

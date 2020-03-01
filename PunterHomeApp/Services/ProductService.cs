@@ -15,7 +15,7 @@ namespace PunterHomeApp.Services
 
         public void AddProduct(IProduct product)
         {
-            throw new NotImplementedException();
+            myProductDataAdapter.AddProduct(product);
         }
 
         public IProduct GetProductById(Guid productId)

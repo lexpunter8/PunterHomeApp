@@ -22,6 +22,7 @@
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+    <None Remove="ClientApp\src\app\models\product.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,10 @@
     <Folder Include="DataAdapters\" />
     <Folder Include="ApiModels\" />
     <Folder Include="Helpers\" />
+    <Folder Include="ClientApp\src\app\models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\models\product.ts" />
   </ItemGroup>
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->

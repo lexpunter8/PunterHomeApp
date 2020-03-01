@@ -39,12 +39,15 @@ namespace PunterHomeApp.Controllers
         [HttpPost]
         public void Post([FromBody]Product value)
         {
+            value.Id = Guid.NewGuid();
+            myProductService.AddProduct(value);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]Product value)
         {
+
         }
 
         // DELETE api/values/5
