@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using PunterHomeAdapters.Models;
 using PunterHomeApp.Interfaces;
 
 namespace PunterHomeApp.Services
@@ -15,7 +17,7 @@ namespace PunterHomeApp.Services
 
         public void AddProduct(IProduct product)
         {
-            myProductDataAdapter.AddProduct(product);
+            myProductDataAdapter.AddProduct(product as DbProduct);
         }
 
         public IProduct GetProductById(Guid productId)
@@ -28,9 +30,9 @@ namespace PunterHomeApp.Services
             throw new NotImplementedException();
         }
 
-        public IEnumerable<IProduct> GetProducts()
+        public async Task<IEnumerable<IProduct>> GetProducts()
         {
-            return myProductDataAdapter.GetProducts();
+            return await myProductDataAdapter.GetProducts();
         }
     }
 }

@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PunterHomeAdapters;
 using PunterHomeApp.DataAdapters;
 using PunterHomeApp.Interfaces;
 using PunterHomeApp.Services;
@@ -25,15 +27,21 @@ namespace PunterHomeApp
         {
             services.AddControllersWithViews();
 
-            services.AddSingleton<IProductService, ProductService>();
-            services.AddSingleton<IProductDataAdapter, ProductDataAdapter>();
+            services.AddDbContext<HomeAppDbContext>(op =>
+                op.UseNpgsql("Host=localhost;Database=HomeAppDb;Username=postgres;Password=2964Lppos"));
 
+
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IRecipeService, RecipeService>();
+            services.AddScoped<IProductDataAdapter, ProductDataAdapter>();
+            services.AddScoped<IRecipeDataAdapter, RecipeDataAdapter>();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
 
+               
             services.AddSwaggerGen(s =>
             {
                 s.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo

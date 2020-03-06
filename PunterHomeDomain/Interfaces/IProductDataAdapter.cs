@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using PunterHomeAdapters.Models;
 
 namespace PunterHomeApp.Interfaces
 {
     public interface IProductDataAdapter
     {
-        IEnumerable<IProduct> GetProducts();
-        void AddProduct(IProduct product);
+        IEnumerable<Product> GetProducts();
+        void AddProduct(Product product);
     }
 }

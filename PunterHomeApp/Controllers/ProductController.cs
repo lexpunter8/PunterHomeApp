@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using PunterHomeAdapters.Models;
 using PunterHomeApp.ApiModels;
 using PunterHomeApp.Helpers;
 using PunterHomeApp.Interfaces;
@@ -23,9 +24,10 @@ namespace PunterHomeApp.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IEnumerable<ProductApiModel> Get()
+        public async Task<IEnumerable<ProductApiModel>> Get()
         {
-            return ConvertProducts(myProductService.GetProducts());
+            var products = await myProductService.GetProducts();
+            return ConvertProducts(products);
         }
 
         // GET api/values/5
@@ -37,7 +39,7 @@ namespace PunterHomeApp.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]Product value)
+        public void Post([FromBody]DbProduct value)
         {
             value.Id = Guid.NewGuid();
             myProductService.AddProduct(value);
@@ -45,7 +47,7 @@ namespace PunterHomeApp.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]Product value)
+        public void Put(int id, [FromBody]IProduct value)
         {
 
         }
@@ -60,7 +62,8 @@ namespace PunterHomeApp.Controllers
         private List<ProductApiModel> ConvertProducts(IEnumerable<IProduct> products)
         {
             var convertedProducts = new List<ProductApiModel>();
-            products.ToList().ForEach(p => convertedProducts.Add(new ProductApiModel
+            var pr = products.ToList();
+            pr.ForEach(p => convertedProducts.Add(new ProductApiModel
             {
                 Id = p.Id.ToString(),
                 Name = p.Name,

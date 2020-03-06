@@ -1,11 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using PunterHomeApp.Interfaces;
 using static Enums;
 
-namespace PunterHomeApp
+namespace PunterHomeAdapters.Models
 {
-    public class Product : IProduct
+    public class DbProduct : IProduct
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -13,17 +13,6 @@ namespace PunterHomeApp
         public int UnitQuantity { get; set; }
         public EUnitQuantityType UnitQuantityType { get; set; }
 
-    }
-}
-
-public class Enums
-{
-    public enum EUnitQuantityType
-    {
-        [Description("Kilogram")]
-        Kg,
-
-        [Description("Gram")]
-        Gr
+        public Collection<DbIngredient> Ingredients { get; set; }
     }
 }

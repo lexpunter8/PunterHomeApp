@@ -27,6 +27,11 @@ export class FetchDataComponent {
 
   private unitTypes = EUnitVolumeType;
   public unitTypeOptions = [];
+  public showAddProduct: boolean;
+
+  toggleAddProduct() {
+    this.showAddProduct = !this.showAddProduct;
+  }
    
   addProduct(): void {
     console.log(this.newProduct.name);
