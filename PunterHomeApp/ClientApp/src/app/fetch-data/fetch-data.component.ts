@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { IProduct } from '../models/product';
 
 @Component({
   selector: 'app-fetch-data',
@@ -60,13 +61,7 @@ export class FetchDataComponent {
 
 }
 
-interface IProduct {
-  id: string;
-  name: string;
-  quantity: string;
-  unitQuantity: string;
-  unitQuantityType: string;
-}
+
 
 interface WeatherForecast {
   date: string;

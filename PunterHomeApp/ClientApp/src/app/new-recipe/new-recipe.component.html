@@ -1,1 +1,42 @@
-<p>new-recipe works!</p>
+<h3>Add recipe</h3>
+
+<div class="row">
+    <div class="col-12 col-md-3">
+        <input [(ngModel)]="newRecipe.name" placeholder="product name" />
+    </div>
+</div>
+<div class="row">
+    <ul class="heroes">
+        <li *ngFor="let step of newRecipe.steps">
+            <span class="badge"></span> {{step}}
+        </li>
+    </ul>
+
+
+    <div class="col-12 col-md-3">
+        <input type="text" [(ngModel)]="newStep" placeholder="step" />
+        <button class="btn btn-primary" (click)="addStep(newStep)"></button>
+    </div>
+
+    <div>
+        <button>Add</button>
+        <ul class="heroes">
+            <li *ngFor="let ingredient of newRecipe.ingredients">
+                <span class="badge"></span> {{ingredient.name}}
+            </li>
+        </ul>
+
+        <div>
+            <p>Search product</p>
+            <input type="text" [(ngModel)]="productSearchText" />
+            <button (click)="searchProduct(productSearchText)">Search</button>
+
+            <ul>
+                <li *ngFor="let p of productSearchResult">
+                    <span class="badge"></span> {{p.name}}
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+</div>
