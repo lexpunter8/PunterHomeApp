@@ -24,7 +24,7 @@ namespace PunterHomeApp.Services
                 Name = recipeName,
                 Steps = steps,
                 Ingredients = ingredients
-            }); ;
+            });
         }
 
         public bool AddIngredient(Guid recipeId, IIngredient ingredient)

@@ -51,7 +51,19 @@ namespace PunterHomeApp.DataAdapters
 
         public IRecipe GetRecipeById(Guid recipeId)
         {
-            throw new NotImplementedException();
+            using var context = new HomeAppDbContext(myDbOptions);
+            return DbRecipeToRecipe(context.Recipes.Single(r => r.Id == recipeId));
+        }
+
+        private Recipe DbRecipeToRecipe(DbRecipe dbRecipe)
+        {
+            return new Recipe
+            {
+                Id = dbRecipe.Id,
+                Name = dbRecipe.Name,
+                Steps = dbRecipe.Steps,
+                Ingredients = dbRecipe.Ingredients.Select(ConvertDbIngredient)
+            };
         }
 
         public void SaveRecipe(IRecipe recipe)
@@ -69,7 +81,7 @@ namespace PunterHomeApp.DataAdapters
             var ingredients = recipe.Ingredients.Select(r => new DbIngredient
             {
                 Recipe = dbRecipe,
-                Product = ConvertProductToDbProduct(r.Product),
+                ProductId = r.Product.Id,
                 UnitQuantity = r.UnitQuantity,
                 UnitQuantityType = r.UnitQuantityType
             }).ToList();
@@ -126,11 +138,11 @@ namespace PunterHomeApp.DataAdapters
                     Id = r.Id,
                     Name = r.Name,
                     Steps = r.Steps,
-                    Ingredients = r.Ingredients.Select(ConvertDbrecipe)
+                    Ingredients = r.Ingredients.Select(ConvertDbIngredient)
             });
         }
 
-        private IIngredient ConvertDbrecipe(DbIngredient dbIngredient)
+        private IIngredient ConvertDbIngredient(DbIngredient dbIngredient)
         {
             return new Ingredient
             {

@@ -1,0 +1,13 @@
+<p>recipe works!</p>
+<ul class="navbar-nav flex-grow">
+    <li class="nav-item"
+        [routerLinkActive]="['link-active']"
+        [routerLinkActiveOptions]="{ exact: true }">
+        <a class="nav-link text-dark" [routerLink]="['/recipes', { outlets: { 'sub-recipe': ['overview']}}]">Overview</a>
+    </li>
+    <li class="nav-item" [routerLinkActive]="['link-active']">
+        <a class="nav-link text-dark" [routerLink]="['/recipes', { outlets: { 'sub-recipe': ['new-recipe']}}]">New recipe</a>
+    </li>
+</ul>
+<router-outlet name="sub-recipe"></router-outlet>
+

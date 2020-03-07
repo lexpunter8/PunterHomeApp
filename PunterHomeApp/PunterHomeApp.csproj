@@ -20,9 +20,9 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
-    <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     <None Remove="ClientApp\src\app\models\product.ts" />
+    <None Remove="ClientApp\src\app\models\Recipe.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\models\product.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\models\Recipe.ts" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PunterHomeDomain\PunterHomeDomain.csproj">
