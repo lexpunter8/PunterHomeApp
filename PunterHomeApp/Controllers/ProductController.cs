@@ -37,6 +37,18 @@ namespace PunterHomeApp.Controllers
             return myProductService.GetProductById(Guid.NewGuid());
         }
 
+        // GET api/values/5
+        [HttpGet("search")]
+        public async Task<IEnumerable<ProductApiModel>> Get(string searchText)
+        {
+            if (searchText == null)
+            {
+                var products = await myProductService.GetProducts();
+                return ConvertProducts(products);
+            }
+            return ConvertProducts(await myProductService.SearchProductsAsync(searchText).ConfigureAwait(false));
+        }
+
         // POST api/values
         [HttpPost]
         public void Post([FromBody]DbProduct value)
@@ -73,5 +85,10 @@ namespace PunterHomeApp.Controllers
             }));
             return convertedProducts;
         }
+    }
+
+    public class SearchApiModel
+    {
+        public string SearchText { get; set; }
     }
 }

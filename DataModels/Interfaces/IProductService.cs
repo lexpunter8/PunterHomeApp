@@ -10,5 +10,6 @@ namespace PunterHomeApp.Interfaces
         IProduct GetProductById(Guid productId);
         IProduct GetProductByName(string productName);
         void AddProduct(IProduct product);
+        Task<IEnumerable<IProduct>> SearchProductsAsync(string searchText);
     }
 }

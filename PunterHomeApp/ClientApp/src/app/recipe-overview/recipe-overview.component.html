@@ -1,17 +1,18 @@
 <div class="row">
 
-    <div class="col-md-4">
-
-        <ul class="heroes">
-            <li *ngFor="let recipe of recipes"
+    <div class="col-md-2">
+        <h4>Recipes</h4>
+        <ul class="list-group">
+            <li *ngFor="let recipe of recipes" class="list-group-item"
+                [class.active]="recipe === selectedRecipe"
                 (click)="onSelect(recipe)">
                 <span class="badge"></span> {{recipe.name}}
             </li>
         </ul>
 
     </div>
-    <div *ngIf="selectedRecipe" class="col-md-8">
-        <h4>Details</h4>
+    <div *ngIf="selectedRecipe" class="col-md-10">
+        <h4 class="mx-auto">Details</h4>
 
         <h6>Ingredients</h6>
         <ul class="heroes">

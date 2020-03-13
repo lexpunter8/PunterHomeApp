@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PunterHomeAdapters.Models;
 using PunterHomeApp.Interfaces;
+using System.Linq;
 
 namespace PunterHomeApp.Services
 {
@@ -33,6 +34,12 @@ namespace PunterHomeApp.Services
         public async Task<IEnumerable<IProduct>> GetProducts()
         {
             return await myProductDataAdapter.GetProducts();
+        }
+
+        public async Task<IEnumerable<IProduct>> SearchProductsAsync(string searchText)
+        {
+            var result = await myProductDataAdapter.GetProducts();
+            return result.Where(p => p.Name.Contains(searchText));
         }
     }
 }

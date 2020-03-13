@@ -1,42 +1,72 @@
-<h3>Add recipe</h3>
-
 <div class="row">
+    <h3>Add recipe</h3>
+
     <div class="col-12 col-md-3">
         <input [(ngModel)]="newRecipe.name" placeholder="product name" />
     </div>
 </div>
 <div class="row">
-    <ul class="heroes">
-        <li *ngFor="let step of newRecipe.steps">
-            <span class="badge"></span> {{step}}
-        </li>
-    </ul>
+    <div class="col-md-6">
 
+        <div class="row">
 
-    <div class="col-12 col-md-3">
-        <input type="text" [(ngModel)]="newStep" placeholder="step" />
-        <button class="btn btn-primary" (click)="addStep(newStep)"></button>
-    </div>
-
-    <div>
-        <button>Add</button>
-        <ul class="heroes">
-            <li *ngFor="let ingredient of newRecipe.ingredients">
-                <span class="badge"></span> {{ingredient.name}}
+          <ol class="list-group col-md-6">
+            <li class="list-group-item" *ngFor="let step of newRecipe.steps">
+                <span class="badge"></span> {{step}}
             </li>
-        </ul>
+          </ol>
+          <div class="col-md-6">
+            <input class="" type="text" [(ngModel)]="newStep" placeholder="step" style="height: 150px;"/>
+            <button class="btn btn-primary" (click)="addStep(newStep)">Add step</button>
+          </div>
 
-        <div>
-            <p>Search product</p>
-            <input type="text" [(ngModel)]="productSearchText" />
-            <button (click)="searchProduct(productSearchText)">Search</button>
-
-            <ul>
-                <li *ngFor="let p of productSearchResult">
-                    <span class="badge"></span> {{p.name}}
-                </li>
-            </ul>
-            
         </div>
+
+    </div>
+   
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="list-group">
+                    <li class="list-group-item" *ngFor="let ingredient of newRecipe.ingredients">
+                        <span class="badge"></span> {{ingredient.productName}}<input type="number" />
+                        <select [(ngModel)]="ingredient.unitQunatityType">
+                            <option *ngFor="let key of unitTypeOptions" [value]="key" [label]="unitTypes[key]"></option>
+                        </select>
+                    </li>
+                </ul>
+
+            </div>
+            
+
+            <div class="col-md-6">
+                <p>Search product</p>
+                <input type="text" [(ngModel)]="productSearchText" />
+                <button class="btn btn-dark" (click)="searchProduct(productSearchText)">Search</button>
+
+                <div class=" overflow-auto" style="max-height: 400px;">
+                    <ul class="list-group">
+                        <li class="list-group-item" *ngFor="let p of productSearchResult">
+                            <div class="row" style="height: 20px;">
+                                <div class="col-md-9">
+                                    <span class="badge"></span> {{p.name}} 
+                                </div>
+                                <div class="col-md-3">
+
+                                    <button class="btn btn-sm btn-secondary" (click)="addProduct(p)">Add</button>
+                                </div>
+                            </div>
+                        
+                        </li>
+                    </ul>
+                </div>
+                
+
+            </div>
+
+        </div>
+        
+
+        <button (click)="saveRecipe()">Add</button>
     </div>
 </div>
