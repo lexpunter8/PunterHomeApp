@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using PunterHomeApp.Services;
 
-namespace PunterHomeApp.Interfaces
+namespace PunterHomeDomain.Interfaces
 {
     public interface IRecipeService
     {

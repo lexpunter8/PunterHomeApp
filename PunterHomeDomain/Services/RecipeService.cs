@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using PunterHomeAdapters.Models;
 using PunterHomeApp.Interfaces;
+using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
 using static Enums;
 
@@ -38,6 +38,10 @@ namespace PunterHomeApp.Services
             return recipeAdapter.GetAllRecipes();
         }
 
+        IEnumerable<PunterHomeDomain.Interfaces.IRecipe> IRecipeService.GetAllRecipes()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public interface IRecipe

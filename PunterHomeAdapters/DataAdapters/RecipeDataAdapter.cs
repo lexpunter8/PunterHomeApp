@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using PunterHomeAdapters;
 using PunterHomeAdapters.Models;
 using PunterHomeApp.Interfaces;
-using PunterHomeApp.Models;
 using PunterHomeApp.Services;
+using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
 
 namespace PunterHomeApp.DataAdapters
@@ -49,7 +49,7 @@ namespace PunterHomeApp.DataAdapters
             });
         }
 
-        public IRecipe GetRecipeById(Guid recipeId)
+        public Services.IRecipe GetRecipeById(Guid recipeId)
         {
             using var context = new HomeAppDbContext(myDbOptions);
             return DbRecipeToRecipe(context.Recipes.Single(r => r.Id == recipeId));
@@ -66,7 +66,7 @@ namespace PunterHomeApp.DataAdapters
             };
         }
 
-        public void SaveRecipe(IRecipe recipe)
+        public void SaveRecipe(Services.IRecipe recipe)
         {
             using var context = new HomeAppDbContext(myDbOptions);
 
@@ -100,15 +100,11 @@ namespace PunterHomeApp.DataAdapters
         {
             return new DbProduct
             {
-                Id = product.Id,
-                UnitQuantityType = product.UnitQuantityType,
-                UnitQuantity = product.UnitQuantity,
-                Name = product.Name,
-                Quantity = product.Quantity
+                Id = product.Id
             };
         }
 
-        private DbRecipe ConvertRecipeToDbRecipe(IRecipe recipe)
+        private DbRecipe ConvertRecipeToDbRecipe(Services.IRecipe recipe)
         {
             return new DbRecipe
             {
@@ -127,7 +123,7 @@ namespace PunterHomeApp.DataAdapters
             };
         }
 
-        public IEnumerable<IRecipe> GetAllRecipes()
+        public IEnumerable<Services.IRecipe> GetAllRecipes()
         {
             using var context = new HomeAppDbContext(myDbOptions);
             var recipes = context.Recipes.Include(r => r.Ingredients).ThenInclude(i => i.Product).ToList();
@@ -146,10 +142,19 @@ namespace PunterHomeApp.DataAdapters
         {
             return new Ingredient
             {
-                Product = dbIngredient.Product,
                 UnitQuantity = dbIngredient.UnitQuantity,
                 UnitQuantityType = dbIngredient.UnitQuantityType
             };
+        }
+
+        IEnumerable<Services.IRecipe> IRecipeDataAdapter.GetAllRecipes()
+        {
+            throw new NotImplementedException();
+        }
+
+        Services.IRecipe IRecipeDataAdapter.GetRecipeById(Guid recipeId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

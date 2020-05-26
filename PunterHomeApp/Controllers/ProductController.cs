@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using PunterHomeAdapters.Models;
 using PunterHomeApp.ApiModels;
 using PunterHomeApp.Helpers;
-using PunterHomeApp.Interfaces;
+using PunterHomeDomain.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,37 +24,44 @@ namespace PunterHomeApp.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<IEnumerable<ProductApiModel>> Get()
+        public async Task<IActionResult> Get()
         {
-            var products = await myProductService.GetProducts();
-            return ConvertProducts(products);
+            IEnumerable<IProduct> products = await myProductService.GetProducts();
+            return Ok(products);
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public IProduct Get(int id)
+        public IActionResult Get(int id)
         {
-            return myProductService.GetProductById(Guid.NewGuid());
+            var result = myProductService.GetProductById(Guid.NewGuid());
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
         // GET api/values/5
         [HttpGet("search")]
-        public async Task<IEnumerable<ProductApiModel>> Get(string searchText)
+        public async Task<IActionResult> Get(string searchText)
         {
-            if (searchText == null)
-            {
-                var products = await myProductService.GetProducts();
-                return ConvertProducts(products);
-            }
-            return ConvertProducts(await myProductService.SearchProductsAsync(searchText).ConfigureAwait(false));
+            return null;
+            //if (searchText == null)
+            //{
+            //    var products = await myProductService.GetProducts();
+            //    return ConvertProducts(products);
+            //}
+            //return ConvertProducts(await myProductService.SearchProductsAsync(searchText).ConfigureAwait(false));
         }
 
         // POST api/values
         [HttpPost]
         public void Post([FromBody]DbProduct value)
         {
-            value.Id = Guid.NewGuid();
-            myProductService.AddProduct(value);
+            //value.Id = Guid.NewGuid();
+            //myProductService.AddProduct(value);
         }
 
         // PUT api/values/5
@@ -71,7 +78,7 @@ namespace PunterHomeApp.Controllers
         }
 
 
-        private List<ProductApiModel> ConvertProducts(IEnumerable<IProduct> products)
+        private List<ProductApiModel> ConvertProducts(IEnumerable<DbProduct> products)
         {
             var convertedProducts = new List<ProductApiModel>();
             var pr = products.ToList();
@@ -79,9 +86,7 @@ namespace PunterHomeApp.Controllers
             {
                 Id = p.Id.ToString(),
                 Name = p.Name,
-                Quantity = p.Quantity,
-                UnitQuantity = p.UnitQuantity,
-                UnitQuantityType = EnumHelpers.GetEnumDescription(p.UnitQuantityType)
+
             }));
             return convertedProducts;
         }

@@ -1,13 +1,19 @@
-﻿using System;
+﻿using PunterHomeApp.ApiModels;
+using PunterHomeDomain.Models;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace PunterHomeApp.Interfaces
+namespace PunterHomeDomain.Interfaces
 {
     public interface IProductService
     {
-        IEnumerable<IProduct> GetProducts();
+        Task<IEnumerable<IProduct>> GetProducts();
         IProduct GetProductById(Guid productId);
         IProduct GetProductByName(string productName);
-        void AddProduct(IProduct product);
+        void AddProduct(NewProductApiModel product);
+        Task<IEnumerable<IProduct>> SearchProductsAsync(string searchText);
+        Task<bool> TryDeleteProductById(Guid id);
+        Task AddQuantityToProduct(ProductQuantity value, Guid id);
     }
 }

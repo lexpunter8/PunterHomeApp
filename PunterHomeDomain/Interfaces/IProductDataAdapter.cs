@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
-using PunterHomeAdapters.Models;
+﻿using PunterHomeDomain.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace PunterHomeApp.Interfaces
+namespace PunterHomeDomain.Interfaces
 {
     public interface IProductDataAdapter
     {
-        IEnumerable<Product> GetProducts();
-        void AddProduct(Product product);
+        Task<IEnumerable<IProduct>> GetProducts();
+        void AddProduct(IProduct product);
+        Task DeleteProduct(Guid id);
+        Task AddQuantityToProduct(ProductQuantity value, Guid id);
     }
 }

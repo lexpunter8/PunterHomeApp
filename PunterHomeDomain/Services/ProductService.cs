@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PunterHomeAdapters.Models;
-using PunterHomeApp.Interfaces;
 using System.Linq;
+using PunterHomeDomain.Interfaces;
+using PunterHomeApp.ApiModels;
+using PunterHomeDomain.Models;
 
 namespace PunterHomeApp.Services
 {
@@ -16,9 +17,25 @@ namespace PunterHomeApp.Services
             myProductDataAdapter = productDataAdapter;
         }
 
-        public void AddProduct(IProduct product)
+        public void AddProduct(NewProductApiModel product)
         {
-            myProductDataAdapter.AddProduct(product as DbProduct);
+            myProductDataAdapter.AddProduct(new Product
+            {
+                Name = product.Name,
+                ProductQuantities = new List<IProductQuantity>
+                {
+                    new ProductQuantity
+                    {
+                        UnitQuantityTypeVolume = product.UnitQuantity,
+                        UnitQuantityType = product.UnitQuantityType
+                    }
+                }
+            });
+        }
+
+        public async Task AddQuantityToProduct(ProductQuantity value, Guid id)
+        {
+            await myProductDataAdapter.AddQuantityToProduct(value, id);
         }
 
         public IProduct GetProductById(Guid productId)
@@ -40,6 +57,19 @@ namespace PunterHomeApp.Services
         {
             var result = await myProductDataAdapter.GetProducts();
             return result.Where(p => p.Name.Contains(searchText));
+        }
+
+        public async Task<bool> TryDeleteProductById(Guid id)
+        {
+            try
+            {
+                await myProductDataAdapter.DeleteProduct(id);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

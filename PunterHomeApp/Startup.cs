@@ -10,6 +10,7 @@ using PunterHomeAdapters;
 using PunterHomeApp.DataAdapters;
 using PunterHomeApp.Interfaces;
 using PunterHomeApp.Services;
+using PunterHomeDomain.Interfaces;
 
 namespace PunterHomeApp
 {

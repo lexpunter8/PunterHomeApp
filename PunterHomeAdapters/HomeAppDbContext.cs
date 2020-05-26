@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PunterHomeAdapters.Models;
-using PunterHomeApp;
-using PunterHomeApp.Models;
 
 namespace PunterHomeAdapters
 {
@@ -15,6 +13,9 @@ namespace PunterHomeAdapters
         public HomeAppDbContext (DbContextOptions<HomeAppDbContext> options) : base (options)
         { }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+            => options.UseNpgsql("Host=localhost;Database=punterhomeapp;Username=postgres;Password=2964Lppos");
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbIngredient>()
@@ -24,5 +25,6 @@ namespace PunterHomeAdapters
         public DbSet<DbIngredient> Ingredients { get; set; }
         public DbSet<DbRecipe> Recipes { get; set; }
         public DbSet<DbProduct> Products { get; set; }
+        public DbSet<DbProductQuantity> ProductQuantities { get; set; }
     }
 }

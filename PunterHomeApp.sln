@@ -1,15 +1,22 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeApp", "PunterHomeApp\PunterHomeApp.csproj", "{EDDE9EAB-A39B-4569-B628-1936C1561AC7}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeApp", "PunterHomeApp\PunterHomeApp.csproj", "{EDDE9EAB-A39B-4569-B628-1936C1561AC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{59E78FB9-04BF-4E51-8958-97E15D77684B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{59E78FB9-04BF-4E51-8958-97E15D77684B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeDomain", "PunterHomeDomain\PunterHomeDomain.csproj", "{C21C898E-8723-4702-AF94-9FFD9CB37058}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeDomain", "PunterHomeDomain\PunterHomeDomain.csproj", "{C21C898E-8723-4702-AF94-9FFD9CB37058}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeAdapters", "PunterHomeAdapters\PunterHomeAdapters.csproj", "{6D656771-8B70-4FE4-9C17-26BE9507C60F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeAdapters", "PunterHomeAdapters\PunterHomeAdapters.csproj", "{6D656771-8B70-4FE4-9C17-26BE9507C60F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModels", "DataModels\DataModels.csproj", "{08A64526-C9F5-448F-BC64-6ACFD3E3F1E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModels", "DataModels\DataModels.csproj", "{08A64526-C9F5-448F-BC64-6ACFD3E3F1E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeApi", "PunterHomeApi\PunterHomeApi.csproj", "{C4468E0F-0151-460D-98EB-92CDE5B7378B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeManagmentWebApp", "PunterHomeManagmentWebApp\PunterHomeManagmentWebApp.csproj", "{31F48D28-784E-4816-834C-B4140E70E401}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorPunterHomeApp", "BlazorPunterHomeApp\BlazorPunterHomeApp.csproj", "{38B7E148-6692-47CC-BE66-875F04A730D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,5 +44,23 @@ Global
 		{08A64526-C9F5-448F-BC64-6ACFD3E3F1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08A64526-C9F5-448F-BC64-6ACFD3E3F1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08A64526-C9F5-448F-BC64-6ACFD3E3F1E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4468E0F-0151-460D-98EB-92CDE5B7378B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4468E0F-0151-460D-98EB-92CDE5B7378B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4468E0F-0151-460D-98EB-92CDE5B7378B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4468E0F-0151-460D-98EB-92CDE5B7378B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31F48D28-784E-4816-834C-B4140E70E401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31F48D28-784E-4816-834C-B4140E70E401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31F48D28-784E-4816-834C-B4140E70E401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31F48D28-784E-4816-834C-B4140E70E401}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38B7E148-6692-47CC-BE66-875F04A730D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38B7E148-6692-47CC-BE66-875F04A730D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38B7E148-6692-47CC-BE66-875F04A730D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38B7E148-6692-47CC-BE66-875F04A730D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9F91869B-8BDD-44E1-981E-7FEEF5C9017F}
 	EndGlobalSection
 EndGlobal

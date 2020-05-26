@@ -6,16 +6,11 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataModels\DataModels.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Interfaces\IProductDataAdapter.cs" />
     <Compile Remove="Interfaces\IRecipeDataAdapter.cs" />
-    <Compile Remove="Interfaces\IProductService.cs" />
-    <Compile Remove="Interfaces\IProduct.cs" />
   </ItemGroup>
 </Project>
