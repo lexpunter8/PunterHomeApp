@@ -71,5 +71,18 @@ namespace PunterHomeApp.Services
             }
             return true;
         }
+
+        public async Task<bool> Update(Guid id, string newName)
+        {
+            try
+            {
+                await myProductDataAdapter.Update(id, newName);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
     }
 }

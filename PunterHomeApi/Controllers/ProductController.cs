@@ -31,9 +31,9 @@ namespace PunterHomeApp.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(Guid id)
         {
-            var result = myProductService.GetProductById(Guid.NewGuid());
+            var result = myProductService.GetProductById(id);
 
             if (result == null)
             {
@@ -78,10 +78,16 @@ namespace PunterHomeApp.Controllers
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]NewProductApiModel value)
+        [HttpPut("{id}/{newName}")]
+        public async Task<IActionResult> Put(Guid id, string newName)
         {
+            bool result = await myProductService.Update(id, newName);
 
+            if (result)
+            {
+                Ok();
+            }
+            return BadRequest();
         }
 
         // DELETE api/values/5

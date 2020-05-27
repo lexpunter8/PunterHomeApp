@@ -1,24 +1,30 @@
 ﻿@page "/products"
 @using BlazorPunterHomeApp.Data
 @using PunterHomeApp.ApiModels;
+@using DataModels.Helpers;
 @inject ProductService ProductService
 <h3>Products</h3>
 
 <EditForm Model="@newProduct" OnValidSubmit="HandleSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <div class="col-6">
+        <input type="text" class="form-control" placeholder="name" id="name" @bind="newProduct.Name" />
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Size</span>
+            </div>
+            <input type="number" class="form-control" aria-label="Text input with checkbox" @bind="newProduct.UnitQuantity">
+            <select class="custom-select" @bind="newProduct.UnitQuantityType">
+                @foreach (var cnt in ProductModel.SelectableUnitQuantityTypes)
+                {
+                    <option value="@cnt">@cnt.GetEnumDescription()</option>
+                }
+            </select>
+        </div>
 
-    <InputText placeholder="name" id="name" @bind-Value="newProduct.Name" />
-    <InputNumber placeholder="volume quantity" id="quantity" @bind-Value="newProduct.UnitQuantity" />
-    <select class="form-control" @bind="newProduct.UnitQuantityType">
-        @foreach (string cnt in ProductModel.SelectableUnitQuantityTypes)
-        {
-            <option value="@cnt">@cnt</option>
-        }
-    </select>
-
-    <button type="submit">Save</button>
-
+        <button type="submit">Save</button>
+    </div>
 </EditForm>
 
 <div class="row">
@@ -26,7 +32,7 @@
         <ul class="list-group ">
             @foreach (var cnt in products)
             {
-                <li class="list-group-item list-group-item-action justify-content-between @((cnt.Id == SelectedProduct?.Id) ? "active" : "")" @onclick="@(e => ItemClick(e, cnt))">
+                <li class="list-group-item list-group-item-action justify-content-between @((cnt.Id == SelectedProduct?.CurrentSelectedProduct?.Id) ? "active" : "")" @onclick="@(e => ItemClick(e, cnt))">
                     @cnt.Name
                     <span class="badge @((cnt.Quantity > 0) ? "badge-info" : "badge-warning") badge-pill">@cnt.Quantity</span>
                 </li>
@@ -37,10 +43,10 @@
     @if (SelectedProduct != null)
     {
 <div class="col-sm-12 col-md-6">
-    <h4>@SelectedProduct.Name Details</h4>
-    <p>@SelectedProduct.Id</p>
+    <h4>@SelectedProduct.CurrentSelectedProduct.Name Details</h4>
+    <p>@SelectedProduct.CurrentSelectedProduct.Id</p>
 
-    @foreach (var prodQuan in SelectedProduct.ProductQuantities)
+    @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
     {
 
 
@@ -59,17 +65,23 @@
     }
 
 <div class="row">
-    <EditForm Model="@SelectedProduct.NewProductQuantity" OnValidSubmit="HandleAddQuantity">
+    <EditForm Model="@SelectedProduct.CurrentSelectedProduct.NewProductQuantity" OnValidSubmit="HandleAddQuantity">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <InputNumber placeholder="volume quantity" id="quantity" @bind-Value="SelectedProduct.NewProductQuantity.UnitQuantityTypeVolume" />
-        <select @bind="SelectedProduct.NewProductQuantity.UnitQuantityType">
-            @foreach (string cnt in ProductModel.SelectableUnitQuantityTypes)
-            {
-                <option value="@cnt">@cnt</option>
-            }
-        </select>
+        <InputNumber placeholder="volume quantity" id="quantity" @bind-Value="SelectedProduct.CurrentSelectedProduct.NewProductQuantity.UnitQuantityTypeVolume" />
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Size</span>
+            </div>
+            <input type="number" class="form-control" aria-label="Text input with checkbox" @bind="SelectedProduct.CurrentSelectedProduct.NewProductQuantity.UnitQuantityTypeVolume">
+            <select class="custom-select" @bind="SelectedProduct.CurrentSelectedProduct.NewProductQuantity.UnitQuantityType">
+                @foreach (var cnt in ProductModel.SelectableUnitQuantityTypes)
+                {
+                    <option value="@cnt">@cnt.GetEnumDescription()</option>
+                }
+            </select>
+        </div>
 
         <button type="submit">ADD</button>
 
@@ -78,8 +90,8 @@
 
     <p>Some info</p>
     <div class="row">
-        <button class="btn btn-outline-danger" @onclick="@(e => ProductService.Delete(SelectedProduct))">Delete</button>
-        <button class="btn btn-primary" @onclick="@(e => ProductService.Update(SelectedProduct))">Save</button>
+        <button class="btn btn-outline-danger" @onclick="@(e => ProductService.DeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete</button>
+        <button class="btn btn-primary" @onclick="@(e => ProductService.Update(SelectedProduct.CurrentSelectedProduct))">Save</button>
 
     </div>
 </div>
@@ -92,7 +104,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        products = await ProductService.GetForecastAsync();
+        products = await ProductService.GetProducts();
+        ProductService.RefreshRequired += async (a, b) => {
+            products = await ProductService.GetProducts();
+
+            StateHasChanged();
+        };
     }
 
     private async void HandleSubmit()
@@ -100,19 +117,28 @@
         await ProductService.AddProduct(newProduct);
         newProduct = new NewProductApiModel();
 
-        products = await ProductService.GetForecastAsync();
+        products = await ProductService.GetProducts();
+        StateHasChanged();
     }
 
     private async void HandleAddQuantity()
     {
-        await ProductService.AddQuantityToProduct(SelectedProduct.NewProductQuantity, SelectedProduct);
+        await ProductService.AddQuantityToProduct(SelectedProduct.CurrentSelectedProduct.NewProductQuantity, SelectedProduct.CurrentSelectedProduct);
         StateHasChanged();
     }
 
-    private ProductModel SelectedProduct;
+    private BlazorPunterHomeApp.ViewModels.ProductViewModel SelectedProduct;
 
     private void ItemClick(MouseEventArgs e, ProductModel product)
     {
-        SelectedProduct = product;
+        if (SelectedProduct == null)
+        {
+            SelectedProduct = new ViewModels.ProductViewModel(product);
+        }
+        else
+        {
+            SelectedProduct.CurrentSelectedProduct = product;
+        }
+        StateHasChanged();
     }
 }

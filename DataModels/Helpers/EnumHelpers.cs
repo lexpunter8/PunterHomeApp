@@ -3,11 +3,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace PunterHomeApp.Helpers
+namespace DataModels.Helpers
 {
-    public class EnumHelpers
+    public static class EnumHelpers
     {
-        public static string GetEnumDescription(Enum value)
+        public static string GetEnumDescription(this Enum value)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString());
 

@@ -11,5 +11,6 @@ namespace PunterHomeDomain.Interfaces
         void AddProduct(IProduct product);
         Task DeleteProduct(Guid id);
         Task AddQuantityToProduct(ProductQuantity value, Guid id);
+        Task<bool> Update(Guid id, string newName);
     }
 }

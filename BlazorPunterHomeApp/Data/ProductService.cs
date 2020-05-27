@@ -13,6 +13,7 @@ namespace BlazorPunterHomeApp.Data
 {
     public class ProductService
     {
+        public event EventHandler RefreshRequired;
         public async Task Update(ProductModel product)
         {
             var json = JsonConvert.SerializeObject(product);
@@ -22,9 +23,11 @@ namespace BlazorPunterHomeApp.Data
             Uri uri = new Uri($"http://localhost:5005/api/product?{product.Id}");
             var response = await httpClient.PutAsync(uri, data);
             string responseString = await response.Content.ReadAsStringAsync();
+
+            RefreshRequired?.Invoke(this, new EventArgs());
         }
 
-        public async Task<ProductModel[]> GetForecastAsync()
+        public async Task<ProductModel[]> GetProducts()
         {
             var httpClient = new HttpClient();
             Uri uri = new Uri("http://localhost:5005/api/product");
@@ -35,7 +38,7 @@ namespace BlazorPunterHomeApp.Data
             return result;
         }
 
-        public async Task<bool> Delete(ProductModel productToDelete)
+        public async Task<bool> DeleteProduct(ProductModel productToDelete)
         {
             var httpClient = new HttpClient();
             Uri uri = new Uri($"http://localhost:5005/api/product/{productToDelete.Id}");
@@ -48,6 +51,7 @@ namespace BlazorPunterHomeApp.Data
                 return false;
             }
 
+            RefreshRequired?.Invoke(this, new EventArgs());
             return true;
         }
 
@@ -72,6 +76,7 @@ namespace BlazorPunterHomeApp.Data
 
             }
         }
+
 
         public async Task AddQuantityToProduct(ProductQuantity quantity, ProductModel product)
         {

@@ -15,5 +15,6 @@ namespace PunterHomeDomain.Interfaces
         Task<IEnumerable<IProduct>> SearchProductsAsync(string searchText);
         Task<bool> TryDeleteProductById(Guid id);
         Task AddQuantityToProduct(ProductQuantity value, Guid id);
+        Task<bool> Update(Guid id, string newName);
     }
 }

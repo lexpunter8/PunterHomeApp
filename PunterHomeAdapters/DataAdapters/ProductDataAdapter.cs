@@ -63,8 +63,7 @@ namespace PunterHomeApp.DataAdapters
         {
             using var context = new HomeAppDbContext(myDbOptions);
             var toDelete = context.Products.Where(p => p.Id == id).Include(pq => pq.ProductQuantities);
-
-            context.Remove(toDelete);
+            context.Products.RemoveRange(toDelete);
             await context.SaveChangesAsync();
         }
 
@@ -85,6 +84,22 @@ namespace PunterHomeApp.DataAdapters
             });
 
             return retval;
+        }
+
+        public async Task<bool> Update(Guid id, string newName)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var product = context.Products.FirstOrDefault(p => p.Id.Equals(id));
+
+            if (product == null)
+            {
+                throw new KeyNotFoundException($"Could not find product with Id: {id}");
+            }
+
+            product.Name = newName;
+            await context.SaveChangesAsync();
+            return true;
         }
 
         // Conversions
