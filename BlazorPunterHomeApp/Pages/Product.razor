@@ -2,30 +2,13 @@
 @using BlazorPunterHomeApp.Data
 @using PunterHomeApp.ApiModels;
 @using DataModels.Helpers;
+@using BlazorPunterHomeApp.ViewModels;
+@using BlazorPunterHomeApp.Components;
+
+@inject Blazored.Modal.Services.IModalService Modal
 @inject ProductService ProductService
 <h3>Products</h3>
-
-<EditForm Model="@newProduct" OnValidSubmit="HandleSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="col-6">
-        <input type="text" class="form-control" placeholder="name" id="name" @bind="newProduct.Name" />
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Size</span>
-            </div>
-            <input type="number" class="form-control" aria-label="Text input with checkbox" @bind="newProduct.UnitQuantity">
-            <select class="custom-select" @bind="newProduct.UnitQuantityType">
-                @foreach (var cnt in ProductModel.SelectableUnitQuantityTypes)
-                {
-                    <option value="@cnt">@cnt.GetEnumDescription()</option>
-                }
-            </select>
-        </div>
-
-        <button type="submit">Save</button>
-    </div>
-</EditForm>
+<button @onclick="ShowNewProductModal" class="btn btn-primary">New product</button>
 
 <div class="row">
     <div class="col-sm-12 col-md-6">
@@ -42,59 +25,40 @@
     </div>
     @if (SelectedProduct != null)
     {
-<div class="col-sm-12 col-md-6">
-    <h4>@SelectedProduct.CurrentSelectedProduct.Name Details</h4>
-    <p>@SelectedProduct.CurrentSelectedProduct.Id</p>
+        <div class="col-sm-12 col-md-6">
+            <h4>@SelectedProduct.CurrentSelectedProduct.Name Details</h4>
+            <p>@SelectedProduct.CurrentSelectedProduct.Id</p>
 
-    @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
-    {
+            @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
+            {
 
+
+                <div class="row">
+                    <div class="col">
+                        <p>
+                            @prodQuan.UnitQuantityTypeVolume @prodQuan.UnitQuantityType<br>
+                            Quantity: @prodQuan.Quantity
+                        </p>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-danger" @onclick="@(e => SelectedProduct.ChangeQuantity(-1, prodQuan.Id))">-</button>
+                        <button class="btn btn-success" @onclick="@(e => SelectedProduct.ChangeQuantity(1, prodQuan.Id))">+</button>
+                        <button class="btn btn-outline-danger" @onclick="@(e => ProductService.DeleteProductQuantity(prodQuan.Id))">delete</button>
+                    </div>
+                </div>
+            }
 
         <div class="row">
-            <div class="col">
-                <p>
-                    @prodQuan.UnitQuantityTypeVolume @prodQuan.UnitQuantityType<br>
-                    Quantity: @prodQuan.Quantity
-                </p>
-            </div>
-            <div class="col">
-                <button class="btn btn-danger" @onclick="@(e => prodQuan.Quantity--)">-</button>
-                <button class="btn btn-success" @onclick="@(e => prodQuan.Quantity++)">+</button>
+
+            <button @onclick="ShowAddProductQuantityModal" class="btn btn-primary">New product</button>
+        </div>
+            <button @onclick="@(() => Modal.Show<ProductComponent>("Product"))" class="btn btn-primary">View</button>
+            <p>Some info</p>
+            <div class="row">
+                <button class="btn btn-outline-danger" @onclick="@(e => ProductService.DeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete</button>
+                <button disabled="@(!(SelectedProduct.IsDirty))" class="btn btn-primary" @onclick="@(e => ProductService.Update(SelectedProduct.CurrentSelectedProduct))">Save</button>
             </div>
         </div>
-    }
-
-<div class="row">
-    <EditForm Model="@SelectedProduct.CurrentSelectedProduct.NewProductQuantity" OnValidSubmit="HandleAddQuantity">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
-        <InputNumber placeholder="volume quantity" id="quantity" @bind-Value="SelectedProduct.CurrentSelectedProduct.NewProductQuantity.UnitQuantityTypeVolume" />
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Size</span>
-            </div>
-            <input type="number" class="form-control" aria-label="Text input with checkbox" @bind="SelectedProduct.CurrentSelectedProduct.NewProductQuantity.UnitQuantityTypeVolume">
-            <select class="custom-select" @bind="SelectedProduct.CurrentSelectedProduct.NewProductQuantity.UnitQuantityType">
-                @foreach (var cnt in ProductModel.SelectableUnitQuantityTypes)
-                {
-                    <option value="@cnt">@cnt.GetEnumDescription()</option>
-                }
-            </select>
-        </div>
-
-        <button type="submit">ADD</button>
-
-    </EditForm>
-</div>
-
-    <p>Some info</p>
-    <div class="row">
-        <button class="btn btn-outline-danger" @onclick="@(e => ProductService.DeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete</button>
-        <button class="btn btn-primary" @onclick="@(e => ProductService.Update(SelectedProduct.CurrentSelectedProduct))">Save</button>
-
-    </div>
-</div>
     }
 </div>
 
@@ -105,11 +69,27 @@
     protected override async Task OnInitializedAsync()
     {
         products = await ProductService.GetProducts();
-        ProductService.RefreshRequired += async (a, b) => {
+        ProductService.RefreshRequired += async (a, b) =>
+        {
             products = await ProductService.GetProducts();
 
-            StateHasChanged();
+            InvokeAsync(() => StateHasChanged());
         };
+    }
+
+    private async void ShowNewProductModal()
+    {
+        var moviesModal = Modal.Show<NewEditProductComponent>("New product");
+        var result = await moviesModal.Result;
+
+    }
+
+    private void ShowAddProductQuantityModal()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(NewEditProductQuantityComponent.Product), SelectedProduct.CurrentSelectedProduct);
+
+        Modal.Show<NewEditProductQuantityComponent>("Add product quantity", parameters);
     }
 
     private async void HandleSubmit()
@@ -123,7 +103,8 @@
 
     private async void HandleAddQuantity()
     {
-        await ProductService.AddQuantityToProduct(SelectedProduct.CurrentSelectedProduct.NewProductQuantity, SelectedProduct.CurrentSelectedProduct);
+        await ProductService.AddQuantityToProduct(SelectedProduct.NewProductQuantity, SelectedProduct.CurrentSelectedProduct);
+        SelectedProduct.NewProductQuantity = new PunterHomeDomain.Models.ProductQuantity();
         StateHasChanged();
     }
 
@@ -134,10 +115,11 @@
         if (SelectedProduct == null)
         {
             SelectedProduct = new ViewModels.ProductViewModel(product);
+            SelectedProduct.PropertyChanged += (a, b) => StateHasChanged();
         }
         else
         {
-            SelectedProduct.CurrentSelectedProduct = product;
+            SelectedProduct.SetProduct(product);
         }
         StateHasChanged();
     }

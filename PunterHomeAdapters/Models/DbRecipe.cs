@@ -10,7 +10,7 @@ namespace PunterHomeAdapters.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
 
-        public List<string> Steps { get; set; }
+        public List<DbRecipeStep> Steps { get; set; } = new List<DbRecipeStep>();
         public List<DbIngredient> Ingredients { get; set; } = new List<DbIngredient>();
     }
 

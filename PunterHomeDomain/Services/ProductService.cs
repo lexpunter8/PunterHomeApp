@@ -38,6 +38,11 @@ namespace PunterHomeApp.Services
             await myProductDataAdapter.AddQuantityToProduct(value, id);
         }
 
+        public async Task DeleteProductQuantityById(int id)
+        {
+            await myProductDataAdapter.DeleteProductQuantityById(id);
+        }
+
         public IProduct GetProductById(Guid productId)
         {
             throw new NotImplementedException();
@@ -83,6 +88,11 @@ namespace PunterHomeApp.Services
             {
                 return false;
             }
+        }
+
+        public async Task UpdateProductQuantity(int id, ProductQuantity productQuantity)
+        {
+            await myProductDataAdapter.UpdateProductQuantity(id, productQuantity);
         }
     }
 }

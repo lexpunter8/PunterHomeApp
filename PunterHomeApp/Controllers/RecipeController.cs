@@ -25,12 +25,7 @@ namespace PunterHomeApp.Controllers
         [HttpGet]
         public IEnumerable<RecipeApiModel> Get()
         {
-            return recipeService.GetAllRecipes().Select(r => new RecipeApiModel
-            {
-                Name = r.Name,
-                Steps = new List<string>(r.Steps),
-                Ingredients = r.Ingredients.Select(ConvertRecipeToApiModel).ToList()
-            });
+            throw new NotImplementedException();
         }
 
         private ApiIngredientModel ConvertRecipeToApiModel(IIngredient ingredient)
@@ -52,17 +47,10 @@ namespace PunterHomeApp.Controllers
         }
 
         // POST api/values
-        [HttpPost]
-        public void Post([FromBody]RecipeApiModel value)
+        [HttpPost("{name}")]
+        public void Post(string name)
         {
-
-            recipeService.CreateRecipe(value.Name, value.Steps.ToList(), value.Ingredients.Select(i => new Ingredient
-                    {
-                         Product = new Product { Id = i.ProductId },
-                         UnitQuantity = i.UnitQuantity,
-                         UnitQuantityType = i.UnitQuantityType
-                    }).ToList()
-            );
+            recipeService.CreateRecipe(name);
         }
 
         // PUT api/values/5

@@ -1,0 +1,149 @@
+﻿@page "/recipes"
+@inject Blazored.Modal.Services.IModalService Modal
+
+@using BlazorPunterHomeApp.Data;
+@using BlazorPunterHomeApp.ViewModels;
+@inject RecipeService RecipeService
+@inject ProductService PropductService
+
+<h3>Recipe</h3>
+<EditForm Model="@RecipeViewModel" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-6">
+        <input type="text" class="form-control" placeholder="name" id="name" @bind="newRecipeName" />
+
+        <button class="btn btn-primary" type="submit">Save</button>
+    </div>
+</EditForm>
+
+<div class="row">
+    <div class="col-sm-12 col-md-3">
+
+        <ul class="list-group ">
+            @foreach (var cnt in recipes)
+            {
+                <li class="list-group-item list-group-item-action justify-content-between @((RecipeViewModel.CurrentSelectedRecipe != null && cnt.Id == RecipeViewModel?.CurrentSelectedRecipe?.Id) ? "active" : "")" @onclick="@(e => ItemClick(e, cnt))">
+                    @cnt.Name
+                </li>
+
+            }
+        </ul>
+
+    </div>
+    @if (RecipeViewModel.CurrentSelectedRecipe.Id != Guid.Empty)
+    {
+        <div class="col-sm-12 col-md-6">
+            <h4>@RecipeViewModel.CurrentSelectedRecipe.Name Details</h4>
+            <p>@RecipeViewModel.CurrentSelectedRecipe.Id</p>
+
+
+        </div>
+        <div class="col-md-3">
+            <ul class="list-group ">
+                @foreach (var cnt in products)
+                {
+                    <li class="list-group-item list-group-item-action justify-content-between" data-toggle="modal" data-target="#exampleModal">
+
+                        @cnt.Name
+                    </li>
+
+
+                }
+            </ul>
+        </div>
+
+    }
+</div>
+
+
+@code {
+    private bool Open { get; set; }
+
+    public void OnClose()
+    {
+
+    }
+
+    private RecipeViewModel RecipeViewModel;
+    private string newRecipeName = string.Empty;
+
+    private RecipeModel[] recipes = new RecipeModel[0];
+    private List<ProductModel> products = new List<ProductModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        RecipeViewModel = new RecipeViewModel(PropductService);
+
+        recipes = await RecipeViewModel.GetRecipes();
+        products = await RecipeViewModel.GetAllProduct();
+
+        RecipeViewModel.PropertyChanged += async (a, b) => await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void HandleSubmit()
+    {
+        await RecipeViewModel.CreateNewRecipe(newRecipeName);
+    }
+
+    private async void AddStep()
+    {
+
+    }
+
+    private async void AddProduct()
+    {
+
+    }
+
+    private void ItemClick(MouseEventArgs e, RecipeModel product)
+    {
+        RecipeViewModel.CurrentSelectedRecipe = product;
+    }
+}
+
+
+@*<EditForm Model="@RecipeViewModel" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="col-6">
+            <input type="text" class="form-control" placeholder="name" id="name" @bind="newRecipeName" />
+
+            <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+    </EditForm>
+    @foreach (var ingredient in RecipeViewModel.CurrentSelectedRecipe.Ingredients)
+    {
+
+
+        <div class="row">
+            <div class="col">
+                <p>
+                    @ingredient @ingredient<br>
+                    Quantity: @ingredient
+                </p>
+            </div>
+        </div>
+    }
+
+    <EditForm Model="@RecipeViewModel.CurrentSelectedRecipe.NewRecipestep" OnValidSubmit="AddStep">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="col-6">
+            <input type="text" class="form-control" placeholder="name" id="name" @bind="RecipeViewModel.CurrentSelectedRecipe.NewRecipestep.Text" />
+
+            <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+    </EditForm>
+    @foreach (var step in RecipeViewModel.CurrentSelectedRecipe.Steps)
+    {
+
+
+        <div class="row">
+            <div class="col">
+                <p>
+                    @step.Order @step.Text
+                </p>
+            </div>
+        </div>
+    }*@

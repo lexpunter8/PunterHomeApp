@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using PunterHomeApp.Services;
+using PunterHomeDomain.Models;
 using static Enums;
 
 namespace PunterHomeApp.ApiModels
 {
     public class RecipeApiModel
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public List<string> Steps { get; set; }
+        public List<RecipeStep> Steps { get; set; }
         public List<ApiIngredientModel> Ingredients { get; set; }
     }
     public class ApiIngredientModel

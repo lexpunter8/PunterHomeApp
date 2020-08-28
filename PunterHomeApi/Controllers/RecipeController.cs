@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PunterHomeApp.ApiModels;
@@ -27,8 +28,9 @@ namespace PunterHomeApp.Controllers
         {
             return recipeService.GetAllRecipes().Select(r => new RecipeApiModel
             {
+                Id = r.Id,
                 Name = r.Name,
-                Steps = new List<string>(r.Steps),
+                Steps = r.Steps.ToList(),
                 Ingredients = r.Ingredients.Select(ConvertRecipeToApiModel).ToList()
             });
         }
@@ -52,29 +54,49 @@ namespace PunterHomeApp.Controllers
         }
 
         // POST api/values
-        [HttpPost]
-        public void Post([FromBody]RecipeApiModel value)
+        [HttpPost("{name}")]
+        public IActionResult Post(string name)
         {
+            try
+            {
+                recipeService.CreateRecipe(name);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
 
-            recipeService.CreateRecipe(value.Name, value.Steps.ToList(), value.Ingredients.Select(i => new Ingredient
-                    {
-                         Product = new Product { Id = i.ProductId },
-                         UnitQuantity = i.UnitQuantity,
-                         UnitQuantityType = i.UnitQuantityType
-                    }).ToList()
-            );
+            return Ok();
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{id}/{name}")]
+        public IActionResult Put(Guid id, string name)
         {
+            try
+            {
+                recipeService.UpdateRecipe(id, name);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
+            try
+            {
+                recipeService.DeleteRecipeById(id);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok();
         }
     }
 }

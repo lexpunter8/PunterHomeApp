@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -26,8 +25,7 @@ namespace PunterHomeAdapters.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Steps = table.Column<List<string>>(nullable: true)
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -82,6 +80,26 @@ namespace PunterHomeAdapters.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RecipeSteps",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Order = table.Column<int>(nullable: false),
+                    Text = table.Column<string>(nullable: true),
+                    RecipeId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipeSteps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RecipeSteps_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Ingredients_RecipeId",
                 table: "Ingredients",
@@ -91,6 +109,11 @@ namespace PunterHomeAdapters.Migrations
                 name: "IX_ProductQuantities_ProductIdId",
                 table: "ProductQuantities",
                 column: "ProductIdId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeSteps_RecipeId",
+                table: "RecipeSteps",
+                column: "RecipeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -102,10 +125,13 @@ namespace PunterHomeAdapters.Migrations
                 name: "ProductQuantities");
 
             migrationBuilder.DropTable(
-                name: "Recipes");
+                name: "RecipeSteps");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Recipes");
         }
     }
 }

@@ -7,7 +7,6 @@ using PunterHomeAdapters;
 using PunterHomeAdapters.Models;
 using PunterHomeApp.Interfaces;
 using PunterHomeApp.Services;
-using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
 
 namespace PunterHomeApp.DataAdapters
@@ -61,7 +60,7 @@ namespace PunterHomeApp.DataAdapters
             {
                 Id = dbRecipe.Id,
                 Name = dbRecipe.Name,
-                Steps = dbRecipe.Steps,
+                Steps = dbRecipe.Steps.Select(r => Convert(r)),
                 Ingredients = dbRecipe.Ingredients.Select(ConvertDbIngredient)
             };
         }
@@ -75,7 +74,7 @@ namespace PunterHomeApp.DataAdapters
             {
                 Id = recipe.Id,
                 Name = recipe.Name,
-                Steps = new List<string>(recipe.Steps)
+                Steps = recipe.Steps.Select(rs => Convert(rs)).ToList()
             };
 
             var ingredients = recipe.Ingredients.Select(r => new DbIngredient
@@ -96,49 +95,18 @@ namespace PunterHomeApp.DataAdapters
             context.SaveChanges();
         }
 
-        private DbProduct ConvertProductToDbProduct(IProduct product)
+        private Recipe ConvertDbRecipeToRecipe(DbRecipe recipe)
         {
-            return new DbProduct
+            return new Recipe
             {
-                Id = product.Id
+                Name = recipe.Name,
+                Id = recipe.Id,
+                Steps = recipe.Steps.Select(s => Convert(s)),
+                Ingredients = recipe.Ingredients.Select(i => ConvertDbIngredient(i))
             };
         }
 
-        private DbRecipe ConvertRecipeToDbRecipe(Services.IRecipe recipe)
-        {
-            return new DbRecipe
-            {
-            };
-        }
-
-        private DbIngredient ConvertIngredientToDbIngredient(IIngredient ingredient)
-        {
-            return new DbIngredient
-            {
-                Product = new DbProduct
-                {
-                    Id = ingredient.Product.Id,
-
-                }
-            };
-        }
-
-        public IEnumerable<Services.IRecipe> GetAllRecipes()
-        {
-            using var context = new HomeAppDbContext(myDbOptions);
-            var recipes = context.Recipes.Include(r => r.Ingredients).ThenInclude(i => i.Product).ToList();
-
-
-            return recipes.Select(r => new Recipe
-                {
-                    Id = r.Id,
-                    Name = r.Name,
-                    Steps = r.Steps,
-                    Ingredients = r.Ingredients.Select(ConvertDbIngredient)
-            });
-        }
-
-        private IIngredient ConvertDbIngredient(DbIngredient dbIngredient)
+        private Ingredient ConvertDbIngredient(DbIngredient dbIngredient)
         {
             return new Ingredient
             {
@@ -147,14 +115,78 @@ namespace PunterHomeApp.DataAdapters
             };
         }
 
-        IEnumerable<Services.IRecipe> IRecipeDataAdapter.GetAllRecipes()
+        private RecipeStep Convert(DbRecipeStep recipe)
         {
-            throw new NotImplementedException();
+            return new RecipeStep
+            {
+                Id = recipe.Id,
+                Order = recipe.Order,
+                Text = recipe.Text
+            };
         }
 
-        Services.IRecipe IRecipeDataAdapter.GetRecipeById(Guid recipeId)
+        private DbRecipeStep Convert(IRecipeStep recipe)
         {
-            throw new NotImplementedException();
+            return new DbRecipeStep
+            {
+                Id = recipe.Id,
+                Order = recipe.Order,
+                Text = recipe.Text
+            };
+        }
+
+        public async Task<IEnumerable<Recipe>> GetAllRecipes()
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var result = await context.Recipes.Include(r => r.Ingredients).ThenInclude(i => i.Recipe).Include(r => r.Steps).ThenInclude(s => s.Recipe).ToListAsync();
+
+            return result.Select(r => ConvertDbRecipeToRecipe(r));
+        }
+
+        public void SaveRecipe(Recipe recipe)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            context.Recipes.Add(new DbRecipe
+            {
+                Name = recipe.Name
+            });
+
+            context.SaveChanges();
+        }
+
+        public void UpdateRecipe(Guid id, string newName)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var recipe = context.Recipes.FirstOrDefault(r => r.Id == id);
+
+            if (recipe == null)
+            {
+                return;
+            }
+
+            recipe.Name = newName;
+
+            context.SaveChanges();
+        }
+
+        public void DeleteById(Guid id)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var recipe = context.Recipes.FirstOrDefault(r => r.Id == id);
+
+            if (recipe == null)
+            {
+                return;
+            }
+
+            context.Recipes.Remove(recipe);
+
+            context.SaveChanges();
         }
     }
 }
+

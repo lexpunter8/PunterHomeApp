@@ -11,18 +11,22 @@ using System.Threading.Tasks;
 
 namespace BlazorPunterHomeApp.Data
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
         public event EventHandler RefreshRequired;
         public async Task Update(ProductModel product)
         {
-            var json = JsonConvert.SerializeObject(product);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            foreach (var q in product.ProductQuantities)
+            {
+                var json = JsonConvert.SerializeObject(q);
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var httpClient = new HttpClient();
-            Uri uri = new Uri($"http://localhost:5005/api/product?{product.Id}");
-            var response = await httpClient.PutAsync(uri, data);
-            string responseString = await response.Content.ReadAsStringAsync();
+                var httpClient = new HttpClient();
+                Uri uri = new Uri($"http://localhost:5005/api/productquantity/{q.Id}");
+                var response = await httpClient.PutAsync(uri, data);
+                string responseString = await response.Content.ReadAsStringAsync();
+            }
+
 
             RefreshRequired?.Invoke(this, new EventArgs());
         }
@@ -42,6 +46,23 @@ namespace BlazorPunterHomeApp.Data
         {
             var httpClient = new HttpClient();
             Uri uri = new Uri($"http://localhost:5005/api/product/{productToDelete.Id}");
+            var response = await httpClient.DeleteAsync(uri);
+            string responseString = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // handle error
+                return false;
+            }
+
+            RefreshRequired?.Invoke(this, new EventArgs());
+            return true;
+        }
+
+        public async Task<bool> DeleteProductQuantity(int id)
+        {
+            var httpClient = new HttpClient();
+            Uri uri = new Uri($"http://localhost:5005/api/productquantity/{id}");
             var response = await httpClient.DeleteAsync(uri);
             string responseString = await response.Content.ReadAsStringAsync();
 
@@ -94,7 +115,6 @@ namespace BlazorPunterHomeApp.Data
                 client.Dispose();
 
                 product.ProductQuantities = product.ProductQuantities.Concat(new[] { quantity });
-                product.NewProductQuantity = new ProductQuantity();
             }
             catch (Exception)
             {

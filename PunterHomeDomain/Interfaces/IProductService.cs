@@ -16,5 +16,7 @@ namespace PunterHomeDomain.Interfaces
         Task<bool> TryDeleteProductById(Guid id);
         Task AddQuantityToProduct(ProductQuantity value, Guid id);
         Task<bool> Update(Guid id, string newName);
+        Task UpdateProductQuantity(int id, ProductQuantity productQuantity);
+        Task DeleteProductQuantityById(int id);
     }
 }

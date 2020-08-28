@@ -26,5 +26,6 @@ namespace PunterHomeAdapters
         public DbSet<DbRecipe> Recipes { get; set; }
         public DbSet<DbProduct> Products { get; set; }
         public DbSet<DbProductQuantity> ProductQuantities { get; set; }
+        public DbSet<DbRecipeStep> RecipeSteps { get; set; }
     }
 }

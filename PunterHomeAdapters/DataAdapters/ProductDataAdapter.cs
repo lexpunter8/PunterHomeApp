@@ -67,6 +67,15 @@ namespace PunterHomeApp.DataAdapters
             await context.SaveChangesAsync();
         }
 
+        public async Task DeleteProductQuantityById(int id)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var toDelete = context.ProductQuantities.FirstOrDefault(p => p.Id == id);
+            context.ProductQuantities.Remove(toDelete);
+            await context.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<IProduct>> GetProducts()
         {
             using var context = new HomeAppDbContext(myDbOptions);
@@ -100,6 +109,17 @@ namespace PunterHomeApp.DataAdapters
             product.Name = newName;
             await context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task UpdateProductQuantity(int id, ProductQuantity productQuantity)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var productToChange = context.ProductQuantities.FirstOrDefault(q => q.Id == id);
+
+            productToChange.UnitQuantity = productQuantity.Quantity;
+
+            await context.SaveChangesAsync();
         }
 
         // Conversions

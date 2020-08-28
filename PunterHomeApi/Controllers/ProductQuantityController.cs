@@ -44,14 +44,33 @@ namespace PunterHomeApi.Controllers
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task<IActionResult> Put(int id, [FromBody] ProductQuantity productQuantity)
         {
-        }
 
+            try
+            {
+                await myProductService.UpdateProductQuantity(id, productQuantity);
+            } catch (Exception e)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            try
+            {
+                await myProductService.DeleteProductQuantityById(id);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
     }
 }

@@ -13,4 +13,7 @@
   <ItemGroup>
     <Compile Remove="Interfaces\IRecipeDataAdapter.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
+  </ItemGroup>
 </Project>

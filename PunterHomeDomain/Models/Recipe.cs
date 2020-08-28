@@ -8,7 +8,7 @@ namespace PunterHomeDomain.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public IEnumerable<string> Steps { get; set; }
-        public IEnumerable<IIngredient> Ingredients { get; set; }
+        public IEnumerable<RecipeStep> Steps { get; set; }
+        public IEnumerable<Ingredient> Ingredients { get; set; }
     }
 }

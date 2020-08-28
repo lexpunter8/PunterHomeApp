@@ -12,11 +12,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeAdapters", "Punte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModels", "DataModels\DataModels.csproj", "{08A64526-C9F5-448F-BC64-6ACFD3E3F1E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeApi", "PunterHomeApi\PunterHomeApi.csproj", "{C4468E0F-0151-460D-98EB-92CDE5B7378B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeApi", "PunterHomeApi\PunterHomeApi.csproj", "{C4468E0F-0151-460D-98EB-92CDE5B7378B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeManagmentWebApp", "PunterHomeManagmentWebApp\PunterHomeManagmentWebApp.csproj", "{31F48D28-784E-4816-834C-B4140E70E401}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeManagmentWebApp", "PunterHomeManagmentWebApp\PunterHomeManagmentWebApp.csproj", "{31F48D28-784E-4816-834C-B4140E70E401}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorPunterHomeApp", "BlazorPunterHomeApp\BlazorPunterHomeApp.csproj", "{38B7E148-6692-47CC-BE66-875F04A730D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorPunterHomeApp", "BlazorPunterHomeApp\BlazorPunterHomeApp.csproj", "{38B7E148-6692-47CC-BE66-875F04A730D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
