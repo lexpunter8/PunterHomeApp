@@ -7,6 +7,6 @@ namespace PunterHomeApp.ApiModels
     {
         public string Name { get; set; }
         public int UnitQuantity { get; set; }
-        public EUnitQuantityType UnitQuantityType { get; set; }
+        public EUnitMeasurementType UnitQuantityType { get; set; }
     }
 }

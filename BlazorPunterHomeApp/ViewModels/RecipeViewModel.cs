@@ -2,6 +2,7 @@
 using BlazorPunterHomeApp.Data;
 using Newtonsoft.Json;
 using PunterHomeDomain;
+using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Models;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace BlazorPunterHomeApp.ViewModels
             this.productService = productService;
         }
 
-        public RecipeModel CurrentSelectedRecipe { get; set; } = new RecipeModel();
+        public RecipeDetailsApiModel CurrentSelectedRecipe { get; set; } = new RecipeDetailsApiModel();
 
         public async Task<bool> CreateNewRecipe(string newRecipeName)
         {
@@ -35,6 +36,13 @@ namespace BlazorPunterHomeApp.ViewModels
         {
             var r = await myRecipeApiHandler.GetAll();
             return r.ToArray();
+        }
+
+
+        public async Task<RecipeDetailsApiModel> GetRecipeDetails(Guid id)
+        {
+            var r = await myRecipeApiHandler.GetById<RecipeDetailsApiModel>(id);
+            return r;
         }
 
         public async Task<List<ProductModel>> GetAllProduct()

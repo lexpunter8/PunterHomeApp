@@ -9,9 +9,11 @@ namespace BlazorPunterHomeApp.Data
 {
     public class IngredientModel
     {
-        public ProductModel Product { get; set; }
+        public Guid ProductId { get; set; }
+        public Guid RecipeId { get; set; }
+        public string ProductName { get; set; }
         public int UnitQuantity { get; set; }
-        public EUnitQuantityType UnitQuantityType { get; set; }
+        public EUnitMeasurementType UnitQuantityType { get; set; }
     }
 
     public class RecipeStepModel

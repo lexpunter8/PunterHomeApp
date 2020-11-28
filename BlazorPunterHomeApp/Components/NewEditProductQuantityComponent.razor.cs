@@ -20,7 +20,7 @@ namespace BlazorPunterHomeApp.Components
 
         public ProductQuantity NewProductQuantity { get; set; } = new ProductQuantity();
 
-        public List<EUnitQuantityType> SelectableUnitQuantityTypes => Enum.GetValues(typeof(EUnitQuantityType)).Cast<EUnitQuantityType>().ToList();
+        public List<EUnitMeasurementType> SelectableUnitQuantityTypes => Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList();
 
         public async void Save()
         {

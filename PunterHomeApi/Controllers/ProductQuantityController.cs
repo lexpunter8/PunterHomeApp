@@ -57,6 +57,41 @@ namespace PunterHomeApi.Controllers
 
             return Ok();
         }
+
+
+        // PUT api/<controller>/5
+        [HttpPut("{id}/increase")]
+        public async Task<IActionResult> IncreaseQuantity(int id)
+        {
+            try
+            {
+                await myProductService.UpdateProductQuantity(id, 1, true);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        // PUT api/<controller>/5
+        [HttpPut("{id}/decrease")]
+        public async Task<IActionResult> DecreaseQuantity(int id)
+        {
+
+            try
+            {
+                await myProductService.UpdateProductQuantity(id, 1, false);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

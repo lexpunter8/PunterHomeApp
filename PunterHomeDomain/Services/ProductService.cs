@@ -22,12 +22,11 @@ namespace PunterHomeApp.Services
             myProductDataAdapter.AddProduct(new Product
             {
                 Name = product.Name,
-                ProductQuantities = new List<IProductQuantity>
+                ProductQuantities = new List<BaseMeasurement>
                 {
-                    new ProductQuantity
+                    new BaseMeasurement(product.UnitQuantityType)
                     {
-                        UnitQuantityTypeVolume = product.UnitQuantity,
-                        UnitQuantityType = product.UnitQuantityType
+                        UnitQuantityTypeVolume = product.UnitQuantity
                     }
                 }
             });
@@ -43,25 +42,25 @@ namespace PunterHomeApp.Services
             await myProductDataAdapter.DeleteProductQuantityById(id);
         }
 
-        public IProduct GetProductById(Guid productId)
+        public Product GetProductById(Guid productId)
         {
             throw new NotImplementedException();
         }
 
-        public IProduct GetProductByName(string productName)
+        public Product GetProductByName(string productName)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<IProduct>> GetProducts()
+        public async Task<IEnumerable<Product>> GetProducts()
         {
             return await myProductDataAdapter.GetProducts();
         }
 
-        public async Task<IEnumerable<IProduct>> SearchProductsAsync(string searchText)
+        public async Task<IEnumerable<Product>> SearchProductsAsync(string searchText)
         {
             var result = await myProductDataAdapter.GetProducts();
-            return result.Where(p => p.Name.Contains(searchText));
+            return result.Where(p => p.Name.ToLower().Contains(searchText.ToLower()));
         }
 
         public async Task<bool> TryDeleteProductById(Guid id)
@@ -93,6 +92,16 @@ namespace PunterHomeApp.Services
         public async Task UpdateProductQuantity(int id, ProductQuantity productQuantity)
         {
             await myProductDataAdapter.UpdateProductQuantity(id, productQuantity);
+        }
+
+        public async Task UpdateProductQuantity(int id, int value, bool increase)
+        {
+            if (increase)
+            {
+                await myProductDataAdapter.IncreaseProductQuantity(id, value);
+                return;
+            }
+            await myProductDataAdapter.DereaseProductQuantity(id, value);
         }
     }
 }

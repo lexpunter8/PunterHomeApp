@@ -9,10 +9,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PunterHomeAdapters;
+using PunterHomeAdapters.DataAdapters;
 using PunterHomeApp.DataAdapters;
-using PunterHomeApp.Interfaces;
 using PunterHomeApp.Services;
+using PunterHomeDomain;
 using PunterHomeDomain.Interfaces;
+using PunterHomeDomain.Services;
 
 namespace PunterHomeApi
 {
@@ -36,8 +38,11 @@ namespace PunterHomeApi
 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IRecipeService, RecipeService>();
+            services.AddScoped<IIngredientService, IngredientService>();
+
             services.AddScoped<IProductDataAdapter, ProductDataAdapter>();
             services.AddScoped<IRecipeDataAdapter, RecipeDataAdapter>();
+            services.AddScoped<IIngredientDataAdapter, IngredientDataAdapter>();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

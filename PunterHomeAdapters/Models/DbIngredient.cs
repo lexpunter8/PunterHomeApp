@@ -12,6 +12,6 @@ namespace PunterHomeAdapters.Models
         public virtual DbProduct Product { get; set; }
 
         public int UnitQuantity { get; set; }
-        public EUnitQuantityType UnitQuantityType { get; set; }
+        public EUnitMeasurementType UnitQuantityType { get; set; }
     }
 }

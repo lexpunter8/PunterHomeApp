@@ -2,9 +2,7 @@
 using Blazored.Modal.Services;
 using BlazorPunterHomeApp.Data;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using PunterHomeApp.ApiModels;
-using System.Threading.Tasks;
 
 namespace BlazorPunterHomeApp.Components
 { 

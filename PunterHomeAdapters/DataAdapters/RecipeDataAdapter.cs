@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PunterHomeAdapters;
 using PunterHomeAdapters.Models;
-using PunterHomeApp.Interfaces;
 using PunterHomeApp.Services;
+using PunterHomeDomain;
 using PunterHomeDomain.Models;
 
 namespace PunterHomeApp.DataAdapters
@@ -26,7 +26,7 @@ namespace PunterHomeApp.DataAdapters
             {
                 using var context = new HomeAppDbContext(myDbOptions);
 
-                DbProduct product = context.Products.FirstOrDefault(p => p.Id.Equals(ingredient.Product.Id));
+                DbProduct product = context.Products.FirstOrDefault(p => p.Id.Equals(ingredient.ProductId));
                 if (product == null)
                 {
                     return false;
@@ -48,15 +48,27 @@ namespace PunterHomeApp.DataAdapters
             });
         }
 
-        public Services.IRecipe GetRecipeById(Guid recipeId)
+        public RecipeApiModel GetRecipeById(Guid recipeId)
         {
             using var context = new HomeAppDbContext(myDbOptions);
-            return DbRecipeToRecipe(context.Recipes.Single(r => r.Id == recipeId));
+
+
+            var result = context.Recipes
+                                    .Include(r => r.Ingredients)
+                                    .ThenInclude(i => i.Recipe).Include(r => r.Steps)
+                                    .ThenInclude(s => s.Recipe)
+                                    .FirstOrDefault(d => d.Id == recipeId);
+
+            result.Ingredients.ForEach(i => i.Product = context.Products.Include(p => p.ProductQuantities).FirstOrDefault(p => p.Id == i.ProductId));
+            //result.Ingredients.ForEach(i => i.Product = context.Products.FirstOrDefault(p => p.Id == i.ProductId));
+
+
+            return DbRecipeToRecipe(result);
         }
 
-        private Recipe DbRecipeToRecipe(DbRecipe dbRecipe)
+        private RecipeApiModel DbRecipeToRecipe(DbRecipe dbRecipe)
         {
-            return new Recipe
+            return new RecipeApiModel
             {
                 Id = dbRecipe.Id,
                 Name = dbRecipe.Name,
@@ -80,7 +92,7 @@ namespace PunterHomeApp.DataAdapters
             var ingredients = recipe.Ingredients.Select(r => new DbIngredient
             {
                 Recipe = dbRecipe,
-                ProductId = r.Product.Id,
+                ProductId = r.ProductId,
                 UnitQuantity = r.UnitQuantity,
                 UnitQuantityType = r.UnitQuantityType
             }).ToList();
@@ -95,9 +107,9 @@ namespace PunterHomeApp.DataAdapters
             context.SaveChanges();
         }
 
-        private Recipe ConvertDbRecipeToRecipe(DbRecipe recipe)
+        private RecipeApiModel ConvertDbRecipeToRecipe(DbRecipe recipe)
         {
-            return new Recipe
+            return new RecipeApiModel
             {
                 Name = recipe.Name,
                 Id = recipe.Id,
@@ -110,6 +122,9 @@ namespace PunterHomeApp.DataAdapters
         {
             return new Ingredient
             {
+                ProductId = dbIngredient.ProductId,
+                RecipeId = dbIngredient.RecipeId,
+                ProductName = dbIngredient.Product.Name,
                 UnitQuantity = dbIngredient.UnitQuantity,
                 UnitQuantityType = dbIngredient.UnitQuantityType
             };
@@ -135,16 +150,19 @@ namespace PunterHomeApp.DataAdapters
             };
         }
 
-        public async Task<IEnumerable<Recipe>> GetAllRecipes()
+        public async Task<IEnumerable<RecipeApiModel>> GetAllRecipes()
         {
             using var context = new HomeAppDbContext(myDbOptions);
 
             var result = await context.Recipes.Include(r => r.Ingredients).ThenInclude(i => i.Recipe).Include(r => r.Steps).ThenInclude(s => s.Recipe).ToListAsync();
 
+            result.ForEach(r => r.Ingredients.ForEach(i => i.Product = context.Products.FirstOrDefault(p => p.Id == i.ProductId)));
+
+
             return result.Select(r => ConvertDbRecipeToRecipe(r));
         }
 
-        public void SaveRecipe(Recipe recipe)
+        public void SaveRecipe(RecipeApiModel recipe)
         {
             using var context = new HomeAppDbContext(myDbOptions);
 

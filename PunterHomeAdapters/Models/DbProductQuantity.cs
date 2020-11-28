@@ -9,7 +9,7 @@ namespace PunterHomeAdapters.Models
         public int Id { get; set; }
         public DbProduct ProductId { get; set; }
         public int QuantityTypeVolume { get; set; }
-        public Enums.EUnitQuantityType UnitQuantityType { get; set; }
+        public Enums.EUnitMeasurementType UnitQuantityType { get; set; }
         public int UnitQuantity { get; set; }
     }
 }

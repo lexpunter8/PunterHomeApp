@@ -1,0 +1,55 @@
+﻿@using BlazorPunterHomeApp.Data;
+@using DataModels.Helpers;
+
+@inject ProductService ProductService
+@inject RecipeService RecipeService
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" @bind="SearchTextString" placeholder="Product name" aria-label="Recipient's username" aria-describedby="basic-addon2">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" @onclick="Search" type="button">Search</button>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <ul class="list-group ">
+            @foreach (var cnt in Products)
+            {
+                <li class="list-group-item list-group-item-action justify-content-between @((cnt.Product.Id == CurrentSelectedProduct?.Product.Id) ? "active" : "")"
+                    @onclick="(e => ProductSelected(cnt))">
+                    <span>@cnt.Name</span>
+                    @{
+                        if (cnt.IsSelected)
+                        {
+                            <span></span>                        
+                        }
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Size</span>
+        </div>
+        <input type="number" class="form-control" aria-label="Text input with checkbox" @bind="CurrentUnitQuantityTypeVolume">
+        <select class="custom-select" @bind="UnitQuantityType">
+            @foreach (var cnt in SelectableUnitQuantityTypes)
+            {
+                <option value="@cnt">@cnt.GetEnumDescription()</option>
+            }
+        </select>
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" @onclick="AddProduct" type="button">Add selected product</button>
+        </div>
+    </div>
+</div>
+
+
+<button @onclick="Ok" class="btn btn-primary">OK</button>
+<button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+

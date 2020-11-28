@@ -10,7 +10,7 @@ namespace BlazorPunterHomeApp.crud
         Task<bool> Create(T value);
         Task<bool> Create(string value);
         Task<IEnumerable<T>> GetAll();
-        Task<T> GetById(Guid id);
+        Task<A> GetById<A>(Guid id) where A : class;
         Task<bool> DeletetById(Guid id);
         Task<bool> Update(T value);
 

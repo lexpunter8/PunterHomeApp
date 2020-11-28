@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using PunterHomeApp.ApiModels;
 using PunterHomeApp.Services;
+using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
 
@@ -23,7 +23,7 @@ namespace PunterHomeApp.Controllers
         }
         // GET: api/values
         [HttpGet]
-        public IEnumerable<RecipeApiModel> Get()
+        public IEnumerable<RecipeDetailsApiModel> Get()
         {
             throw new NotImplementedException();
         }
@@ -32,10 +32,10 @@ namespace PunterHomeApp.Controllers
         {
             return new ApiIngredientModel
             {
-                ProductId = ingredient.Product.Id,
-                ProductName = ingredient.Product.Name,
-                UnitQuantity = ingredient.UnitQuantity,
-                UnitQuantityType = ingredient.UnitQuantityType
+                //ProductId = ingredient.Product.Id,
+                //ProductName = ingredient.Product.Name,
+                //UnitQuantity = ingredient.UnitQuantity,
+                //UnitQuantityType = ingredient.UnitQuantityType
             };
         }
 

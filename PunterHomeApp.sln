@@ -2,10 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeApp", "PunterHomeApp\PunterHomeApp.csproj", "{EDDE9EAB-A39B-4569-B628-1936C1561AC7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{59E78FB9-04BF-4E51-8958-97E15D77684B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeDomain", "PunterHomeDomain\PunterHomeDomain.csproj", "{C21C898E-8723-4702-AF94-9FFD9CB37058}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeAdapters", "PunterHomeAdapters\PunterHomeAdapters.csproj", "{6D656771-8B70-4FE4-9C17-26BE9507C60F}"
@@ -18,20 +14,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeManagmentWebApp",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorPunterHomeApp", "BlazorPunterHomeApp\BlazorPunterHomeApp.csproj", "{38B7E148-6692-47CC-BE66-875F04A730D0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EDDE9EAB-A39B-4569-B628-1936C1561AC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDDE9EAB-A39B-4569-B628-1936C1561AC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDDE9EAB-A39B-4569-B628-1936C1561AC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDDE9EAB-A39B-4569-B628-1936C1561AC7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59E78FB9-04BF-4E51-8958-97E15D77684B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59E78FB9-04BF-4E51-8958-97E15D77684B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59E78FB9-04BF-4E51-8958-97E15D77684B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59E78FB9-04BF-4E51-8958-97E15D77684B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C21C898E-8723-4702-AF94-9FFD9CB37058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C21C898E-8723-4702-AF94-9FFD9CB37058}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C21C898E-8723-4702-AF94-9FFD9CB37058}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,6 +46,10 @@ Global
 		{38B7E148-6692-47CC-BE66-875F04A730D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38B7E148-6692-47CC-BE66-875F04A730D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38B7E148-6692-47CC-BE66-875F04A730D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

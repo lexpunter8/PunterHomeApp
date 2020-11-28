@@ -67,9 +67,19 @@ namespace BlazorPunterHomeApp.crud
             return result;
         }
 
-        public Task<T> GetById(Guid id)
+        public async Task<A> GetById<A>(Guid id) where A : class
         {
-            throw new NotImplementedException();
+            using var httpClient = new HttpClient();
+            Uri uri = new Uri($"{myBaseApiUrl}/{id}");
+            var response = await httpClient.GetAsync(uri);
+            string responseString = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<A>(responseString);
+
+            if (HandleResponseMessage(response))
+            {
+                return result;
+            }
+            return null;
         }
 
         public Task<bool> Update(T value)

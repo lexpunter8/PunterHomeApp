@@ -4,9 +4,9 @@ using PunterHomeApp.Services;
 using PunterHomeDomain.Models;
 using static Enums;
 
-namespace PunterHomeApp.ApiModels
+namespace PunterHomeDomain.ApiModels
 {
-    public class RecipeApiModel
+    public class RecipeDetailsApiModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -18,7 +18,8 @@ namespace PunterHomeApp.ApiModels
         public Guid ProductId { get; set; }
         public string ProductName { get; set; }
         public int UnitQuantity { get; set; }
-        public EUnitQuantityType UnitQuantityType { get; set; }
+        public EUnitMeasurementType UnitQuantityType { get; set; }
+        public bool IsAvaliable { get; set; }
     }
 
 }

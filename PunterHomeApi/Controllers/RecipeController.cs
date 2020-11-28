@@ -4,8 +4,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using PunterHomeApp.ApiModels;
 using PunterHomeApp.Services;
+using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
 
@@ -24,9 +24,9 @@ namespace PunterHomeApp.Controllers
         }
         // GET: api/values
         [HttpGet]
-        public IEnumerable<RecipeApiModel> Get()
+        public IEnumerable<RecipeDetailsApiModel> Get()
         {
-            return recipeService.GetAllRecipes().Select(r => new RecipeApiModel
+            return recipeService.GetAllRecipes().Select(r => new RecipeDetailsApiModel
             {
                 Id = r.Id,
                 Name = r.Name,
@@ -39,8 +39,8 @@ namespace PunterHomeApp.Controllers
         {
             return new ApiIngredientModel
             {
-                ProductId = ingredient.Product.Id,
-                ProductName = ingredient.Product.Name,
+                ProductName = ingredient.ProductName,
+                ProductId = ingredient.ProductId,
                 UnitQuantity = ingredient.UnitQuantity,
                 UnitQuantityType = ingredient.UnitQuantityType
             };
@@ -48,9 +48,24 @@ namespace PunterHomeApp.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            return "value";
+            try
+            {
+                var result = await recipeService.GetRecipeSummaryDetails(id);
+
+                if (result == null)
+                {
+                    return BadRequest();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
 
         // POST api/values

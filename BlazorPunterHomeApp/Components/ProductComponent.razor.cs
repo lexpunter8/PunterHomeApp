@@ -10,6 +10,9 @@ namespace BlazorPunterHomeApp.Components
         [Parameter]
         public string productName { get; set; }
 
+        [Parameter]
+        public string quantiyString { get; set; }
+
         private string productDescription =
             "You won't believe how great this product is until you actually use it yourself.";
     }

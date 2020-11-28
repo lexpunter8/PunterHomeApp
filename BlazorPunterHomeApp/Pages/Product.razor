@@ -3,6 +3,8 @@
 @using PunterHomeApp.ApiModels;
 @using DataModels.Helpers;
 @using BlazorPunterHomeApp.ViewModels;
+
+@using PunterHomeDomain.Models;
 @using BlazorPunterHomeApp.Components;
 
 @inject Blazored.Modal.Services.IModalService Modal
@@ -27,36 +29,38 @@
     {
         <div class="col-sm-12 col-md-6">
             <h4>@SelectedProduct.CurrentSelectedProduct.Name Details</h4>
+            <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete product</label>
             <p>@SelectedProduct.CurrentSelectedProduct.Id</p>
 
             @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
             {
-
-
                 <div class="row">
                     <div class="col">
                         <p>
-                            @prodQuan.UnitQuantityTypeVolume @prodQuan.UnitQuantityType<br>
-                            Quantity: @prodQuan.Quantity
+                            @prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType<br>
+                            <div class="input-group col-6">
+                                <span class="input-group-btn">
+                                    <button type="button" @onclick="@(e => DecreaseQuantity(prodQuan.Id))" class="btn btn-danger btn-number" data-type="minus" data-field="quant[2]">
+                                        <span class="glyphicon glyphicon-minus">-</span>
+                                    </button>
+                                </span>
+                                <input type="text" name="quant[2]" class="form-control input-number" @bind="prodQuan.Quantity" min="0">
+                                <span class="input-group-btn">
+                                    <button type="button"@onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn btn-success btn-number" data-type="plus" data-field="quant[2]">
+                                        <span class="glyphicon glyphicon-plus">+</span>
+                                    </button>
+                                </span>
+                            </div>
                         </p>
                     </div>
                     <div class="col">
-                        <button class="btn btn-danger" @onclick="@(e => SelectedProduct.ChangeQuantity(-1, prodQuan.Id))">-</button>
-                        <button class="btn btn-success" @onclick="@(e => SelectedProduct.ChangeQuantity(1, prodQuan.Id))">+</button>
-                        <button class="btn btn-outline-danger" @onclick="@(e => ProductService.DeleteProductQuantity(prodQuan.Id))">delete</button>
+                        <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProductQuantity(prodQuan.Id))">Delete product quantity</label>
                     </div>
                 </div>
             }
 
-        <div class="row">
-
-            <button @onclick="ShowAddProductQuantityModal" class="btn btn-primary">New product</button>
-        </div>
-            <button @onclick="@(() => Modal.Show<ProductComponent>("Product"))" class="btn btn-primary">View</button>
-            <p>Some info</p>
             <div class="row">
-                <button class="btn btn-outline-danger" @onclick="@(e => ProductService.DeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete</button>
-                <button disabled="@(!(SelectedProduct.IsDirty))" class="btn btn-primary" @onclick="@(e => ProductService.Update(SelectedProduct.CurrentSelectedProduct))">Save</button>
+                <button @onclick="ShowAddProductQuantityModal" class="btn btn-outline-secondary">Add quantity</button>
             </div>
         </div>
     }
@@ -83,13 +87,31 @@
         var result = await moviesModal.Result;
 
     }
+    private async void HandleDeleteProductQuantity(int id)
+    {
+        await ProductService.DeleteProductQuantity(id);
+        StateHasChanged();
+    }
 
-    private void ShowAddProductQuantityModal()
+    private async void HandleDeleteProduct(ProductModel vm)
+    {
+        await ProductService.DeleteProduct(vm);
+        StateHasChanged();
+    }
+
+    private async void ShowAddProductQuantityModal()
     {
         var parameters = new ModalParameters();
         parameters.Add(nameof(NewEditProductQuantityComponent.Product), SelectedProduct.CurrentSelectedProduct);
 
-        Modal.Show<NewEditProductQuantityComponent>("Add product quantity", parameters);
+        var adddQuantityModal = Modal.Show<NewEditProductQuantityComponent>("Add product quantity", parameters);
+
+        var result = await adddQuantityModal.Result;
+
+        if (!result.Cancelled)
+        {
+            StateHasChanged();
+        }
     }
 
     private async void HandleSubmit()
@@ -121,6 +143,20 @@
         {
             SelectedProduct.SetProduct(product);
         }
+        StateHasChanged();
+    }
+
+    private async void IncreaseQuantity(int prodQuanId)
+    {
+        await ProductService.IncreaseProductQuantity(prodQuanId);
+        SelectedProduct.ChangeQuantity(prodQuanId, 1);
+        StateHasChanged();
+    }
+
+    private async void DecreaseQuantity(int prodQuanId)
+    {
+        await ProductService.DecreaseProductQuantity(prodQuanId);
+        SelectedProduct.ChangeQuantity(prodQuanId, -1);
         StateHasChanged();
     }
 }

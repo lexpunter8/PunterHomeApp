@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using PunterHomeApp.Services;
 using PunterHomeDomain.Models;
 
-namespace PunterHomeApp.Interfaces
+namespace PunterHomeDomain
 {
     public interface IRecipeDataAdapter
     {
-        Task<IEnumerable<Recipe>> GetAllRecipes();
-        void SaveRecipe(Recipe recipe);
-        IRecipe GetRecipeById(Guid recipeId);
+        Task<IEnumerable<RecipeApiModel>> GetAllRecipes();
+        void SaveRecipe(RecipeApiModel recipe);
+        RecipeApiModel GetRecipeById(Guid recipeId);
         Task<bool> AddIngredient(Guid recipeId, IIngredient ingredient);
         void UpdateRecipe(Guid id, string newName);
         void DeleteById(Guid id);

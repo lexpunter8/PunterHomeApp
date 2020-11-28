@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using PunterHomeApp.Services;
 
 namespace PunterHomeDomain.Models
 {
-    public class Recipe : IRecipe
+    public class RecipeApiModel 
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

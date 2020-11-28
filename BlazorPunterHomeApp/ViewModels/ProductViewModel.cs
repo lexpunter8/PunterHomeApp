@@ -38,7 +38,7 @@ namespace BlazorPunterHomeApp.ViewModels
             var l = new List<ProductQuantity>();
             foreach (var q in product.ProductQuantities)
             {
-                l.Add(new ProductQuantity { Id = q.Id, Quantity = q.Quantity, UnitQuantityType = q.UnitQuantityType, UnitQuantityTypeVolume = q.UnitQuantityTypeVolume });
+                l.Add(new ProductQuantity { ProductQuantityId = q.Id, Quantity = q.Quantity, MeasurementType = q.MeasurementType, UnitQuantityTypeVolume = q.UnitQuantityTypeVolume });
             }
             myOriginalProduct.ProductQuantities = l;
             CurrentSelectedProduct = product;
@@ -71,14 +71,14 @@ namespace BlazorPunterHomeApp.ViewModels
             return quantitiesChanged || e;
         }
 
-        public void ChangeQuantity(int n, int id)
+        public void ChangeQuantity(int id, int n)
         {
             var quan = CurrentSelectedProduct.ProductQuantities.FirstOrDefault(q => q.Id == id);
             quan.Quantity += n;
         }
 
         [JsonIgnore]
-        public static List<EUnitQuantityType> SelectableUnitQuantityTypes => Enum.GetValues(typeof(EUnitQuantityType)).Cast<EUnitQuantityType>().ToList();
+        public static List<EUnitMeasurementType> SelectableUnitQuantityTypes => Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList();
 
         [JsonIgnore]
         public ProductQuantity NewProductQuantity { get; set; } = new ProductQuantity();

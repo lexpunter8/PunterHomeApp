@@ -9,7 +9,6 @@
 <h3>Recipe</h3>
 <EditForm Model="@RecipeViewModel" OnValidSubmit="HandleSubmit">
     <DataAnnotationsValidator />
-    <ValidationSummary />
     <div class="col-6">
         <input type="text" class="form-control" placeholder="name" id="name" @bind="newRecipeName" />
 
@@ -40,17 +39,20 @@
 
         </div>
         <div class="col-md-3">
-            <ul class="list-group ">
-                @foreach (var cnt in products)
+
+            <h2>Ingredients</h2>
+            <ul class="list-group list-group-flush">
+                @foreach (var cnt in RecipeViewModel.CurrentSelectedRecipe.Ingredients)
                 {
-                    <li class="list-group-item list-group-item-action justify-content-between" data-toggle="modal" data-target="#exampleModal">
-
-                        @cnt.Name
+                    <li class="list-group-item py-1" data-toggle="modal" data-target="#exampleModal">
+                        <label>@cnt.UnitQuantity</label>
+                        <label>@cnt.UnitQuantityType</label>
+                        <label>@cnt.ProductName</label>
+                        <label>@cnt.IsAvaliable</label>
                     </li>
-
-
                 }
             </ul>
+            <button @onclick="ShowAddProductModal" class="btn btn-outline-secondary m-2">Add ingredient</button>
         </div>
 
     }
@@ -76,7 +78,7 @@
         RecipeViewModel = new RecipeViewModel(PropductService);
 
         recipes = await RecipeViewModel.GetRecipes();
-        products = await RecipeViewModel.GetAllProduct();
+        //products = await RecipeViewModel.GetAllProduct();
 
         RecipeViewModel.PropertyChanged += async (a, b) => await InvokeAsync(() => StateHasChanged());
     }
@@ -96,9 +98,24 @@
 
     }
 
-    private void ItemClick(MouseEventArgs e, RecipeModel product)
+    private async void ItemClick(MouseEventArgs e, RecipeModel product)
     {
-        RecipeViewModel.CurrentSelectedRecipe = product;
+        RecipeViewModel.CurrentSelectedRecipe = await RecipeViewModel.GetRecipeDetails(product.Id);
+    }
+
+    private async void ShowAddProductModal()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(BlazorPunterHomeApp.Components.SearchSelectProductComponent.RecipeId), RecipeViewModel.CurrentSelectedRecipe.Id);
+
+        var adddQuantityModal = Modal.Show<BlazorPunterHomeApp.Components.SearchSelectProductComponent>("Add ingredients", parameters);
+
+        var result = await adddQuantityModal.Result;
+
+        if (!result.Cancelled)
+        {
+            StateHasChanged();
+        }
     }
 }
 

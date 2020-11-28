@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using PunterHomeApp.Interfaces;
 using PunterHomeApp.Services;
 
 namespace PunterHomeDomain.Interfaces

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PunterHomeAdapters;
 using PunterHomeAdapters.Models;
+using PunterHomeApp.Services;
 using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
 
@@ -19,7 +20,7 @@ namespace PunterHomeApp.DataAdapters
             myDbOptions = options;
         }
 
-        public void AddProduct(IProduct product)
+        public void AddProduct(Product product)
         {
             DbProduct newProduct = new DbProduct
             {
@@ -53,7 +54,7 @@ namespace PunterHomeApp.DataAdapters
                 ProductId = prod,
                 QuantityTypeVolume = value.UnitQuantityTypeVolume,
                 UnitQuantity = value.Quantity,
-                UnitQuantityType = value.UnitQuantityType
+                UnitQuantityType = value.MeasurementType
             });
 
             await context.SaveChangesAsync();
@@ -76,12 +77,26 @@ namespace PunterHomeApp.DataAdapters
             await context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<IProduct>> GetProducts()
+        public async Task DereaseProductQuantity(int id, int value)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+            var quantity = context.ProductQuantities.FirstOrDefault(p => p.Id == id);
+
+            if (quantity == null)
+            {
+                return;
+            }
+
+            quantity.UnitQuantity -= value;
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetProducts()
         {
             using var context = new HomeAppDbContext(myDbOptions);
             List<DbProduct> products = await context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.ProductId).ToListAsync();
 
-            var retval = new List<IProduct>();
+            var retval = new List<Product>();
             products.ForEach(p => 
             {
                 retval.Add(new Product
@@ -93,6 +108,20 @@ namespace PunterHomeApp.DataAdapters
             });
 
             return retval;
+        }
+
+        public async Task IncreaseProductQuantity(int id, int value)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+            var quantity = context.ProductQuantities.FirstOrDefault(p => p.Id == id);
+
+            if (quantity == null)
+            {
+                return;
+            }
+
+            quantity.UnitQuantity += value;
+            await context.SaveChangesAsync();
         }
 
         public async Task<bool> Update(Guid id, string newName)
@@ -124,35 +153,41 @@ namespace PunterHomeApp.DataAdapters
 
         // Conversions
 
-        private List<DbProductQuantity> ConvertProductQuantities(IEnumerable<IProductQuantity> p, DbProduct product)
+        private List<DbProductQuantity> ConvertProductQuantities(IEnumerable<BaseMeasurement> p, DbProduct product)
         {
             var retval = new List<DbProductQuantity>();
-            foreach (IProductQuantity q in p)
+            foreach (BaseMeasurement q in p)
             {
                 retval.Add(new DbProductQuantity
                 {
-                    Id = q.Id,
                     ProductId = product,
                     QuantityTypeVolume = q.UnitQuantityTypeVolume,
                     UnitQuantity = q.Quantity,
-                    UnitQuantityType = q.UnitQuantityType
+                    UnitQuantityType = q.MeasurementType
                 });
             }
             return retval;
         }
 
-        private List<IProductQuantity> ConvertProductQuantities(IEnumerable<DbProductQuantity> p)
+        private List<BaseMeasurement> ConvertProductQuantities(IEnumerable<DbProductQuantity> p)
         {
-            var retval = new List<IProductQuantity>();
+            var retval = new List<BaseMeasurement>();
             foreach (DbProductQuantity q in p)
             {
-                retval.Add(new ProductQuantity
-                {
-                    Id = q.Id,
-                    UnitQuantityTypeVolume = q.QuantityTypeVolume,
-                    Quantity = q.UnitQuantity,
-                    UnitQuantityType = q.UnitQuantityType
-                });
+                var measurement = BaseMeasurement.GetMeasurement(q.UnitQuantityType);
+                measurement.Quantity = q.UnitQuantity;
+                measurement.UnitQuantityTypeVolume = q.QuantityTypeVolume;
+                measurement.ProductQuantityId = q.Id;
+                retval.Add(measurement
+                //    new ProductQuantity
+                //{
+                //    Id = q.Id,
+                //    UnitQuantityTypeVolume = q.QuantityTypeVolume,
+                //    Quantity = q.UnitQuantity,
+                //    UnitQuantityType = q.UnitQuantityType,
+                    
+                //}
+                    );
             }
             return retval;
         }

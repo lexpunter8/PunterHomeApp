@@ -15,7 +15,7 @@ namespace PunterHomeDomain.Interfaces
     {
         int Id { get; set; }
         int UnitQuantityTypeVolume { get; set; }
-        EUnitQuantityType UnitQuantityType { get; set; }
+        EUnitMeasurementType UnitQuantityType { get; set; }
         int Quantity { get; set; }
     }
 }

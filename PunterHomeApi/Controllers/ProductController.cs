@@ -25,7 +25,7 @@ namespace PunterHomeApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            IEnumerable<IProduct> products = await myProductService.GetProducts();
+            IEnumerable<Product> products = await myProductService.GetProducts();
             return Ok(products);
         }
 
@@ -44,7 +44,7 @@ namespace PunterHomeApp.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("search")]
+        [HttpGet("search/{searchText}")]
         public async Task<IActionResult> Get(string searchText)
         {
             if (searchText == null)
@@ -52,7 +52,7 @@ namespace PunterHomeApp.Controllers
                 var products = await myProductService.GetProducts();
                 return Ok(products);
             }
-            var result = myProductService.SearchProductsAsync(searchText);
+            var result = await myProductService.SearchProductsAsync(searchText);
 
             if (result == null)
             {

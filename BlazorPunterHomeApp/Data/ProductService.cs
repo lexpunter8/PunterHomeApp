@@ -31,6 +31,22 @@ namespace BlazorPunterHomeApp.Data
             RefreshRequired?.Invoke(this, new EventArgs());
         }
 
+        public async Task IncreaseProductQuantity(int id)
+        {
+            var httpClient = new HttpClient();
+            Uri uri = new Uri($"http://localhost:5005/api/productquantity/{id}/increase");
+            var response = await httpClient.PutAsync(uri, null);
+            string responseString = await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task DecreaseProductQuantity(int id)
+        {
+            var httpClient = new HttpClient();
+            Uri uri = new Uri($"http://localhost:5005/api/productquantity/{id}/decrease");
+            var response = await httpClient.PutAsync(uri, null);
+            string responseString = await response.Content.ReadAsStringAsync();
+        }
+
         public async Task<ProductModel[]> GetProducts()
         {
             var httpClient = new HttpClient();
@@ -121,6 +137,17 @@ namespace BlazorPunterHomeApp.Data
 
 
             }
+        }
+
+        public async Task<List<ProductModel>> SearchProducts(string searchText)
+        {
+            var httpClient = new HttpClient();
+            Uri uri = new Uri($"http://localhost:5005/api/product/search/{searchText}");
+            var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+            string responseString = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ProductModel[]>(responseString).ToList();
+
+            return result;
         }
     }
 

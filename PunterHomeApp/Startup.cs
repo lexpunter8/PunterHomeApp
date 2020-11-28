@@ -8,8 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PunterHomeAdapters;
 using PunterHomeApp.DataAdapters;
-using PunterHomeApp.Interfaces;
 using PunterHomeApp.Services;
+using PunterHomeDomain;
 using PunterHomeDomain.Interfaces;
 
 namespace PunterHomeApp
