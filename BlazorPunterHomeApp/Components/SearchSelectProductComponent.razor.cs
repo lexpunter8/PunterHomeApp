@@ -17,6 +17,8 @@ namespace BlazorPunterHomeApp.Components
         
         [Parameter]
         public Guid RecipeId { get; set; }
+        [Parameter]
+        public Guid[] ExistingProductIds { get; set; }
         public int CurrentUnitQuantityTypeVolume { get; set; }
         public EUnitMeasurementType UnitQuantityType { get; set; }
         public List<EUnitMeasurementType> SelectableUnitQuantityTypes => Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList();
@@ -33,7 +35,7 @@ namespace BlazorPunterHomeApp.Components
             Products = products.Select(p => {
                 return new SelectableProduct(p)
                 {
-                    IsSelected = myProductsToAdd.Any(x => x.ProductId == p.Id)
+                    IsSelected = myProductsToAdd.Any(x => x.ProductId == p.Id) || ExistingProductIds.Any(x => p.Id == x)
                 };
                 
                 }).ToList();

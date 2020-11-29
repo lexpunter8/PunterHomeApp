@@ -16,21 +16,24 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>icon</th>
+                <th>icon Regular</th>
+                <th>icon light</th>
+                <th>icon duotone</th>
+                <th>name</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var forecast in Icons)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td><Icon Name="forecast" IconStyle="IconStyle.Solid" Class="text-success"></Icon></td>
+                    <td><Icon Name="forecast" IconStyle="IconStyle.Regular"></Icon></td>
+                    <td><Icon Name="forecast" IconStyle="IconStyle.Light"></Icon></td>
+                    <td><Icon Name="forecast" IconStyle="IconStyle.DuoTone"></Icon></td>
+                    <td>@forecast</td>
                 </tr>
+                
             }
         </tbody>
     </table>
@@ -38,6 +41,8 @@ else
 
 @code {
     private WeatherForecast[] forecasts;
+
+    private Blazorise.IconName[] Icons = Enum.GetValues(typeof(Blazorise.IconName)).Cast<Blazorise.IconName>().ToArray();
 
     protected override async Task OnInitializedAsync()
     {

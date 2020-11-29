@@ -13,5 +13,7 @@ namespace PunterHomeDomain.Interfaces
         void DeleteRecipeById(Guid id);
         void UpdateRecipe(Guid id, string newName);
         Task<RecipeDetailsApiModel> GetRecipeSummaryDetails(Guid recipeId);
+        void AddStep(RecipeStep step, Guid recipeId);
+        void RemoveStep(Guid step);
     }
 }

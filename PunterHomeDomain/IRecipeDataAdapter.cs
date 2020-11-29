@@ -14,5 +14,7 @@ namespace PunterHomeDomain
         Task<bool> AddIngredient(Guid recipeId, IIngredient ingredient);
         void UpdateRecipe(Guid id, string newName);
         void DeleteById(Guid id);
+        void AddStep(string text, int order, Guid recipeId);
+        void RemoveStep(Guid stepId);
     }
 }

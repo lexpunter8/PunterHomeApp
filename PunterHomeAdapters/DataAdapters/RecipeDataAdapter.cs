@@ -205,6 +205,40 @@ namespace PunterHomeApp.DataAdapters
 
             context.SaveChanges();
         }
+
+        public void AddStep(string text, int order, Guid recipeId)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+            var recipe = context.Recipes.FirstOrDefault(r => r.Id == recipeId);
+            if (recipe == null)
+            {
+                return;
+            }
+
+            var step = new DbRecipeStep
+            {
+                Id = Guid.NewGuid(),
+                Order = order,
+                Text = text,
+                Recipe = recipe
+            };
+
+            context.RecipeSteps.Add(step);
+            context.SaveChanges();
+        }
+
+        public void RemoveStep(Guid stepId)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+            var step = context.RecipeSteps.FirstOrDefault(r => r.Id == stepId);
+            if (step == null)
+            {
+                return;
+            }
+
+            context.RecipeSteps.Remove(step);
+            context.SaveChanges();
+        }
     }
 }
 

@@ -45,6 +45,25 @@ app {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.circle {
+    height: 50px;
+    width: 50px;
+    background-color: #bbb;
+    text-align: center;
+    border-radius: 50%;
+    display: inline-block;
+    padding: 12px 3px 0 3px;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+.btn-square {
+    border-radius: 0 !important;
+}
+
+.recipe-available-color {
+    color: #63dd7c;
+}
 
 .sidebar {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);

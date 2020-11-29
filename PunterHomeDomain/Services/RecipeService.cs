@@ -66,7 +66,7 @@ namespace PunterHomeApp.Services
                         return r;
                     }).ToList(),
                 Name = recipe.Name,
-                Steps = recipe.Steps.ToList(),
+                Steps = recipe.Steps.OrderBy(o => o.Order).ToList(),
             };
             return recipeDetails;
         }
@@ -91,6 +91,16 @@ namespace PunterHomeApp.Services
                 total += pq.ConvertTo(type);
             }
             return total;
+        }
+
+        public void AddStep(RecipeStep step, Guid recipeId)
+        {
+            recipeAdapter.AddStep(step.Text, step.Order, recipeId);
+        }
+
+        public void RemoveStep(Guid stepId)
+        {
+            recipeAdapter.RemoveStep(stepId);
         }
     }
 

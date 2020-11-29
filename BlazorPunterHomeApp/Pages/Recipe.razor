@@ -32,28 +32,59 @@
     </div>
     @if (RecipeViewModel.CurrentSelectedRecipe.Id != Guid.Empty)
     {
-        <div class="col-sm-12 col-md-6">
-            <h4>@RecipeViewModel.CurrentSelectedRecipe.Name Details</h4>
-            <p>@RecipeViewModel.CurrentSelectedRecipe.Id</p>
+        <div class="col-md-9">
+            <div class="row">
 
+                <h2 style="display: inline-block">@RecipeViewModel.CurrentSelectedRecipe.Name</h2>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <h4>Instructions</h4>
 
+                    @foreach (var step in RecipeViewModel.CurrentSelectedRecipe.Steps)
+                    {
+                        <div class="row" style="margin:5px 0 0 0">
+                            <div class="justify-content-center align-middle col-md-2">
+                                <span class="circle">@step.Order</span>
+                            </div>
+                            <div class="col-md-10">
+                                <div style="min-height: 50px">@step.Text</div>
+                                <hr />
+                            </div>
+                        </div>
+                    }
+
+                    <input type="text" class="form-control" placeholder="name" id="name" @bind="newStepText" />
+                    <button @onclick="AddStep" class="btn btn-outline-secondary m-2">Add instruction step</button>
+                </div>
+                <div class="col-md-6">
+
+                    <h4>Ingredients</h4>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var cnt in RecipeViewModel.CurrentSelectedRecipe.Ingredients)
+                        {
+                            <li class="list-group-item py-1" data-toggle="modal" data-target="#exampleModal">
+                                @if (cnt.IsAvaliable)
+                                {
+
+                                    <Blazorise.Icon Name="Blazorise.IconName.CheckCircle" Class="recipe-available-color" />
+                                }
+                                else
+                                {
+
+                                    <Blazorise.Icon Name="Blazorise.IconName.TimesCircle" Class="text-danger" />
+                                }
+                                <label>@cnt.UnitQuantity</label>
+                                <label>@cnt.UnitQuantityType</label>
+                                <label>@cnt.ProductName</label>
+                            </li>
+                        }
+                    </ul>
+                    <button @onclick="ShowAddProductModal" class="btn btn-outline-secondary m-2">Add ingredient</button>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
 
-            <h2>Ingredients</h2>
-            <ul class="list-group list-group-flush">
-                @foreach (var cnt in RecipeViewModel.CurrentSelectedRecipe.Ingredients)
-                {
-                    <li class="list-group-item py-1" data-toggle="modal" data-target="#exampleModal">
-                        <label>@cnt.UnitQuantity</label>
-                        <label>@cnt.UnitQuantityType</label>
-                        <label>@cnt.ProductName</label>
-                        <label>@cnt.IsAvaliable</label>
-                    </li>
-                }
-            </ul>
-            <button @onclick="ShowAddProductModal" class="btn btn-outline-secondary m-2">Add ingredient</button>
-        </div>
 
     }
 </div>
@@ -69,6 +100,7 @@
 
     private RecipeViewModel RecipeViewModel;
     private string newRecipeName = string.Empty;
+    private string newStepText = string.Empty;
 
     private RecipeModel[] recipes = new RecipeModel[0];
     private List<ProductModel> products = new List<ProductModel>();
@@ -90,7 +122,10 @@
 
     private async void AddStep()
     {
-
+        await RecipeViewModel.AddStep(newStepText);
+        newStepText = string.Empty;
+        RecipeViewModel.CurrentSelectedRecipe = await RecipeViewModel.GetRecipeDetails(RecipeViewModel.CurrentSelectedRecipe.Id);
+        StateHasChanged();
     }
 
     private async void AddProduct()
@@ -106,11 +141,14 @@
     private async void ShowAddProductModal()
     {
         var parameters = new ModalParameters();
+        parameters.Add(nameof(BlazorPunterHomeApp.Components.SearchSelectProductComponent.ExistingProductIds), RecipeViewModel.CurrentSelectedRecipe.Ingredients.Select(p => p.ProductId).ToArray());
         parameters.Add(nameof(BlazorPunterHomeApp.Components.SearchSelectProductComponent.RecipeId), RecipeViewModel.CurrentSelectedRecipe.Id);
 
         var adddQuantityModal = Modal.Show<BlazorPunterHomeApp.Components.SearchSelectProductComponent>("Add ingredients", parameters);
 
         var result = await adddQuantityModal.Result;
+
+        RecipeViewModel.CurrentSelectedRecipe = await RecipeViewModel.GetRecipeDetails(RecipeViewModel.CurrentSelectedRecipe.Id);
 
         if (!result.Cancelled)
         {
