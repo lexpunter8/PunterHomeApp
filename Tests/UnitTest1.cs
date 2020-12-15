@@ -1,3 +1,4 @@
+using DataModels.Measurements;
 using FluentAssert;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
@@ -30,7 +31,7 @@ namespace Tests
         public void Test()
         {
             Guid pId = Guid.NewGuid();
-            var p = new Product
+            var p = new ProductDetails
             {
                 Id = pId,
                 Name = "Test p",
@@ -53,14 +54,14 @@ namespace Tests
                 UnitQuantityType = EUnitMeasurementType.Ml
             };
 
-            recipeService.CalculateIngedientAvailability(i, p).ShouldBeTrue();
+            recipeService.IsIngedientAvailable(i, p).ShouldBeTrue();
         }
 
         [TestMethod]
         public void Test2()
         {
             Guid pId = Guid.NewGuid();
-            var p = new Product
+            var p = new ProductDetails
             {
                 Id = pId,
                 Name = "Test p",
@@ -83,14 +84,14 @@ namespace Tests
                 UnitQuantityType = EUnitMeasurementType.Ml
             };
 
-            recipeService.CalculateIngedientAvailability(i, p).ShouldBeTrue();
+            recipeService.IsIngedientAvailable(i, p).ShouldBeTrue();
         }
 
         [TestMethod]
         public void When_QuanityIs2Times100Ml_AndNeededIs200Ml_ThenReturnTrue()
         {
             Guid pId = Guid.NewGuid();
-            var p = new Product
+            var p = new ProductDetails
             {
                 Id = pId,
                 Name = "Test p",
@@ -113,7 +114,7 @@ namespace Tests
                 UnitQuantityType = EUnitMeasurementType.Ml
             };
 
-            recipeService.CalculateIngedientAvailability(i, p).ShouldBeTrue();
+            recipeService.IsIngedientAvailable(i, p).ShouldBeTrue();
         }
 
 
@@ -121,7 +122,7 @@ namespace Tests
         public void When_QuanityIs2Times50MlAnd1x100Ml_AndNeededIs200Ml_ThenReturnTrue()
         {
             Guid pId = Guid.NewGuid();
-            var p = new Product
+            var p = new ProductDetails
             {
                 Id = pId,
                 Name = "Test p",
@@ -149,14 +150,14 @@ namespace Tests
                 UnitQuantityType = EUnitMeasurementType.Ml
             };
 
-            recipeService.CalculateIngedientAvailability(i, p).ShouldBeTrue();
+            recipeService.IsIngedientAvailable(i, p).ShouldBeTrue();
         }
 
         [TestMethod]
         public void When_QuanityIs1Times50MlAnd1x100Ml_AndNeededIs200Ml_ThenReturnFalse()
         {
             Guid pId = Guid.NewGuid();
-            var p = new Product
+            var p = new ProductDetails
             {
                 Id = pId,
                 Name = "Test p",
@@ -184,7 +185,7 @@ namespace Tests
                 UnitQuantityType = EUnitMeasurementType.Ml
             };
 
-            recipeService.CalculateIngedientAvailability(i, p).ShouldBeFalse();
+            recipeService.IsIngedientAvailable(i, p).ShouldBeFalse();
         }
     }
 }

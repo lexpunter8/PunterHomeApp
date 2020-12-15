@@ -16,7 +16,7 @@ namespace BlazorPunterHomeApp.Components
         [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
         [Parameter]
-        public ProductModel Product { get; set; }
+        public ProductDetailsModel Product { get; set; }
 
         public ProductQuantity NewProductQuantity { get; set; } = new ProductQuantity();
 

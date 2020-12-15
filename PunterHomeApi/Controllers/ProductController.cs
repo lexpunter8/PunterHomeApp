@@ -25,8 +25,15 @@ namespace PunterHomeApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            IEnumerable<Product> products = await myProductService.GetProducts();
-            return Ok(products);
+            try
+            {
+                IEnumerable<LightProduct> products = await myProductService.GetProducts();
+                return Ok(products);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         // GET api/values/5

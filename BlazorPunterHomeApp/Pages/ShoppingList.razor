@@ -1,0 +1,40 @@
+﻿@page "/shoppinglist"
+
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-md-10">
+            <h3>ShoppingList</h3>
+            @foreach (var item in ListItems)
+            {
+                <div class="row">
+
+                    <div class="col-6">
+                        <strong>@item.ProductName</strong> <br />
+                        @($"{item.MeasurementVolume} {item.MeasurementType}")
+                    </div>
+                    <div class="col-1">
+
+                    </div>
+                    <div class="col-5">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button" @onclick="() => DecreaseQuantityToItem(item)"><Icon Name="IconName.ExpandMore"></Icon></button>
+                                        <span class="input-group-text" style="max-width:50px">@item.Quantity</span>
+                                        <button class="btn btn-secondary" type="button" @onclick="() => AddQuantityToItem(item)"><Icon Name="IconName.ExpandLess"></Icon></button>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button class="btn"><Icon Name="IconName.Delete"></Icon></button>
+                                    </div>
+                                </div>
+                        
+                    </div>
+                </div>
+                <hr />
+            }
+
+        </div>
+    </div>
+
+
+</div>

@@ -64,7 +64,7 @@ namespace BlazorPunterHomeApp.Components
 
         public async void Ok()
         {
-            RecipeService.InsertIngredients(myProductsToAdd);
+            await RecipeService.InsertIngredients(myProductsToAdd);
             await BlazoredModal.Close(ModalResult.Ok(myProductsToAdd));
         }
         public async void Cancel()

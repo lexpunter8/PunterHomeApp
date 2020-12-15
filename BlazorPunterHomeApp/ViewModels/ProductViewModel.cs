@@ -14,7 +14,7 @@ namespace BlazorPunterHomeApp.ViewModels
     public class ProductViewModel : BaseViewModel
     {
         private ProductModel myOriginalProduct;
-        public ProductViewModel(ProductModel product)
+        public ProductViewModel(ProductDetailsModel product)
         {
             SetProduct(product);
             CurrentSelectedProduct.PropertyChanged += CurrentSelectedProduct_PropertyChanged;
@@ -25,9 +25,9 @@ namespace BlazorPunterHomeApp.ViewModels
             
         }
 
-        public ProductModel CurrentSelectedProduct { get; private set; }
+        public ProductDetailsModel CurrentSelectedProduct { get; private set; }
 
-        public void SetProduct(ProductModel product)
+        public void SetProduct(ProductDetailsModel product)
         {
             myOriginalProduct = new ProductModel
             {

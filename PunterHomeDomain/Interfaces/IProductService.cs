@@ -8,11 +8,11 @@ namespace PunterHomeDomain.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<Product>> GetProducts();
-        Product GetProductById(Guid productId);
-        Product GetProductByName(string productName);
+        Task<IEnumerable<LightProduct>> GetProducts();
+        ProductDetails GetProductById(Guid productId);
+        ProductDetails GetProductByName(string productName);
         void AddProduct(NewProductApiModel product);
-        Task<IEnumerable<Product>> SearchProductsAsync(string searchText);
+        Task<IEnumerable<LightProduct>> SearchProductsAsync(string searchText);
         Task<bool> TryDeleteProductById(Guid id);
         Task AddQuantityToProduct(ProductQuantity value, Guid id);
         Task<bool> Update(Guid id, string newName);

@@ -7,8 +7,9 @@ namespace PunterHomeDomain.Interfaces
 {
     public interface IProductDataAdapter
     {
-        Task<IEnumerable<Product>> GetProducts();
-        void AddProduct(Product product);
+        Task<IEnumerable<LightProduct>> GetProducts();
+        Task<IEnumerable<ProductDetails>> GetAllProductDetails();
+        void AddProduct(LightProduct product);
         Task DeleteProduct(Guid id);
         Task AddQuantityToProduct(ProductQuantity value, Guid id);
         Task<bool> Update(Guid id, string newName);
@@ -17,6 +18,6 @@ namespace PunterHomeDomain.Interfaces
 
         Task IncreaseProductQuantity(int id, int value);
         Task DereaseProductQuantity(int id, int value);
-
+        ProductDetails GetProductById(Guid productId);
     }
 }

@@ -14,6 +14,7 @@ using Blazored.Modal;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using PunterHomeDomain.Interfaces;
 
 namespace BlazorPunterHomeApp
 {
@@ -43,6 +44,8 @@ namespace BlazorPunterHomeApp
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<ProductService>();
             services.AddSingleton<RecipeService>();
+            services.AddSingleton<BlazorRecipeService>();
+            services.AddSingleton<BlazorShoppingListService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

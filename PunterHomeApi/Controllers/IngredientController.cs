@@ -20,20 +20,6 @@ namespace PunterHomeApi.Controllers
             myIngredientService = ingredientService;
         }
 
-        // GET: api/Ingredient
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/Ingredient/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST: api/Ingredient
         [HttpPost]
         public IActionResult Post([FromBody] Ingredient value)
@@ -56,9 +42,10 @@ namespace PunterHomeApi.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{recipeId}/{productId}")]
+        public void Delete(Guid recipeId, Guid productId)
         {
+            myIngredientService.DeleteIngredient(recipeId, productId);
         }
     }
 }

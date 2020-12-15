@@ -19,16 +19,16 @@ namespace PunterHomeApp.Services
 
         public void AddProduct(NewProductApiModel product)
         {
-            myProductDataAdapter.AddProduct(new Product
+            myProductDataAdapter.AddProduct(new LightProduct
             {
                 Name = product.Name,
-                ProductQuantities = new List<BaseMeasurement>
-                {
-                    new BaseMeasurement(product.UnitQuantityType)
-                    {
-                        UnitQuantityTypeVolume = product.UnitQuantity
-                    }
-                }
+                //ProductQuantities = new List<BaseMeasurement>
+                //{
+                //    new BaseMeasurement(product.UnitQuantityType)
+                //    {
+                //        UnitQuantityTypeVolume = product.UnitQuantity
+                //    }
+                //}
             });
         }
 
@@ -42,22 +42,22 @@ namespace PunterHomeApp.Services
             await myProductDataAdapter.DeleteProductQuantityById(id);
         }
 
-        public Product GetProductById(Guid productId)
+        public ProductDetails GetProductById(Guid productId)
+        {
+            return myProductDataAdapter.GetProductById(productId);
+        }
+
+        public ProductDetails GetProductByName(string productName)
         {
             throw new NotImplementedException();
         }
 
-        public Product GetProductByName(string productName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<Product>> GetProducts()
+        public async Task<IEnumerable<LightProduct>> GetProducts()
         {
             return await myProductDataAdapter.GetProducts();
         }
 
-        public async Task<IEnumerable<Product>> SearchProductsAsync(string searchText)
+        public async Task<IEnumerable<LightProduct>> SearchProductsAsync(string searchText)
         {
             var result = await myProductDataAdapter.GetProducts();
             return result.Where(p => p.Name.ToLower().Contains(searchText.ToLower()));

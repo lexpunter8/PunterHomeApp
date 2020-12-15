@@ -9,5 +9,6 @@ namespace PunterHomeDomain.Models
         public string Name { get; set; }
         public IEnumerable<RecipeStep> Steps { get; set; }
         public IEnumerable<Ingredient> Ingredients { get; set; }
+        public bool IsAvailable { get; set; }
     }
 }

@@ -6,7 +6,6 @@ namespace PunterHomeAdapters.Models
 {
     public class DbRecipe
     {
-
         public Guid Id { get; set; }
         public string Name { get; set; }
 

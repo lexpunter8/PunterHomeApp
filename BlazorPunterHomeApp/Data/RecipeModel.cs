@@ -14,11 +14,6 @@ namespace BlazorPunterHomeApp.Data
         public string Name { get; set; }
         public IEnumerable<RecipeStepModel> Steps { get; set; }
         public IEnumerable<IngredientModel> Ingredients { get; set; }
-
-        [JsonIgnore]
-        public RecipeStepModel NewRecipestep { get; set; } = new RecipeStepModel();
-
-        [JsonIgnore]
-        public IngredientModel NewIngredient { get; set; } = new IngredientModel();
+        public bool IsRecipeAvailable { get; set; }
     }
 }

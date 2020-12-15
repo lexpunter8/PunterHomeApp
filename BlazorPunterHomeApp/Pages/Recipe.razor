@@ -5,200 +5,61 @@
 @using BlazorPunterHomeApp.ViewModels;
 @inject RecipeService RecipeService
 @inject ProductService PropductService
-
+@inject NavigationManager NavigationManager
 <h3>Recipe</h3>
-<EditForm Model="@RecipeViewModel" OnValidSubmit="HandleSubmit">
-    <DataAnnotationsValidator />
-    <div class="col-6">
-        <input type="text" class="form-control" placeholder="name" id="name" @bind="newRecipeName" />
-
-        <button class="btn btn-primary" type="submit">Save</button>
-    </div>
-</EditForm>
-
 <div class="row">
-    <div class="col-sm-12 col-md-3">
+    <div class="col-12 col-md-6 input-group">
+        <input type="text" class="form-control" placeholder="New recipe name" id="name" @bind="newRecipeName" aria-describedby="button-addon2" />
 
-        <ul class="list-group ">
-            @foreach (var cnt in recipes)
-            {
-                <li class="list-group-item list-group-item-action justify-content-between @((RecipeViewModel.CurrentSelectedRecipe != null && cnt.Id == RecipeViewModel?.CurrentSelectedRecipe?.Id) ? "active" : "")" @onclick="@(e => ItemClick(e, cnt))">
-                    @cnt.Name
-                </li>
-
-            }
-        </ul>
-
+        <button class="btn btn-primary" type="button" @onclick="HandleSubmit">Save</button>
     </div>
-    @if (RecipeViewModel.CurrentSelectedRecipe.Id != Guid.Empty)
-    {
-        <div class="col-md-9">
-            <div class="row">
-
-                <h2 style="display: inline-block">@RecipeViewModel.CurrentSelectedRecipe.Name</h2>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-6">
-                    <h4>Instructions</h4>
-
-                    @foreach (var step in RecipeViewModel.CurrentSelectedRecipe.Steps)
-                    {
-                        <div class="row" style="margin:5px 0 0 0">
-                            <div class="justify-content-center align-middle col-md-2">
-                                <span class="circle">@step.Order</span>
-                            </div>
-                            <div class="col-md-10">
-                                <div style="min-height: 50px">@step.Text</div>
-                                <hr />
-                            </div>
-                        </div>
-                    }
-
-                    <input type="text" class="form-control" placeholder="name" id="name" @bind="newStepText" />
-                    <button @onclick="AddStep" class="btn btn-outline-secondary m-2">Add instruction step</button>
-                </div>
-                <div class="col-md-6">
-
-                    <h4>Ingredients</h4>
-                    <ul class="list-group list-group-flush">
-                        @foreach (var cnt in RecipeViewModel.CurrentSelectedRecipe.Ingredients)
-                        {
-                            <li class="list-group-item py-1" data-toggle="modal" data-target="#exampleModal">
-                                @if (cnt.IsAvaliable)
-                                {
-
-                                    <Blazorise.Icon Name="Blazorise.IconName.CheckCircle" Class="recipe-available-color" />
-                                }
-                                else
-                                {
-
-                                    <Blazorise.Icon Name="Blazorise.IconName.TimesCircle" Class="text-danger" />
-                                }
-                                <label>@cnt.UnitQuantity</label>
-                                <label>@cnt.UnitQuantityType</label>
-                                <label>@cnt.ProductName</label>
-                            </li>
-                        }
-                    </ul>
-                    <button @onclick="ShowAddProductModal" class="btn btn-outline-secondary m-2">Add ingredient</button>
-                </div>
-            </div>
-        </div>
-
-
-    }
 </div>
 
-
-@code {
-    private bool Open { get; set; }
-
-    public void OnClose()
-    {
-
-    }
-
-    private RecipeViewModel RecipeViewModel;
-    private string newRecipeName = string.Empty;
-    private string newStepText = string.Empty;
-
-    private RecipeModel[] recipes = new RecipeModel[0];
-    private List<ProductModel> products = new List<ProductModel>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        RecipeViewModel = new RecipeViewModel(PropductService);
-
-        recipes = await RecipeViewModel.GetRecipes();
-        //products = await RecipeViewModel.GetAllProduct();
-
-        RecipeViewModel.PropertyChanged += async (a, b) => await InvokeAsync(() => StateHasChanged());
-    }
-
-    private async void HandleSubmit()
-    {
-        await RecipeViewModel.CreateNewRecipe(newRecipeName);
-    }
-
-    private async void AddStep()
-    {
-        await RecipeViewModel.AddStep(newStepText);
-        newStepText = string.Empty;
-        RecipeViewModel.CurrentSelectedRecipe = await RecipeViewModel.GetRecipeDetails(RecipeViewModel.CurrentSelectedRecipe.Id);
-        StateHasChanged();
-    }
-
-    private async void AddProduct()
-    {
-
-    }
-
-    private async void ItemClick(MouseEventArgs e, RecipeModel product)
-    {
-        RecipeViewModel.CurrentSelectedRecipe = await RecipeViewModel.GetRecipeDetails(product.Id);
-    }
-
-    private async void ShowAddProductModal()
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(BlazorPunterHomeApp.Components.SearchSelectProductComponent.ExistingProductIds), RecipeViewModel.CurrentSelectedRecipe.Ingredients.Select(p => p.ProductId).ToArray());
-        parameters.Add(nameof(BlazorPunterHomeApp.Components.SearchSelectProductComponent.RecipeId), RecipeViewModel.CurrentSelectedRecipe.Id);
-
-        var adddQuantityModal = Modal.Show<BlazorPunterHomeApp.Components.SearchSelectProductComponent>("Add ingredients", parameters);
-
-        var result = await adddQuantityModal.Result;
-
-        RecipeViewModel.CurrentSelectedRecipe = await RecipeViewModel.GetRecipeDetails(RecipeViewModel.CurrentSelectedRecipe.Id);
-
-        if (!result.Cancelled)
+<div class="container-fluid">
+    <div class="row">
+        @foreach (var cnt in recipes)
         {
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <a href="@($"recipe/{cnt.Id}")" class="custom-card">
+                    <div class="card" style="margin-top:5px;">
+                        <div class="card-body">
+                            <h5 class="card-title">@cnt.Name</h5>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+        }
+    </div>
+</div>
+
+    @code {
+        private string RecipeAvailableColorString = "69B878";
+        private string RecipeUnAvailableColorString = "DB5853";
+        private RecipeViewModel RecipeViewModel;
+        private string newRecipeName = string.Empty;
+
+        private RecipeModel[] recipes = new RecipeModel[0];
+
+        protected override async Task OnInitializedAsync()
+        {
+            RecipeViewModel = new RecipeViewModel(PropductService);
+
+            recipes = await RecipeViewModel.GetRecipes();
+
+            RecipeViewModel.PropertyChanged += async (a, b) => await InvokeAsync(() => StateHasChanged());
+        }
+
+        private async void HandleSubmit()
+        {
+            await RecipeViewModel.CreateNewRecipe(newRecipeName);
+            recipes = await RecipeViewModel.GetRecipes();
             StateHasChanged();
+
+            NavigationManager.NavigateTo($"recipe/{recipes.First(r => r.Name == newRecipeName).Id}");
+
+            newRecipeName = string.Empty;
         }
     }
-}
-
-
-@*<EditForm Model="@RecipeViewModel" OnValidSubmit="HandleSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <div class="col-6">
-            <input type="text" class="form-control" placeholder="name" id="name" @bind="newRecipeName" />
-
-            <button class="btn btn-primary" type="submit">Save</button>
-        </div>
-    </EditForm>
-    @foreach (var ingredient in RecipeViewModel.CurrentSelectedRecipe.Ingredients)
-    {
-
-
-        <div class="row">
-            <div class="col">
-                <p>
-                    @ingredient @ingredient<br>
-                    Quantity: @ingredient
-                </p>
-            </div>
-        </div>
-    }
-
-    <EditForm Model="@RecipeViewModel.CurrentSelectedRecipe.NewRecipestep" OnValidSubmit="AddStep">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <div class="col-6">
-            <input type="text" class="form-control" placeholder="name" id="name" @bind="RecipeViewModel.CurrentSelectedRecipe.NewRecipestep.Text" />
-
-            <button class="btn btn-primary" type="submit">Save</button>
-        </div>
-    </EditForm>
-    @foreach (var step in RecipeViewModel.CurrentSelectedRecipe.Steps)
-    {
-
-
-        <div class="row">
-            <div class="col">
-                <p>
-                    @step.Order @step.Text
-                </p>
-            </div>
-        </div>
-    }*@

@@ -4,6 +4,7 @@ using PunterHomeApp.Services;
 using PunterHomeDomain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PunterHomeAdapters.DataAdapters
@@ -16,8 +17,20 @@ namespace PunterHomeAdapters.DataAdapters
         {
             myDbOptions = options;
         }
-        public void Delete(IIngredient ingredient)
+
+        public void Delete(Guid productId, Guid recipeId)
         {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var ingredientToRemove = context.Ingredients.FirstOrDefault(i => i.ProductId == productId && i.RecipeId == recipeId);
+
+            if (ingredientToRemove == null)
+            {
+                return;
+            }
+
+            context.Ingredients.Remove(ingredientToRemove);
+            context.SaveChanges();
         }
 
         public void Insert(IIngredient ingredient)

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PunterHomeAdapters;
@@ -9,9 +10,10 @@ using PunterHomeAdapters;
 namespace PunterHomeAdapters.Migrations
 {
     [DbContext(typeof(HomeAppDbContext))]
-    partial class HomeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201214173141_AddedShoppingList")]
+    partial class AddedShoppingList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

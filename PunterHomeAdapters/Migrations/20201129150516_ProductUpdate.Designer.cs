@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PunterHomeAdapters;
@@ -9,9 +10,10 @@ using PunterHomeAdapters;
 namespace PunterHomeAdapters.Migrations
 {
     [DbContext(typeof(HomeAppDbContext))]
-    partial class HomeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201129150516_ProductUpdate")]
+    partial class ProductUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,50 +124,6 @@ namespace PunterHomeAdapters.Migrations
                     b.ToTable("RecipeSteps");
                 });
 
-            modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingList", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShoppingLists");
-                });
-
-            modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ProductQuantitiesId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("ShoppingListId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductQuantitiesId");
-
-                    b.HasIndex("ShoppingListId");
-
-                    b.ToTable("ShoppingListItems");
-                });
-
             modelBuilder.Entity("PunterHomeAdapters.Models.DbIngredient", b =>
                 {
                     b.HasOne("PunterHomeAdapters.Models.DbProduct", "Product")
@@ -193,17 +151,6 @@ namespace PunterHomeAdapters.Migrations
                     b.HasOne("PunterHomeAdapters.Models.DbRecipe", "Recipe")
                         .WithMany("Steps")
                         .HasForeignKey("RecipeId");
-                });
-
-            modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListItem", b =>
-                {
-                    b.HasOne("PunterHomeAdapters.Models.DbProductQuantity", "ProductQuantities")
-                        .WithMany("ShoppingListItems")
-                        .HasForeignKey("ProductQuantitiesId");
-
-                    b.HasOne("PunterHomeAdapters.Models.DbShoppingList", "ShoppingList")
-                        .WithMany()
-                        .HasForeignKey("ShoppingListId");
                 });
 #pragma warning restore 612, 618
         }

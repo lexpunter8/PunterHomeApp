@@ -9,28 +9,88 @@
 
 @inject Blazored.Modal.Services.IModalService Modal
 @inject ProductService ProductService
-<h3>Products</h3>
-<button @onclick="ShowNewProductModal" class="btn btn-primary">New product</button>
+@inject BlazorShoppingListService ShoppingListService
 
-<div class="row">
-    <div class="col-sm-12 col-md-6">
-        <ul class="list-group ">
+
+<div class="container-fluid"><div class="row">
+    <div class="col-md-4 col-sm-9 col-10">
+
+        <h3>Products</h3>
+    </div>
+    <div class="col-md-2 col-sm-3 col-2">
+        <button @onclick="ShowNewProductModal" class="btn btn-primary" style="float: right;"><Icon Name="IconName.Add"></Icon></button>
+    </div>
+</div>
+    <div class="row">
             @foreach (var cnt in products)
             {
-                <li class="list-group-item list-group-item-action justify-content-between @((cnt.Id == SelectedProduct?.CurrentSelectedProduct?.Id) ? "active" : "")" @onclick="@(e => ItemClick(e, cnt))">
-                    @cnt.Name
-                    <span class="badge @((cnt.Quantity > 0) ? "badge-info" : "badge-warning") badge-pill">@cnt.Quantity</span>
-                </li>
+                <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-4">
+                    <a @onclick="@(e => ItemClick(e, cnt))" class="custom-card">
+                        <div class="card" style="margin-top:5px;">
+                            <div class="card-body">
+                                <h5 class="card-title">@cnt.Name</h5>
+                                <div class="@(cnt.IsSelected ? "show" : "collapse")">
+                                    @if (cnt.IsSelected && SelectedProduct != null)
+                                    {
+                                        <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete product</label>
+                                        <p>@SelectedProduct.CurrentSelectedProduct.GetQuantityString()</p>
+
+                                        @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
+                                        {
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group mb-3 ">
+                                            <div class="input-group-prepend">
+                                                <button type="button" @onclick="@(e => DecreaseQuantity(prodQuan.Id))" class="btn btn-outline-danger" data-type="minus" data-field="quant[2]">
+                                                    <Icon Name="IconName.ExpandMore"></Icon>
+                                                </button>
+                                                <span class="input-group-text">
+                                                    @prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType
+                                                </span>
+                                            </div>
+                                            <div class="input-group-append">
+
+                                                <button type="button" @onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn btn-outline-success" data-type="plus" data-field="quant[2]">
+                                                    <Icon Name="IconName.ExpandLess"></Icon>
+                                                </button>
+
+
+                                                <button type="button" @onclick="@(e => HandleAddToCart(prodQuan.Id))" class="btn btn-lg btn-dark" data-type="plus" data-field="quant[2]">
+                                                    <Icon Name="IconName.ShoppingCart"></Icon>
+                                                </button>
+
+                                                <button type="button" @onclick="@(e => HandleDeleteProductQuantity(prodQuan.Id))" class="btn btn-danger" data-type="plus" data-field="quant[2]">
+                                                    <Icon Name="IconName.Delete"></Icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <button @onclick="ShowAddProductQuantityModal" class="btn btn-outline-secondary">Add quantity</button>
+                                    </div>
+                                </div>
+                                        }
+                                    }
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    
+
+                </div>
 
             }
-        </ul>
     </div>
-    @if (SelectedProduct != null)
+
+    @if (SelectedProduct != null && false)
     {
-        <div class="col-sm-12 col-md-6">
+        <div id="details" class="col-sm-12 col-md-6">
             <h4>@SelectedProduct.CurrentSelectedProduct.Name</h4>
             <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete product</label>
             <p>@SelectedProduct.CurrentSelectedProduct.Id</p>
+            <p>@SelectedProduct.CurrentSelectedProduct.GetQuantityString()</p>
 
             @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
             {
@@ -45,7 +105,7 @@
                                     </button>
                                 </span>
                                 <span class="input-group-btn">
-                                    <button type="button"@onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn btn-square btn-success btn-number" data-type="plus" data-field="quant[2]">
+                                    <button type="button" @onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn btn-square btn-success btn-number" data-type="plus" data-field="quant[2]">
                                         <span class="glyphicon glyphicon-plus">+</span>
                                     </button>
                                 </span>
@@ -88,11 +148,18 @@
     }
     private async void HandleDeleteProductQuantity(int id)
     {
+        var currentSelected = products.FirstOrDefault(c => c.IsSelected);
         await ProductService.DeleteProductQuantity(id);
+        products.FirstOrDefault(p => p.Id == currentSelected?.Id).IsSelected = true;
         StateHasChanged();
     }
 
-    private async void HandleDeleteProduct(ProductModel vm)
+    private async void HandleAddToCart(int quantityId)
+    {
+        await ShoppingListService.AddToShoppingList(Guid.Empty, quantityId);
+    }
+
+    private async void HandleDeleteProduct(ProductDetailsModel vm)
     {
         await ProductService.DeleteProduct(vm);
         StateHasChanged();
@@ -131,16 +198,22 @@
 
     private BlazorPunterHomeApp.ViewModels.ProductViewModel SelectedProduct;
 
-    private void ItemClick(MouseEventArgs e, ProductModel product)
+    private async void ItemClick(MouseEventArgs e, ProductModel product)
     {
+        foreach (var p in products.Where(p => p.IsSelected))
+        {
+            p.IsSelected = false;
+        }
+        product.IsSelected = true;
+        var productDetails = await ProductService.GetProductById(product.Id);
         if (SelectedProduct == null)
         {
-            SelectedProduct = new ViewModels.ProductViewModel(product);
+            SelectedProduct = new ViewModels.ProductViewModel(productDetails);
             SelectedProduct.PropertyChanged += (a, b) => StateHasChanged();
         }
         else
         {
-            SelectedProduct.SetProduct(product);
+            SelectedProduct.SetProduct(productDetails);
         }
         StateHasChanged();
     }
@@ -148,14 +221,17 @@
     private async void IncreaseQuantity(int prodQuanId)
     {
         await ProductService.IncreaseProductQuantity(prodQuanId);
-        SelectedProduct.ChangeQuantity(prodQuanId, 1);
+
+        var productDetails = await ProductService.GetProductById(SelectedProduct.CurrentSelectedProduct.Id);
+        SelectedProduct.SetProduct(productDetails);
         StateHasChanged();
     }
 
     private async void DecreaseQuantity(int prodQuanId)
     {
         await ProductService.DecreaseProductQuantity(prodQuanId);
-        SelectedProduct.ChangeQuantity(prodQuanId, -1);
+        var productDetails = await ProductService.GetProductById(SelectedProduct.CurrentSelectedProduct.Id);
+        SelectedProduct.SetProduct(productDetails);
         StateHasChanged();
     }
 }

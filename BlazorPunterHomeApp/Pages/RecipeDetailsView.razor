@@ -1,0 +1,97 @@
+﻿@page "/recipe/{Id:guid}"
+@using BlazorPunterHomeApp.Pages
+@inject Blazored.Modal.Services.IModalService Modal
+@inherits RecipedetailsViewBase
+
+@if (Recipedetails != null)
+{
+    <div class="col-md-9">
+        <div class="row">
+
+            <h2 style="display: inline-block">@Recipedetails.Name</h2>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6 order-2 order-sm-1">
+                <h4>Instructions</h4>
+
+                @foreach (var step in Recipedetails.Steps)
+                {
+                    <div class="row" style="margin:5px 0 0 0">
+                        <div class="justify-content-center align-middle col-md-2">
+                            <span class="circle">@step.Order</span>
+                        </div>
+                        <div class="col-md-10">
+                            <div style="min-height: 50px">@step.Text</div>
+                            <hr />
+                        </div>
+                    </div>
+                }
+            <div class="input-group">
+                <input type="text" class="form-control" id="Instruction text" @bind="newStepText" />
+                <div class="input-group-append">
+                    <button @onclick="AddStep" class="btn btn-outline-secondary">Add instruction step</button>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6 col-lg-6 order-1 order-sm-2">
+
+                <h4>Ingredients</h4>
+                <h6>Personen</h6>
+                <div class="row">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-outline-secondary active" @onclick="@(() => ChangePersons(1))">
+                            <input type="radio" name="options" id="option1" checked>1
+                        </label>
+                        <label class="btn btn-outline-secondary" @onclick="@(() => ChangePersons(2))">
+                            <input type="radio" name="options" id="option2">2
+                        </label>
+                        <label class="btn btn-outline-secondary" @onclick="@(() => ChangePersons(3))">
+                            <input type="radio" name="options" id="option3">3
+                        </label>
+                        <label class="btn btn-outline-secondary" @onclick="@(() => ChangePersons(4))">
+                            <input type="radio" name="options" id="option3">4
+                        </label>
+                        <label class="btn btn-outline-secondary" @onclick="@(() => ChangePersons(5))">
+                            <input type="radio" name="options" id="option3">5
+                        </label>
+                        <label class="btn btn-outline-secondary">
+                            <input type="radio" name="options" id="option3">...
+                        </label>
+                    </div>
+                </div>
+                <div class="accordion" id="accordionExample">
+                    @foreach (var details in Recipedetails.Ingredients)
+                    {
+                        <div class="">
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#@($"collapse{details.ProductId}")" aria-expanded="true" aria-controls="@($"collapse{details.ProductId}")">
+                                                    @if (details.IsAvaliable)
+                                                    {
+
+                                                        <Blazorise.Icon Name="Blazorise.IconName.CheckCircle" Class="recipe-available-color" />
+                                                    }
+                                                    else
+                                                    {
+
+                                                        <Blazorise.Icon Name="Blazorise.IconName.TimesCircle" Class="recipe-unavailable-color" />
+                                                    }
+                                                    @(details.UnitQuantity * IngredientMultiplier)
+                                                    @details.UnitQuantityType
+                                                    @details.ProductName
+                                                </button>
+                                            </div>
+                                            <div id="@($"collapse{details.ProductId}")" class="col-1 collapse" aria-labelledby="headingOne" data-parent="#accordionExample" @onclick="@(() => RemoveIngredient(details.ProductId))">
+                                                <Icon Name="IconName.Times"></Icon>
+                                            </div>
+                                        </div>
+                        </div>
+                    }
+                </div>
+
+                <button @onclick="ShowAddProductModal" class="btn btn-outline-secondary m-2">Add ingredient</button>
+            </div>
+                </div>
+            </div>
+
+}

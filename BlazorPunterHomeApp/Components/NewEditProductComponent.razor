@@ -1,15 +1,12 @@
 ﻿@using BlazorPunterHomeApp.Data
-@using DataModels.Helpers;
-@using BlazorPunterHomeApp.ViewModels;
 @inject Blazored.Modal.Services.IModalService Modal
 
 @inject ProductService ProductService
 
 <EditForm Model="@Product">
     <DataAnnotationsValidator />
-    <div class="col-12">
-        <input type="text" class="form-control" placeholder="name" id="name" @bind="Product.Name" />
-        <div class="input-group mb-3">
+        <input style="margin-bottom: 20px;" type="text" class="form-control" placeholder="Product name" id="name" @bind="Product.Name" />
+        @*<div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text">Size</span>
             </div>
@@ -20,9 +17,8 @@
                     <option value="@cnt">@cnt.GetEnumDescription()</option>
                 }
             </select>
-        </div>
-    </div>
+        </div>*@
 
-    <button @onclick="Save" class="btn btn-primary">Submit</button>
+    <button @onclick="Save" class="btn btn-primary">Add product</button>
     <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
 </EditForm>

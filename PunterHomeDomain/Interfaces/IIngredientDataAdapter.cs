@@ -8,6 +8,6 @@ namespace PunterHomeDomain.Interfaces
     public interface IIngredientDataAdapter
     {
         void Insert(IIngredient ingredient);
-        void Delete(IIngredient ingredient);
+        void Delete(Guid productId, Guid recipeId);
     }
 }

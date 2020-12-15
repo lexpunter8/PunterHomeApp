@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataModels.Measurements;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PunterHomeAdapters;
 using PunterHomeAdapters.Models;
 using PunterHomeApp.Services;
@@ -20,7 +22,7 @@ namespace PunterHomeApp.DataAdapters
             myDbOptions = options;
         }
 
-        public void AddProduct(Product product)
+        public void AddProduct(LightProduct product)
         {
             DbProduct newProduct = new DbProduct
             {
@@ -28,7 +30,7 @@ namespace PunterHomeApp.DataAdapters
                 Name = product.Name
             };
 
-            newProduct.ProductQuantities = ConvertProductQuantities(product.ProductQuantities, newProduct);
+            //newProduct.ProductQuantities = ConvertProductQuantities(product.ProductQuantities, newProduct);
 
             
             using var context = new HomeAppDbContext(myDbOptions);
@@ -80,29 +82,99 @@ namespace PunterHomeApp.DataAdapters
         public async Task DereaseProductQuantity(int id, int value)
         {
             using var context = new HomeAppDbContext(myDbOptions);
-            var quantity = context.ProductQuantities.FirstOrDefault(p => p.Id == id);
+            var quantity = context.ProductQuantities.Include(x => x.ProductId).FirstOrDefault(p => p.Id == id);
 
-            if (quantity == null)
+            if (quantity.ProductId.MeasurementValues == null)
             {
+                var values = new MeasurementClassObject
+                {
+                    Values = new List<MeasurementAmount>
+                    {
+                        new MeasurementAmount
+                        {
+                            Amount = quantity.QuantityTypeVolume,
+                            Type = quantity.UnitQuantityType
+                        }
+                    }
+                };
+                quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(values);
+                await context.SaveChangesAsync();
                 return;
             }
 
-            quantity.UnitQuantity -= value;
+            var measurementClass = JsonConvert.DeserializeObject<MeasurementClassObject>(quantity.ProductId.MeasurementValues);
+            measurementClass.Add(new MeasurementAmount
+            {
+                Amount = quantity.QuantityTypeVolume * -1,
+                Type = quantity.UnitQuantityType
+            });
+            //if (measurementClass.Values.Any(v => v.Type == quantity.UnitQuantityType))
+            //{
+            //    measurementClass.Values.First(v => v.Type == quantity.UnitQuantityType).Amount += quantity.QuantityTypeVolume;
+            //    quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(measurementClass);
+            //    await context.SaveChangesAsync();
+            //    return;
+            //}
+            //measurementClass.Values.Add(new MeasurementAmount
+            //{
+            //    Amount = quantity.QuantityTypeVolume,
+            //    Type = quantity.UnitQuantityType
+            //});
+            quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(measurementClass);
             await context.SaveChangesAsync();
+            return;
         }
 
-        public async Task<IEnumerable<Product>> GetProducts()
+        public ProductDetails GetProductById(Guid productId)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+            DbProduct p = context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.ProductId).FirstOrDefault(p => p.Id == productId);
+
+            if (p == null)
+            {
+                return null;
+            }
+
+            return new ProductDetails
+            {
+                Id = p.Id,
+                MeasurementAmounts = JsonConvert.DeserializeObject<MeasurementClassObject>(p.MeasurementValues ?? string.Empty),
+                Name = p.Name,
+                ProductQuantities = ConvertProductQuantities(p.ProductQuantities)
+            };
+        }
+
+        public async Task<IEnumerable<LightProduct>> GetProducts()
         {
             using var context = new HomeAppDbContext(myDbOptions);
             List<DbProduct> products = await context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.ProductId).ToListAsync();
 
-            var retval = new List<Product>();
+            var retval = new List<LightProduct>();
             products.ForEach(p => 
             {
-                retval.Add(new Product
+                retval.Add(new LightProduct
+                {
+                    Id = p.Id,
+                    Name = p.Name
+                });
+            });
+
+            return retval;
+        }
+
+        public async Task<IEnumerable<ProductDetails>> GetAllProductDetails()
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+            List<DbProduct> products = await context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.ProductId).ToListAsync();
+
+            var retval = new List<ProductDetails>();
+            products.ForEach(p =>
+            {
+                retval.Add(new ProductDetails
                 {
                     Id = p.Id,
                     Name = p.Name,
+                    MeasurementAmounts = JsonConvert.DeserializeObject<MeasurementClassObject>(p.MeasurementValues ?? string.Empty),
                     ProductQuantities = ConvertProductQuantities(p.ProductQuantities)
                 });
             });
@@ -113,15 +185,47 @@ namespace PunterHomeApp.DataAdapters
         public async Task IncreaseProductQuantity(int id, int value)
         {
             using var context = new HomeAppDbContext(myDbOptions);
-            var quantity = context.ProductQuantities.FirstOrDefault(p => p.Id == id);
+            var quantity = context.ProductQuantities.Include(x => x.ProductId).FirstOrDefault(p => p.Id == id);
 
-            if (quantity == null)
+            if (quantity.ProductId.MeasurementValues == null)
             {
+                var values = new MeasurementClassObject
+                {
+                    Values = new List<MeasurementAmount>
+                    {
+                        new MeasurementAmount
+                        {
+                            Amount = quantity.QuantityTypeVolume,
+                            Type = quantity.UnitQuantityType
+                        }
+                    }
+                };
+                quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(values);
+                await context.SaveChangesAsync();
                 return;
             }
 
-            quantity.UnitQuantity += value;
+            var measurementClass = JsonConvert.DeserializeObject<MeasurementClassObject>(quantity.ProductId.MeasurementValues);
+            measurementClass.Add(new MeasurementAmount
+            {
+                Amount = quantity.QuantityTypeVolume,
+                Type = quantity.UnitQuantityType
+            });
+            //if (measurementClass.Values.Any(v => v.Type == quantity.UnitQuantityType))
+            //{
+            //    measurementClass.Values.First(v => v.Type == quantity.UnitQuantityType).Amount += quantity.QuantityTypeVolume;
+            //    quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(measurementClass);
+            //    await context.SaveChangesAsync();
+            //    return;
+            //}
+            //measurementClass.Values.Add(new MeasurementAmount
+            //{
+            //    Amount = quantity.QuantityTypeVolume,
+            //    Type = quantity.UnitQuantityType
+            //});
+            quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(measurementClass);
             await context.SaveChangesAsync();
+            return;
         }
 
         public async Task<bool> Update(Guid id, string newName)
@@ -153,21 +257,21 @@ namespace PunterHomeApp.DataAdapters
 
         // Conversions
 
-        private List<DbProductQuantity> ConvertProductQuantities(IEnumerable<BaseMeasurement> p, DbProduct product)
-        {
-            var retval = new List<DbProductQuantity>();
-            foreach (BaseMeasurement q in p)
-            {
-                retval.Add(new DbProductQuantity
-                {
-                    ProductId = product,
-                    QuantityTypeVolume = q.UnitQuantityTypeVolume,
-                    UnitQuantity = q.Quantity,
-                    UnitQuantityType = q.MeasurementType
-                });
-            }
-            return retval;
-        }
+        //private List<DbProductQuantity> ConvertProductQuantities(IEnumerable<BaseMeasurement> p, DbProduct product)
+        //{
+        //    var retval = new List<DbProductQuantity>();
+        //    foreach (BaseMeasurement q in p)
+        //    {
+        //        retval.Add(new DbProductQuantity
+        //        {
+        //            ProductId = product,
+        //            QuantityTypeVolume = q.UnitQuantityTypeVolume,
+        //            UnitQuantity = q.Quantity,
+        //            UnitQuantityType = q.MeasurementType
+        //        });
+        //    }
+        //    return retval;
+        //}
 
         private List<BaseMeasurement> ConvertProductQuantities(IEnumerable<DbProductQuantity> p)
         {

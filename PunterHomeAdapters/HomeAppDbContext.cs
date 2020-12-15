@@ -10,7 +10,7 @@ namespace PunterHomeAdapters
 
         }
 
-        public HomeAppDbContext (DbContextOptions<HomeAppDbContext> options) : base (options)
+        public HomeAppDbContext(DbContextOptions<HomeAppDbContext> options) : base(options)
         { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -20,6 +20,9 @@ namespace PunterHomeAdapters
         {
             modelBuilder.Entity<DbIngredient>()
                 .HasKey(c => new { c.ProductId, c.RecipeId });
+
+            modelBuilder.Entity<DbIngredient>()
+                .HasKey(c => new { c.ProductId, c.RecipeId });
         }
 
         public DbSet<DbIngredient> Ingredients { get; set; }
@@ -27,5 +30,7 @@ namespace PunterHomeAdapters
         public DbSet<DbProduct> Products { get; set; }
         public DbSet<DbProductQuantity> ProductQuantities { get; set; }
         public DbSet<DbRecipeStep> RecipeSteps { get; set; }
+        public DbSet<DbShoppingList> ShoppingLists { get; set; }
+        public DbSet<DbShoppingListItem> ShoppingListItems { get; set; }
     }
 }

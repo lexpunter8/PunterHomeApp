@@ -12,15 +12,15 @@ namespace BlazorPunterHomeApp.Data
 {
     public class RecipeService
     {
-        public void InsertIngredients(List<IngredientModel> ingredients)
+        public async Task InsertIngredients(List<IngredientModel> ingredients)
         {
             foreach(var i in ingredients)
             {
-                InsertIngredient(i);
+                await InsertIngredient(i);
             }
         }
 
-        public async void InsertIngredient(IngredientModel ingredient)
+        public async Task InsertIngredient(IngredientModel ingredient)
         {
             try
             {

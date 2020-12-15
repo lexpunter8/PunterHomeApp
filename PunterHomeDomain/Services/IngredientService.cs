@@ -14,9 +14,9 @@ namespace PunterHomeDomain.Services
         {
             myIngredientDataAdapter = ingredientDataAdapter;
         }
-        public void DeleteIngredient(IIngredient newIngredient)
+        public void DeleteIngredient(Guid recipeId, Guid productId)
         {
-            throw new NotImplementedException();
+            myIngredientDataAdapter.Delete(productId, recipeId);
         }
 
         public void InsertIngredient(IIngredient newIngredient)
