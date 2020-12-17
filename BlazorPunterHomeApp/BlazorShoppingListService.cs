@@ -12,7 +12,7 @@ namespace BlazorPunterHomeApp
 {
     public class BlazorShoppingListService
     {
-        private Guid myShoppingListId;
+        public Guid ShoppingListId;
 
         public async Task AddToShoppingList(Guid shoppingListId, int prodQuanId)
         {
@@ -20,12 +20,81 @@ namespace BlazorPunterHomeApp
             {
                 var client = new HttpClient();
 
-                var response = await client.PostAsync(new Uri($"http://localhost:5005/api/shoppinglist/{myShoppingListId}/{prodQuanId}"), null);
+                var response = await client.PostAsync(new Uri($"http://localhost:5005/api/shoppinglist/{ShoppingListId}/{prodQuanId}"), null);
 
                 string result = response.Content.ReadAsStringAsync().Result;
 
                 client.Dispose();
 
+            }
+            catch (Exception)
+            {
+
+
+            }
+        }
+        public async Task UpdateCountForItem(Guid shoppingListItemId, bool add)
+        {
+            try
+            {
+                var client = new HttpClient();
+                string c = add ? "plus" : "min";
+                var response = await client.PutAsync(new Uri($"http://localhost:5005/api/shoppinglist/{c}/{shoppingListItemId}"), null);
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                client.Dispose();
+
+            }
+            catch (Exception)
+            {
+
+
+            }
+        }
+
+        public async Task AddQuantityForCheckedItems(Guid shoppingListItemId)
+        {
+            try
+            {
+                var client = new HttpClient();
+                var response = await client.PutAsync(new Uri($"http://localhost:5005/api/shoppinglist/updateproducts/{shoppingListItemId}"), null);
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                client.Dispose();
+
+            }
+            catch (Exception)
+            {
+
+
+            }
+        }
+        public async Task UpdateCheckedForItem(Guid shoppingListItemId, bool isChecked)
+        {
+            try
+            {
+                var client = new HttpClient();
+                string c = isChecked ? "checked" : "unchecked";
+                var response = await client.PutAsync(new Uri($"http://localhost:5005/api/shoppinglist/{c}/{shoppingListItemId}"), null);
+                string result = response.Content.ReadAsStringAsync().Result;
+                client.Dispose();
+            }
+            catch (Exception)
+            {
+
+
+            }
+        }
+        public async Task DeleteItem(Guid shoppingListItemId)
+        {
+            try
+            {
+                var client = new HttpClient();
+                var response = await client.DeleteAsync(new Uri($"http://localhost:5005/api/shoppinglist/{shoppingListItemId}"));
+                string result = response.Content.ReadAsStringAsync().Result;
+                client.Dispose();
             }
             catch (Exception)
             {
@@ -53,7 +122,7 @@ namespace BlazorPunterHomeApp
                 string responseString1 = await response1.Content.ReadAsStringAsync();
                 var result1 = JsonConvert.DeserializeObject<List<ShoppingListItemApiModel>>(responseString1);
 
-                myShoppingListId = result.First().Id;
+                ShoppingListId = result.First().Id;
 
 
                 return result1.Select(r => new ShoppingListItem
@@ -62,7 +131,8 @@ namespace BlazorPunterHomeApp
                     MeasurementType = r.MeasurementType,
                     MeasurementVolume= r.Volume,
                     ProductName = r.ProductName,
-                    Quantity = r.Count
+                    Quantity = r.Count,
+                    IsChecked = r.IsChecked
                 }).ToList();
             }
             catch (Exception)

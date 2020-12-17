@@ -17,6 +17,12 @@ namespace BlazorPunterHomeApp
     }
     public class BlazorRecipeService : IBlazorrecipeService
     {
+        private readonly BlazorShoppingListService shoppingListService;
+
+        public BlazorRecipeService(BlazorShoppingListService shoppingListService)
+        {
+            this.shoppingListService = shoppingListService;
+        }
         public async Task<RecipeDetailsApiModel> GetRecipeById(Guid id)
         {
             try
@@ -34,6 +40,46 @@ namespace BlazorPunterHomeApp
                 return null;
             }
         }
+
+        public async Task<ApiIngredientModel[]> GetIngredientsForRecipeById(Guid id, int numberOfPersons)
+        {
+            try
+            {
+                var httpClient = new HttpClient();
+                Uri uri = new Uri($"http://localhost:5005/api/recipe/ingredients/{id}/{numberOfPersons}");
+                var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+                string responseString = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<ApiIngredientModel[]>(responseString);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<ApiIngredientModel[]> AddToShoppingList(Guid recipeId, int numberOfPersons, Guid shoppingListId)
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(new RecipeToShoppingListRequestApiModel {NumberOfPersons = numberOfPersons, RecipeId = recipeId, ShoppingListIdId = shoppingListService.ShoppingListId });
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var httpClient = new HttpClient();
+                Uri uri = new Uri($"http://localhost:5005/api/recipe/shoppinglist/");
+                var response = await httpClient.PutAsync(uri, data);
+                string responseString = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<ApiIngredientModel[]>(responseString);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public async Task AddStep(RecipeStep newStep, Guid recipeId)
         {
             try

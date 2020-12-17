@@ -1,8 +1,49 @@
-﻿.flex {
+﻿input[type="checkbox"] {
+    visibility: hidden;
+}
+
+label {
+    cursor: pointer;
+}
+
+input[type="checkbox"] + label:before {
+    border: 2px solid rgb(89, 89, 89);
+    border-radius: 2px;
+    content: "\00a0";
+    display: inline-block;
+    font: 16px/1em sans-serif;
+    height: 16px;
+    margin: 0 .25em 0 0;
+    padding: 0;
+    vertical-align: top;
+    width: 16px;
+}
+
+input[type="checkbox"]:checked + label:before {
+    background: rgb(89, 89, 89);
+    color: white;
+    content: "\2713";
+    font-weight: bolder;
+    text-align: center;
+}
+
+input[type="checkbox"]:checked + label:after {
+    font-weight: bold;
+}
+
+input[type="checkbox"]:focus + label::before {
+    outline: rgb(89, 89, 89) auto 7px;
+    border-radius: 2px;
+}
+
+
+
+
+
+.flex {
     display: flex;
     flex-direction: row;
 }
-
 .input-group > .input-group-prepend {
     flex: 0 0 50%;
 }

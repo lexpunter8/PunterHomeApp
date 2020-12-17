@@ -34,7 +34,6 @@ namespace PunterHomeAdapters.DataAdapters
 
             foreach (var i in listItems)
             {
-                //DbProductQuantity prodQuan = context.ProductQuantities.FirstOrDefault(p => p.Id == i.ProductQuantities.Id);
                 var prodQuan = context.ProductQuantities.Include(x => x.ProductId).FirstOrDefault(p => p.Id == i.ProductQuantities.Id);
                 DbProduct p = context.Products.FirstOrDefault(p => prodQuan.ProductId.Id == p.Id);
 
@@ -45,7 +44,9 @@ namespace PunterHomeAdapters.DataAdapters
                     ShoppingListId = shoppingListId,
                     MeasurementType = prodQuan.UnitQuantityType,
                     ProductName = p.Name,
-                    Volume = prodQuan.QuantityTypeVolume
+                    Volume = prodQuan.QuantityTypeVolume,
+                    IsChecked = i.Checked,
+                    ProductQuantityId = prodQuan.Id
                 };
 
                 items.Add(newItem);
@@ -68,6 +69,16 @@ namespace PunterHomeAdapters.DataAdapters
             if (productQuan == null)
             {
                 throw new KeyNotFoundException($"{nameof(DbProductQuantity)} with id {productQuantyId} not found");
+            }
+
+            var item = context.ShoppingListItems.Include(i => i.ShoppingList).Include(i => i.ProductQuantities)
+                .FirstOrDefault(s => s.ShoppingList.Id == shoppingListId && s.ProductQuantities.Id == productQuantyId);
+
+            if (item != null)
+            {
+                item.Count += count;
+                context.SaveChanges();
+                return;
             }
 
             var newItem = new DbShoppingListItem
@@ -108,6 +119,14 @@ namespace PunterHomeAdapters.DataAdapters
             }
 
             context.ShoppingListItems.Remove(item);
+            context.SaveChanges();
+        }
+
+        public void UpdateChecked(Guid itemId, bool isChecked)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            context.ShoppingListItems.FirstOrDefault(sl => sl.Id == itemId).Checked = isChecked;
             context.SaveChanges();
         }
     }

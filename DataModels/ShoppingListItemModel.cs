@@ -12,6 +12,9 @@ namespace DataModels
         public string ProductName { get; set; }
         public EUnitMeasurementType MeasurementType { get; set; }
         public int Volume { get; set; }
+        public bool IsChecked { get; set; }
+
+        public int ProductQuantityId { get; set; }
 
     }
 }

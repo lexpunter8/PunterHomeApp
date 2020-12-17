@@ -17,11 +17,13 @@ namespace PunterHomeApp.Services
     {
         private readonly IRecipeDataAdapter recipeAdapter;
         private readonly IProductDataAdapter productDataAdapter;
+        private readonly IShoppingListService myShoppingListService;
 
-        public RecipeService(IRecipeDataAdapter recipeAdapter, IProductDataAdapter productDataAdapter)
+        public RecipeService(IRecipeDataAdapter recipeAdapter, IProductDataAdapter productDataAdapter, IShoppingListService shoppingListService)
         {
             this.recipeAdapter = recipeAdapter;
             this.productDataAdapter = productDataAdapter;
+            this.myShoppingListService = shoppingListService;
         }
 
         public bool AddIngredient(Guid recipeId, IIngredient ingredient)
@@ -74,16 +76,50 @@ namespace PunterHomeApp.Services
             return recipeDetails;
         }
 
-        public bool IsIngedientAvailable(Ingredient i, ProductDetails p)
+        public async Task<List<ApiIngredientModel>> GetIngredientsDetailsForRecipe(Guid recipeId, int numberOfPersons = 1)
         {
+            var recipe = recipeAdapter.GetRecipeById(recipeId);
+            var products = await productDataAdapter.GetAllProductDetails();
+
+            IEnumerable<ApiIngredientModel> ingredients = recipe.Ingredients.Select(s =>
+            {
+                var r = IngredientApiModelIngredientConversion.Convert(s);
+                r.IsAvaliable = IsIngedientAvailable(s, products.FirstOrDefault(i => i.Id == s.ProductId), numberOfPersons);
+                return r;
+            });
+            return ingredients.ToList();
+        }
+
+        public void AddRecipeIngredientsToShoppingList(Guid recipeId, int numberOfPersons, Guid shoppingListId)
+        {
+            var recipe = recipeAdapter.GetRecipeById(recipeId);
+
+            foreach (var ingredient in recipe.Ingredients)
+            {
+                var amount = new MeasurementAmount
+                {
+                    Amount = ingredient.UnitQuantity * numberOfPersons,
+                    Type = ingredient.UnitQuantityType
+                };
+                myShoppingListService.AddMinimumAmountToShoppingList(shoppingListId, ingredient.ProductId, amount);
+            }
+        }
+
+        public bool IsIngedientAvailable(Ingredient i, ProductDetails p, int numberOfPersons = 1)
+        {
+            if (numberOfPersons < 1)
+            {
+                numberOfPersons = 1;
+            }
+
             bool productHasSameMeasurementClass = p.ProductQuantities.Any(pq => Measurements.GetMeasurementClassForEUnitQuantityType(pq.MeasurementType) == Measurements.GetMeasurementClassForEUnitQuantityType(i.UnitQuantityType));
 
             if (!productHasSameMeasurementClass || p.MeasurementAmounts == null)
             {
                 return false;
             }
-
-            return p.MeasurementAmounts.GetTotalAmount(i.UnitQuantityType) >= i.UnitQuantity;
+            var totalAmountOfProduct = p.MeasurementAmounts.GetTotalAmount(i.UnitQuantityType);
+            return totalAmountOfProduct >= i.UnitQuantity * numberOfPersons; 
         }
 
         private double GetTotalProductQuantitiesToMeasuremenType(IEnumerable<BaseMeasurement> productQuantities, EUnitMeasurementType type)

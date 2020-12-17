@@ -279,7 +279,6 @@ namespace PunterHomeApp.DataAdapters
             foreach (DbProductQuantity q in p)
             {
                 var measurement = BaseMeasurement.GetMeasurement(q.UnitQuantityType);
-                measurement.Quantity = q.UnitQuantity;
                 measurement.UnitQuantityTypeVolume = q.QuantityTypeVolume;
                 measurement.ProductQuantityId = q.Id;
                 retval.Add(measurement

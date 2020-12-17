@@ -14,5 +14,8 @@ namespace PunterHomeDomain.Interfaces
         List<ShoppingListModel> GetShoppingLists();
         void UpdateShoppingListCount(Guid shoppingListItemId, int delta);
         void AddMinimumAmountToShoppingList(Guid shoppingListId, Guid productId, MeasurementAmount amount);
+        void UpdateChecked(Guid itemId, bool isChecked);
+
+        public void AddQuantityToProductForCheckedItems(Guid shoppingListId);
     }
 }

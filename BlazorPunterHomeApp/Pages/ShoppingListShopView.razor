@@ -1,0 +1,63 @@
+﻿@page "/shoppinglist/{Id:guid}/shop"
+
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-md-10">
+            <h3>ShoppingList</h3>
+            @foreach (var item in UnCheckedListItems)
+            {
+                <div class="row justify-content-end">
+                    <div class="col-2 col-md-1">
+                        <input type="checkbox" id="@item.Item.Id" name="@item.Item.Id" @onclick="@(() => ItemClicked(item))" @bind="item.IsChecked">
+                        <label for="@item.Item.Id"></label>
+
+                    </div>
+                    <div class="col-10 col-md-11" @onclick="@(() => ItemClicked(item))">
+                        <div class="row">
+                            <strong>@item.Item.ProductName</strong>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-4">
+                                @($"{item.Item.Quantity} x {item.Item.MeasurementVolume} {item.Item.MeasurementType}")
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <hr class="row" />
+            }
+
+            <h3>Checked items</h3>
+            <button @onclick="@(() => ShoppingListService.AddQuantityForCheckedItems(ShoppingListService.ShoppingListId))">Add checked to product</button>
+            @foreach (var item in CheckedListItems)
+            {
+                <div class="row">
+                    <div class="col-2 col-md-1">
+                        <input type="checkbox" id="@item.Item.Id" name="@item.Item.Id" @onclick="@(() => ItemClicked(item, true))" @bind="item.IsChecked">
+                        <label for="@item.Item.Id"></label>
+                    </div>
+                    <div class="col-10 col-md-11" @onclick="@(() => ItemClicked(item))">
+                        <div class="row">
+                            <strike><strong>@item.Item.ProductName</strong></strike>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-4">
+                                @($"{item.Item.MeasurementVolume} {item.Item.MeasurementType}")
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12"><hr /></div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

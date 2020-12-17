@@ -18,13 +18,24 @@ namespace BlazorPunterHomeApp.Pages
 
         public List<ShoppingListItem> ListItems { get; set; } = new List<ShoppingListItem>();
 
-        public void AddQuantityToItem(ShoppingListItem item)
+        public async void AddQuantityToItem(ShoppingListItem item)
         {
+            await ShoppingListService.UpdateCountForItem(item.Id, true);
             ListItems.FirstOrDefault(i => i.Id == item.Id).Quantity += 1;
+            StateHasChanged();
         }
-        public void DecreaseQuantityToItem(ShoppingListItem item)
+        public async void DecreaseQuantityToItem(ShoppingListItem item)
         {
+            await ShoppingListService.UpdateCountForItem(item.Id, false);
             ListItems.FirstOrDefault(i => i.Id == item.Id).Quantity -= 1;
+            StateHasChanged();
+        }
+
+        public async void DeleteItem(ShoppingListItem item)
+        {
+            await ShoppingListService.DeleteItem(item.Id);
+            ListItems.Remove(ListItems.FirstOrDefault(i => i.Id == item.Id));
+            StateHasChanged();
         }
 
         public async Task Refresh()

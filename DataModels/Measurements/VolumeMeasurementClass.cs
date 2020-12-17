@@ -43,7 +43,6 @@ namespace DataModels.Measurements
             Values.ForEach(v =>
             {
                 var baseM = BaseMeasurement.GetMeasurement(v.Type);
-                baseM.Quantity = 1;
                 baseM.UnitQuantityTypeVolume = v.Amount;
                 totalAmount += baseM.ConvertTo(type);
             }

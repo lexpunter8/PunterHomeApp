@@ -82,22 +82,47 @@ namespace PunterHomeApi.Controllers
         }
 
         // POST: api/ShoppingList
-        [HttpPost("min/{shoppingListID}/{newProductQuantity}")]
+        [HttpPost("minproduct/{shoppingListID}/{newProductQuantity}")]
         public void AddMinToList(Guid shoppingListID, [FromBody] ProductAmountApiModel productAmount)
         {
             myShoppingListService.AddMinimumAmountToShoppingList(shoppingListID, productAmount.ProductId, new MeasurementAmount { Amount = productAmount.VolumeAmount, Type = productAmount.Type });
         }
 
         // PUT: api/ShoppingList/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("plus/{id}")]
+        public void Add(Guid id)
         {
+            myShoppingListService.UpdateShoppingListCount(id, 1);
+        }
+        // PUT: api/ShoppingList/5
+        [HttpPut("min/{id}")]
+        public void Put(Guid id)
+        {
+            myShoppingListService.UpdateShoppingListCount(id, -1);
+        }
+
+        [HttpPut("checked/{id}")]
+        public void UpdateChecked(Guid id)
+        {
+            myShoppingListService.UpdateChecked(id, true);
+        }
+        [HttpPut("unchecked/{id}")]
+        public void UpdateUnChecked(Guid id)
+        {
+            myShoppingListService.UpdateChecked(id, false);
+        }
+
+        [HttpPut("updateproducts/{id}")]
+        public void UpdateCheckedProducts(Guid id)
+        {
+            myShoppingListService.AddQuantityToProductForCheckedItems(id);
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{itemId}")]
+        public void Delete(Guid itemId)
         {
+            myShoppingListService.RemoveProductFromShoppingList(itemId);
         }
     }
 
@@ -122,7 +147,8 @@ namespace PunterHomeApi.Controllers
                 MeasurementType = model.MeasurementType,
                 ProductName = model.ProductName,
                 ShoppingListId = model.ShoppingListId,
-                Volume = model.Volume
+                Volume = model.Volume,
+                IsChecked = model.IsChecked
             };
         }
     }

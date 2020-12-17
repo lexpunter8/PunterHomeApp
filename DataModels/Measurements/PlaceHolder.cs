@@ -18,7 +18,6 @@ namespace DataModels.Measurements
         public int ProductQuantityId { get; set; }
         public EUnitMeasurementType MeasurementType { get; }
         public double UnitQuantityTypeVolume { get; set; }
-        public int Quantity { get; set; }
 
         public virtual double ConvertTo(EUnitMeasurementType measurementType)
         {
@@ -58,7 +57,7 @@ namespace DataModels.Measurements
                 return -1;
             }
 
-            var total = UnitQuantityTypeVolume * Quantity;
+            var total = UnitQuantityTypeVolume;
             switch (measurementType)
             {
                 case EUnitMeasurementType.Liter:
@@ -87,7 +86,7 @@ namespace DataModels.Measurements
                 return 0;
             }
 
-            var total = UnitQuantityTypeVolume * Quantity;
+            var total = UnitQuantityTypeVolume;
             switch (measurementType)
             {
                 case EUnitMeasurementType.Gr:
@@ -112,7 +111,7 @@ namespace DataModels.Measurements
                 return 0;
             }
 
-            var total = UnitQuantityTypeVolume * Quantity;
+            var total = UnitQuantityTypeVolume;
             switch (measurementType)
             {
                 case EUnitMeasurementType.Gr:
@@ -136,7 +135,7 @@ namespace DataModels.Measurements
                 return -1;
             }
 
-            var total = UnitQuantityTypeVolume * Quantity;
+            var total = UnitQuantityTypeVolume;
             switch (measurementType)
             {
                 case EUnitMeasurementType.Liter:
@@ -167,7 +166,7 @@ namespace DataModels.Measurements
                 return -1;
             }
 
-            var total = UnitQuantityTypeVolume * Quantity;
+            var total = UnitQuantityTypeVolume;
             switch (measurementType)
             {
                 case EUnitMeasurementType.Liter:

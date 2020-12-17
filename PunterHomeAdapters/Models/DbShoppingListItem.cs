@@ -9,5 +9,6 @@ namespace PunterHomeAdapters.Models
         public DbShoppingList ShoppingList { get; set; }
         public DbProductQuantity ProductQuantities { get; set; }
         public int Count { get; set; }
+        public bool Checked { get; set; }
     }
 }

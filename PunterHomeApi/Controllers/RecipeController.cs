@@ -68,6 +68,27 @@ namespace PunterHomeApp.Controllers
             }
         }
 
+        [HttpGet("ingredients/{id}/{persons}")]
+        public async Task<IActionResult> GetIngredientForRecipe(Guid id, int persons)
+        {
+            try
+            {
+                var result = await recipeService.GetIngredientsDetailsForRecipe(id, persons);
+
+                if (result == null)
+                {
+                    return BadRequest();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest();
+            }
+        }
+
         // POST api/values
         [HttpPost("{name}")]
         public IActionResult Post(string name)
@@ -91,6 +112,21 @@ namespace PunterHomeApp.Controllers
             try
             {
                 recipeService.UpdateRecipe(id, name);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok();
+        }
+
+        // PUT api/values/5
+        [HttpPut("shoppinglist")]
+        public IActionResult AddIngredientsToShoppingList([FromBody] RecipeToShoppingListRequestApiModel model)
+        {
+            try
+            {
+                recipeService.AddRecipeIngredientsToShoppingList(model.RecipeId, model.NumberOfPersons, model.ShoppingListIdId);
             }
             catch (Exception e)
             {

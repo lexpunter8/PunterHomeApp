@@ -51,9 +51,16 @@ namespace BlazorPunterHomeApp.Pages
             await Refresh();
         }
 
-        public void ChangePersons(int x)
+        public async void ChangePersons(int x)
         {
             IngredientMultiplier = x;
+            var newIngredients = await RecipeService.GetIngredientsForRecipeById(Recipedetails.Id, x);
+
+            foreach (var item in newIngredients)
+            {
+                Recipedetails.Ingredients.FirstOrDefault(i => i.ProductId == item.ProductId).IsAvaliable = item.IsAvaliable;
+            }
+
             StateHasChanged();
         }
 
@@ -67,6 +74,11 @@ namespace BlazorPunterHomeApp.Pages
             newStepText = string.Empty;
 
             await Refresh();
+        }
+
+        public async void AddIngredientsToShoppingList()
+        {
+            await RecipeService.AddToShoppingList(Recipedetails.Id, IngredientMultiplier, Guid.Empty);
         }
 
         public async void ShowAddProductModal()

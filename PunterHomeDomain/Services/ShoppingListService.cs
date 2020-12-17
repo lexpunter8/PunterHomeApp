@@ -59,12 +59,30 @@ namespace PunterHomeDomain.Services
             }
 
             ///
-            var item = quan.FirstOrDefault();
+
+            var allQuans  = product.ProductQuantities;
+            var item = allQuans.FirstOrDefault();
             var i = item.ConvertTo(amount.Type);
             var count = Math.Ceiling(amount.Amount / i);
 
             myShoppingListDataAdapter.AddProductToShoppingList(shoppingListId, item.ProductQuantityId, (int)count);
 
+        }
+
+        public void UpdateChecked(Guid itemId, bool isChecked)
+        {
+            myShoppingListDataAdapter.UpdateChecked(itemId, isChecked);
+        }
+
+        public void AddQuantityToProductForCheckedItems(Guid shoppingListId)
+        {
+            var checkedItems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId).Where(i => i.IsChecked);
+
+            foreach (var item in checkedItems)
+            {
+                myProductDataAdapter.IncreaseProductQuantity(item.ProductQuantityId, item.Count);
+                myShoppingListDataAdapter.RemoveProductFromShoppingList(item.Id);
+            }
         }
     }
 }
