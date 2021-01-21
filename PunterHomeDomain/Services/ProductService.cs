@@ -17,6 +17,11 @@ namespace PunterHomeApp.Services
             myProductDataAdapter = productDataAdapter;
         }
 
+        public void AddBarcodeToQuantity(int id, string barcode)
+        {
+            myProductDataAdapter.AddBarcodeToQuantity(id, barcode);
+        }
+
         public void AddProduct(NewProductApiModel product)
         {
             myProductDataAdapter.AddProduct(new LightProduct
@@ -29,7 +34,14 @@ namespace PunterHomeApp.Services
                 //        UnitQuantityTypeVolume = product.UnitQuantity
                 //    }
                 //}
-            });
+            }, out Guid newId);
+
+            myProductDataAdapter.AddQuantityToProduct(new ProductQuantity
+            {
+                Barcode = product.Barcode,
+                MeasurementType = product.UnitQuantityType,
+                UnitQuantityTypeVolume = product.UnitQuantity
+            }, newId);
         }
 
         public async Task AddQuantityToProduct(ProductQuantity value, Guid id)
@@ -50,6 +62,11 @@ namespace PunterHomeApp.Services
         public ProductDetails GetProductByName(string productName)
         {
             throw new NotImplementedException();
+        }
+
+        public Guid GetProductByQuantityBarcode(string barcode)
+        {
+            return myProductDataAdapter.GetProductIdForBarcode(barcode);
         }
 
         public async Task<IEnumerable<LightProduct>> GetProducts()

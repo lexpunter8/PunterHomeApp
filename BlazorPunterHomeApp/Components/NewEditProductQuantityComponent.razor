@@ -3,22 +3,18 @@
 
 @inject  ProductService ProductService
 
-    <EditForm Model="@NewProductQuantity">
-        <DataAnnotationsValidator />
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Size</span>
-            </div>
-            <input type="number" class="form-control" aria-label="Text input with checkbox" @bind="NewProductQuantity.UnitQuantityTypeVolume">
-            <select class="custom-select" @bind="NewProductQuantity.MeasurementType">
-                @foreach (var cnt in SelectableUnitQuantityTypes)
-                {
-                    <option value="@cnt">@cnt.GetEnumDescription()</option>
-                }
-            </select>
-        </div>
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">Size</span>
+        <input type="number" class="form-control" @bind="NewProductQuantity.UnitQuantityTypeVolume">
+    </div>
+    <select class="custom-select" @bind="NewProductQuantity.MeasurementType">
+        @foreach (var cnt in SelectableUnitQuantityTypes)
+        {
+            <option value="@cnt">@cnt.GetEnumDescription()</option>
+        }
+    </select>
+</div>
 
-        <button @onclick="Save" class="btn btn-primary">Submit</button>
-        <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
-
-    </EditForm>
+    <button @onclick="Cancel" class="btn btn-secondary float-right">Cancel</button>
+    <button @onclick="Save" class="btn btn-primary float-right">Submit</button>

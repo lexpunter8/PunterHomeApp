@@ -25,12 +25,12 @@ namespace BlazorPunterHomeApp.Components
         public async void Save()
         {
             await ProductService.AddQuantityToProduct(NewProductQuantity, Product);
-            await BlazoredModal.Close(ModalResult.Ok(NewProductQuantity));
+            await BlazoredModal.CloseAsync(ModalResult.Ok(NewProductQuantity));
         }
 
         public async void Cancel()
         {
-            await BlazoredModal.Cancel();
+            await BlazoredModal.CancelAsync();
         }
     }
 }

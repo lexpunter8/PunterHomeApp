@@ -67,6 +67,9 @@ namespace PunterHomeAdapters.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("Barcode")
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("ProductIdId")
                         .HasColumnType("uuid");
 
@@ -84,6 +87,35 @@ namespace PunterHomeAdapters.Migrations
                     b.HasIndex("ProductIdId");
 
                     b.ToTable("ProductQuantities");
+                });
+
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbProductTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductTag");
+                });
+
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbProductTags", b =>
+                {
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ProductId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ProductTags");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipe", b =>
@@ -189,6 +221,21 @@ namespace PunterHomeAdapters.Migrations
                     b.HasOne("PunterHomeAdapters.Models.DbProduct", "ProductId")
                         .WithMany("ProductQuantities")
                         .HasForeignKey("ProductIdId");
+                });
+
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbProductTags", b =>
+                {
+                    b.HasOne("PunterHomeAdapters.Models.DbProduct", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PunterHomeAdapters.Models.DbProductTag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStep", b =>

@@ -23,7 +23,7 @@ namespace BlazorPunterHomeApp
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://*:4001");
+                    webBuilder.UseUrls("https://*:4001");
                 });
     }
 }

@@ -19,5 +19,7 @@ namespace PunterHomeDomain.Interfaces
         Task UpdateProductQuantity(int id, ProductQuantity productQuantity);
         Task DeleteProductQuantityById(int id);
         Task UpdateProductQuantity(int id, int value, bool increase);
+        void AddBarcodeToQuantity(int id, string barcode);
+        Guid GetProductByQuantityBarcode(string barcode);
     }
 }

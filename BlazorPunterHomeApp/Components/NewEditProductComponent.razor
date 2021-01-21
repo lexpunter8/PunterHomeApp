@@ -1,23 +1,33 @@
-﻿@using BlazorPunterHomeApp.Data
+﻿@using BlazorPunterHomeApp.Data;
+@using DataModels.Helpers;
 @inject Blazored.Modal.Services.IModalService Modal
 
 @inject ProductService ProductService
 
 <EditForm Model="@Product">
     <DataAnnotationsValidator />
-        <input style="margin-bottom: 20px;" type="text" class="form-control" placeholder="Product name" id="name" @bind="Product.Name" />
-        @*<div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Size</span>
-            </div>
-            <input type="number" class="form-control" aria-label="Text input with checkbox" @bind="Product.UnitQuantity">
-            <select class="custom-select" @bind="Product.UnitQuantityType">
-                @foreach (var cnt in ProductViewModel.SelectableUnitQuantityTypes)
-                {
-                    <option value="@cnt">@cnt.GetEnumDescription()</option>
-                }
-            </select>
-        </div>*@
+    <input style="margin-bottom: 20px;" type="text" class="form-control" placeholder="Product name" id="name" @bind="Product.Name" />
+    @if (ShowBarcodeInput)
+    {
+        <div class="input-group-prepend">
+            <span class="input-group-text">Barcode</span>
+            <input type="number" class="form-control" @bind="Barcode">
+        </div>
+    }
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Size</span>
+            <input type="number" class="form-control" @bind="NewProductQuantity.UnitQuantityTypeVolume">
+        </div>
+
+        <select class="custom-select" @bind="NewProductQuantity.MeasurementType">
+            @foreach (var cnt in SelectableUnitQuantityTypes)
+            {
+                <option value="@cnt">@cnt.GetEnumDescription()</option>
+            }
+        </select>
+    </div>
 
     <button @onclick="Save" class="btn btn-primary">Add product</button>
     <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>

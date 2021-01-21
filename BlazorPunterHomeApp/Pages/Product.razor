@@ -10,78 +10,87 @@
 @inject Blazored.Modal.Services.IModalService Modal
 @inject ProductService ProductService
 @inject BlazorShoppingListService ShoppingListService
+@inject NavigationManager NavigationManager
+
+@inject IBarcodeScannerService barcodeScannerService;
 
 
-<div class="container-fluid"><div class="row">
-    <div class="col-md-4 col-sm-9 col-10">
-
-        <h3>Products</h3>
-    </div>
-    <div class="col-md-2 col-sm-3 col-2">
-        <button @onclick="ShowNewProductModal" class="btn btn-primary" style="float: right;"><Icon Name="IconName.Add"></Icon></button>
-    </div>
-</div>
+<div class="container-fluid">
     <div class="row">
-            @foreach (var cnt in products)
-            {
-                <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-4">
-                    <a @onclick="@(e => ItemClick(e, cnt))" class="custom-card">
-                        <div class="card" style="margin-top:5px;">
-                            <div class="card-body">
-                                <h5 class="card-title">@cnt.Name</h5>
-                                <div class="@(cnt.IsSelected ? "show" : "collapse")">
-                                    @if (cnt.IsSelected && SelectedProduct != null)
+        <div class="col-md-4 col-sm-9 col-10">
+
+            <h3>Products</h3>
+        </div>
+        <div class="col-md-2 col-sm-3 col-2">
+            <div id="scanner-container"></div>
+            <button @onclick="ShowNewProductModal" class="btn btn-primary" style="float: right;"><Icon Name="IconName.Add"></Icon></button>
+            <button @onclick="ShowNewScanBarcodeModal" class="btn btn-primary" style="float: right;"><Icon Name="IconName.Camera"></Icon></button>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var cnt in products)
+        {
+            <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-4">
+                <a href="@($"product/{cnt.Id}")" @onclick="@(e => ItemClick(e, cnt))" class="custom-card">
+                    <div class="card" style="margin-top:5px;">
+                        <div class="card-body">
+                            <h5 class="card-title">@cnt.Name</h5>
+                            <div class="@(cnt.IsSelected ? "show" : "collapse")">
+                                @if (cnt.IsSelected && SelectedProduct != null)
+                                {
+                                    <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete product</label>
+                                    <p>@SelectedProduct.CurrentSelectedProduct.GetQuantityString()</p>
+
+                                    @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
                                     {
-                                        <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete product</label>
-                                        <p>@SelectedProduct.CurrentSelectedProduct.GetQuantityString()</p>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="input-group mb-3 ">
+                                                    <div class="input-group-prepend">
+                                                        <button type="button" @onclick="@(e => DecreaseQuantity(prodQuan.Id))" class="btn btn-outline-danger" data-type="minus" data-field="quant[2]">
+                                                            <Icon Name="IconName.ExpandMore"></Icon>
+                                                        </button>
+                                                        <span class="input-group-text">
+                                                            @prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType
+                                                        </span>
+                                                    </div>
+                                                    <div class="input-group-append">
 
-                                        @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
-                                        {
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="input-group mb-3 ">
-                                            <div class="input-group-prepend">
-                                                <button type="button" @onclick="@(e => DecreaseQuantity(prodQuan.Id))" class="btn btn-outline-danger" data-type="minus" data-field="quant[2]">
-                                                    <Icon Name="IconName.ExpandMore"></Icon>
-                                                </button>
-                                                <span class="input-group-text">
-                                                    @prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType
-                                                </span>
-                                            </div>
-                                            <div class="input-group-append">
+                                                        <button type="button" @onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn-sm btn-outline-success" data-type="plus" data-field="quant[2]">
+                                                            <Icon Name="IconName.ExpandLess"></Icon>
+                                                        </button>
 
-                                                <button type="button" @onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn-sm btn-outline-success" data-type="plus" data-field="quant[2]">
-                                                    <Icon Name="IconName.ExpandLess"></Icon>
-                                                </button>
+                                                        <button type="button" @onclick="@(e => HandleAddToCart(prodQuan.Id))" class="btn-lg btn-outline-dark">
+                                                            <Icon Name="IconName.ShoppingCart"></Icon>
+                                                        </button>
 
+                                                        <button type="button" @onclick="@(e => HandleDeleteProductQuantity(prodQuan.Id))" class="btn-sm btn-danger" data-type="plus" data-field="quant[2]">
+                                                            <Icon Name="IconName.Delete"></Icon>
+                                                        </button>
 
-                                                <button type="button" @onclick="@(e => HandleAddToCart(prodQuan.Id))" class="btn btn-lg btn-dark" data-type="plus" data-field="quant[2]">
-                                                    <Icon Name="IconName.ShoppingCart"></Icon>
-                                                </button>
-
-                                                <button type="button" @onclick="@(e => HandleDeleteProductQuantity(prodQuan.Id))" class="btn-sm btn-danger" data-type="plus" data-field="quant[2]">
-                                                    <Icon Name="IconName.Delete"></Icon>
-                                                </button>
+                                                        <button type="button" @onclick="@(e => HandleAddBarcode(prodQuan.Id))" class="btn-sm btn-danger" data-type="plus" data-field="quant[2]">
+                                                            <Icon Name="IconName.Camera"></Icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    }
                                     <div class="row">
                                         <button @onclick="ShowAddProductQuantityModal" class="btn btn-outline-secondary">Add quantity</button>
                                     </div>
-                                </div>
-                                        }
-                                    }
+                                }
 
 
-                                </div>
                             </div>
                         </div>
-                    </a>
-                    
+                    </div>
+                </a>
 
-                </div>
 
-            }
+            </div>
+
+        }
     </div>
 
     @if (SelectedProduct != null && false)
@@ -146,6 +155,37 @@
         var result = await moviesModal.Result;
 
     }
+
+    private async void ShowNewScanBarcodeModal()
+    {
+        var barcodeResult = await barcodeScannerService.ScanBarcode(Modal);
+
+        if (barcodeResult == null)
+        {
+            return;
+        }
+
+        var id = await ProductService.GetProductIdByBarcode(barcodeResult.Barcode);
+        if (id == Guid.Empty)
+        {
+
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(NewEditProductComponent.Barcode), barcodeResult.Barcode);
+
+
+            var moviesModal = Modal.Show<NewEditProductComponent>("New product", parameters);
+            var result = await moviesModal.Result;
+            if (result.Cancelled)
+            {
+                return;
+            }
+
+            id = await ProductService.GetProductIdByBarcode(barcodeResult.Barcode);
+        }
+        NavigationManager.NavigateTo($"product/{id}");
+
+    }
+
     private async void HandleDeleteProductQuantity(int id)
     {
         var currentSelected = products.FirstOrDefault(c => c.IsSelected);
@@ -233,5 +273,11 @@
         var productDetails = await ProductService.GetProductById(SelectedProduct.CurrentSelectedProduct.Id);
         SelectedProduct.SetProduct(productDetails);
         StateHasChanged();
+    }
+
+    private async void HandleAddBarcode(int prodQuanId)
+    {
+        var barcode = await barcodeScannerService.ScanBarcode(Modal);
+        ProductService.AddBarcodeToQuantity(prodQuanId, barcode.Barcode);
     }
 }

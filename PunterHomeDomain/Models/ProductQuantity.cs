@@ -9,5 +9,6 @@ namespace PunterHomeDomain.Models
         public Enums.EUnitMeasurementType MeasurementType { get; set; }
         public int Quantity { get; set; }
         public int Id => ProductQuantityId;
+        public string Barcode { get; set; }
     }
 }

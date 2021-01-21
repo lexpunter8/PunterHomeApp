@@ -1,0 +1,59 @@
+﻿
+<input type="text" disabled @bind="BarcodeValue" />
+
+
+<section id="container" class="container">
+   
+    <div class="controls">
+        <fieldset class="reader-config-group">
+            <label>
+                <span>Barcode-Type</span>
+                <select name="decoder_readers">
+                    <option value="code_128">Code 128</option>
+                    <option value="code_39">Code 39</option>
+                    <option value="code_39_vin">Code 39 VIN</option>
+                    <option value="ean">EAN</option>
+                    <option value="ean_extended" selected="selected">EAN-extended</option>
+                    <option value="ean_8">EAN-8</option>
+                    <option value="upc">UPC</option>
+                    <option value="upc_e">UPC-E</option>
+                    <option value="codabar">Codabar</option>
+                    <option value="i2of5">Interleaved 2 of 5</option>
+                    <option value="2of5">Standard 2 of 5</option>
+                    <option value="code_93">Code 93</option>
+                </select>
+            </label>
+            @*<label>
+                <span>Half-Sample</span>
+                <input type="checkbox" checked="checked" name="locator_half-sample" />
+            </label>
+            <label>
+                <span>Workers</span>
+                <select name="numOfWorkers">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option selected="selected" value="4">4</option>
+                    <option value="8">8</option>
+                </select>
+            </label>*@
+            <label>
+                <span>Camera</span>
+                <select name="input-stream_constraints" id="deviceSelection">
+                </select>
+            </label>
+            @*<label style="display: none">
+                <span>Zoom</span>
+                <select name="settings_zoom"></select>
+            </label>
+            <label style="display: none">
+                <span>Torch</span>
+                <input type="checkbox" name="settings_torch" />
+            </label>*@
+        </fieldset>
+    </div>
+    <div id="interactive" class="viewport"></div>
+</section>
+
+
+

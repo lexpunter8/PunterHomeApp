@@ -50,6 +50,21 @@ namespace PunterHomeApp.Controllers
             return Ok(result);
         }
 
+
+        // GET api/values/5
+        [HttpGet("barcode/{barcode}")]
+        public IActionResult GetByBarcode(string barcode)
+        {
+            var result = myProductService.GetProductByQuantityBarcode(barcode);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // GET api/values/5
         [HttpGet("search/{searchText}")]
         public async Task<IActionResult> Get(string searchText)

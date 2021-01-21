@@ -65,11 +65,11 @@ namespace BlazorPunterHomeApp.Components
         public async void Ok()
         {
             await RecipeService.InsertIngredients(myProductsToAdd);
-            await BlazoredModal.Close(ModalResult.Ok(myProductsToAdd));
+            await BlazoredModal.CloseAsync(ModalResult.Ok(myProductsToAdd));
         }
         public async void Cancel()
         {
-            await BlazoredModal.Cancel();
+            await BlazoredModal.CancelAsync();
         }
     }
 

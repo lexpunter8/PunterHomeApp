@@ -16,6 +16,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorPunterHomeApp", "Blaz
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeAppWA", "PunterHomeAppWA\PunterHomeAppWA.csproj", "{3E7A1344-5302-40DE-B7B8-B56AD7B882A3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorShared", "RazorShared\RazorShared.csproj", "{699C7514-39D7-4A4F-9934-08995A07565E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +54,14 @@ Global
 		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E7A1344-5302-40DE-B7B8-B56AD7B882A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E7A1344-5302-40DE-B7B8-B56AD7B882A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E7A1344-5302-40DE-B7B8-B56AD7B882A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7A1344-5302-40DE-B7B8-B56AD7B882A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{699C7514-39D7-4A4F-9934-08995A07565E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{699C7514-39D7-4A4F-9934-08995A07565E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{699C7514-39D7-4A4F-9934-08995A07565E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{699C7514-39D7-4A4F-9934-08995A07565E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

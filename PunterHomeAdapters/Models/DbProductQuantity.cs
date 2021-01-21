@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace PunterHomeAdapters.Models
 {
@@ -12,5 +10,6 @@ namespace PunterHomeAdapters.Models
         public int QuantityTypeVolume { get; set; }
         public Enums.EUnitMeasurementType UnitQuantityType { get; set; }
         public int UnitQuantity { get; set; }
+        public string Barcode { get; set; }
     }
 }

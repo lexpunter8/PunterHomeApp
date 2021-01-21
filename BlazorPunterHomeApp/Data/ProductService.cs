@@ -54,8 +54,13 @@ namespace BlazorPunterHomeApp.Data
             var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             string responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ProductModel[]>(responseString);
+             var t = result.OrderBy(q => q.Name).ToArray();
+            return t;
+        }
 
-            return result;
+        internal Task AddQuantityToProduct(object newProductQuantity, ProductDetailsModel product)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<ProductDetailsModel> GetProductById(Guid id)
@@ -152,6 +157,12 @@ namespace BlazorPunterHomeApp.Data
 
         public async Task<List<ProductModel>> SearchProducts(string searchText)
         {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                var products = await GetProducts();
+                return products.ToList();
+            }
+
             var httpClient = new HttpClient();
             Uri uri = new Uri($"http://localhost:5005/api/product/search/{searchText}");
             var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
@@ -159,6 +170,40 @@ namespace BlazorPunterHomeApp.Data
             var result = JsonConvert.DeserializeObject<ProductModel[]>(responseString).ToList();
 
             return result;
+        }
+
+        public async void AddBarcodeToQuantity(int id, string barcode)
+        {
+            try
+            {
+                var client = new HttpClient();
+
+                var response = await client.PutAsync(new Uri($"http://localhost:5005/api/productquantity/{id}/barcode/{barcode}"), null);
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                client.Dispose();
+
+            }
+            catch (Exception)
+            {
+
+
+            }
+        }
+
+        public async Task<Guid> GetProductIdByBarcode(string barcode)
+        {
+            var httpClient = new HttpClient();
+            Uri uri = new Uri($"http://localhost:5005/api/product/barcode/{barcode}");
+            var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+            string responseString = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<string>(responseString);
+            if (Guid.TryParse(result, out Guid guidResult))
+            {
+                return guidResult;
+            }
+            return Guid.Empty;
         }
     }
 

@@ -31,7 +31,7 @@
             }
 
             <h3>Checked items</h3>
-            <button @onclick="@(() => ShoppingListService.AddQuantityForCheckedItems(ShoppingListService.ShoppingListId))">Add checked to product</button>
+            <button class="btn btn-outline-secondary" @onclick="@(() => ShoppingListService.AddQuantityForCheckedItems(ShoppingListService.ShoppingListId))">Add checked to product</button>
             @foreach (var item in CheckedListItems)
             {
                 <div class="row">

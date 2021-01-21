@@ -22,17 +22,17 @@ namespace PunterHomeApp.DataAdapters
             myDbOptions = options;
         }
 
-        public void AddProduct(LightProduct product)
+        public void AddProduct(LightProduct product, out Guid newID)
         {
             DbProduct newProduct = new DbProduct
             {
-                Id = product.Id,
+                Id = Guid.NewGuid(),
                 Name = product.Name
             };
 
             //newProduct.ProductQuantities = ConvertProductQuantities(product.ProductQuantities, newProduct);
 
-            
+            newID = newProduct.Id;
             using var context = new HomeAppDbContext(myDbOptions);
 
             context.Products.Add(newProduct);
@@ -56,7 +56,8 @@ namespace PunterHomeApp.DataAdapters
                 ProductId = prod,
                 QuantityTypeVolume = value.UnitQuantityTypeVolume,
                 UnitQuantity = value.Quantity,
-                UnitQuantityType = value.MeasurementType
+                UnitQuantityType = value.MeasurementType,
+                Barcode = value.Barcode
             });
 
             await context.SaveChangesAsync();
@@ -281,6 +282,7 @@ namespace PunterHomeApp.DataAdapters
                 var measurement = BaseMeasurement.GetMeasurement(q.UnitQuantityType);
                 measurement.UnitQuantityTypeVolume = q.QuantityTypeVolume;
                 measurement.ProductQuantityId = q.Id;
+                measurement.Barcode = q.Barcode;
                 retval.Add(measurement
                 //    new ProductQuantity
                 //{
@@ -293,6 +295,36 @@ namespace PunterHomeApp.DataAdapters
                     );
             }
             return retval;
+        }
+
+        public async void AddBarcodeToQuantity(int id, string barcode)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var prod = context.ProductQuantities.FirstOrDefault(p => p.Id == id);
+
+            if (prod == null)
+            {
+                // prod id does not exists
+                return;
+            }
+            prod.Barcode = barcode;
+
+            await context.SaveChangesAsync();
+        }
+
+        public Guid GetProductIdForBarcode(string barcode)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var prod = context.ProductQuantities.Include(pq => pq.ProductId).FirstOrDefault(p => p.Barcode == barcode);
+
+            if (prod == null)
+            {
+                // prod id does not exists
+                return Guid.Empty;
+            }
+            return prod.ProductId.Id;
         }
     }
 }

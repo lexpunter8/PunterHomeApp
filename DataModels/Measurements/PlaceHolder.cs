@@ -15,6 +15,7 @@ namespace DataModels.Measurements
             MeasurementType = measurementType;
         }
 
+        public string Barcode { get; set; }
         public int ProductQuantityId { get; set; }
         public EUnitMeasurementType MeasurementType { get; }
         public double UnitQuantityTypeVolume { get; set; }

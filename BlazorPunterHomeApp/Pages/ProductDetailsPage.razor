@@ -1,0 +1,8 @@
+﻿@page "/product/{Id:guid}"
+
+<h3>ProductDetailsPage</h3>
+
+@if (Id != null)
+{
+    <BlazorPunterHomeApp.Components.ProductDetailsComponent ProductId="Id"></BlazorPunterHomeApp.Components.ProductDetailsComponent>
+}

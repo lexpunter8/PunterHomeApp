@@ -92,6 +92,24 @@ namespace PunterHomeApi.Controllers
             return Ok();
         }
 
+
+        // PUT api/<controller>/5
+        [HttpPut("{id}/barcode/{barcode}")]
+        public async Task<IActionResult> AddBarcode(int id, string barcode)
+        {
+
+            try
+            {
+                myProductService.AddBarcodeToQuantity(id, barcode);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

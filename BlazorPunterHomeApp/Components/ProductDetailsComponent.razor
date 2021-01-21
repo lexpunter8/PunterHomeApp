@@ -1,0 +1,50 @@
+﻿
+@if (Product != null)
+{
+    <h3>@Product.Name</h3>
+    <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(Product))">Delete product</label>
+    <p>@Product.GetQuantityString()</p>
+
+    <div class="container">
+        @foreach (var prodQuan in Product.ProductQuantities)
+        {
+            <div class="row">
+                <div class="col">
+                    @prodQuan.Barcode
+                    <div class="input-group mb-3 ">
+                        <div class="input-group-prepend">
+                            <button type="button" @onclick="@(e => DecreaseQuantity(prodQuan.Id))" class="btn btn-outline-danger" data-type="minus" data-field="quant[2]">
+                                <Icon Name="IconName.ExpandMore"></Icon>
+                            </button>
+                            <span class="input-group-text">
+                                @prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType
+                            </span>
+                        </div>
+                        <div class="input-group-append">
+
+                            <button type="button" @onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn-sm btn-outline-success" data-type="plus" data-field="quant[2]">
+                                <Icon Name="IconName.ExpandLess"></Icon>
+                            </button>
+
+                            <button type="button" @onclick="@(e => HandleAddToCart(prodQuan.Id))" class="btn-lg btn-outline-dark">
+                                <Icon Name="IconName.ShoppingCart"></Icon>
+                            </button>
+
+                            <button type="button" @onclick="@(e => HandleDeleteProductQuantity(prodQuan.Id))" class="btn-sm btn-danger" data-type="plus" data-field="quant[2]">
+                                <Icon Name="IconName.Delete"></Icon>
+                            </button>
+
+                            <button type="button" @onclick="@(e => HandleAddBarcode(prodQuan.Id))" class="btn-sm btn-danger" data-type="plus" data-field="quant[2]">
+                                <Icon Name="IconName.Camera"></Icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <button @onclick="ShowAddProductQuantityModal" class="btn btn-outline-secondary">Add quantity</button>
+        </div>
+    </div>
+    
+}
