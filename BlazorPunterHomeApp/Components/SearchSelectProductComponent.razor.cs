@@ -9,7 +9,7 @@ using static Enums;
 
 namespace BlazorPunterHomeApp.Components
 {
-    public partial class SearchSelectProductComponent
+    public partial class SearchSelectProductComponent : ComponentBase
     {
         private List<IngredientModel> myProductsToAdd = new List<IngredientModel>();
 
@@ -19,8 +19,6 @@ namespace BlazorPunterHomeApp.Components
         public Guid RecipeId { get; set; }
         [Parameter]
         public Guid[] ExistingProductIds { get; set; }
-        public int CurrentUnitQuantityTypeVolume { get; set; }
-        public EUnitMeasurementType UnitQuantityType { get; set; }
         public List<EUnitMeasurementType> SelectableUnitQuantityTypes => Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList();
 
         public SelectableProduct CurrentSelectedProduct { get; set; }
@@ -35,31 +33,28 @@ namespace BlazorPunterHomeApp.Components
             Products = products.Select(p => {
                 return new SelectableProduct(p)
                 {
-                    IsSelected = myProductsToAdd.Any(x => x.ProductId == p.Id) || ExistingProductIds.Any(x => p.Id == x)
                 };
                 
                 }).ToList();
             StateHasChanged();
         }
 
-        public void AddProduct()
+        [Parameter]
+        public EventCallback<IngredientModel> OnIngredientAdded { get; set; }
+        public async void AddProduct(SelectableProduct prod)
         {
             IngredientModel ingredient = new IngredientModel
             {
-                ProductId = CurrentSelectedProduct.Product.Id,
-                UnitQuantity = CurrentUnitQuantityTypeVolume,
-                UnitQuantityType = UnitQuantityType,
+                ProductName = prod.Product.Name,
+                ProductId = prod.Product.Id,
+                UnitQuantity = prod.CurrentUnitQuantityTypeVolume,
+                UnitQuantityType = prod.UnitQuantityType,
                 RecipeId = RecipeId
             };
 
-            myProductsToAdd.Add(ingredient);
-            CurrentSelectedProduct.IsSelected = true;
-        }
-
-        public void ProductSelected(SelectableProduct product)
-        {
-            CurrentSelectedProduct = product;
-            StateHasChanged();
+            await RecipeService.InsertIngredient(ingredient);
+            await OnIngredientAdded.InvokeAsync(ingredient);
+            prod.IsAdding = false;
         }
 
         public async void Ok()
@@ -70,6 +65,11 @@ namespace BlazorPunterHomeApp.Components
         public async void Cancel()
         {
             await BlazoredModal.CancelAsync();
+        }
+        public void SetIsAdding(SelectableProduct cnt)
+        {
+            Products.ForEach(p => p.IsAdding = false);
+            cnt.IsAdding = true;
         }
     }
 
@@ -83,5 +83,10 @@ namespace BlazorPunterHomeApp.Components
         public string Name => Product.Name;
         public bool IsSelected { get; set; }
         public ProductModel Product { get; }
+        public bool IsAdding { get; set; }
+
+
+        public int CurrentUnitQuantityTypeVolume { get; set; }
+        public EUnitMeasurementType UnitQuantityType { get; set; }
     }
 }

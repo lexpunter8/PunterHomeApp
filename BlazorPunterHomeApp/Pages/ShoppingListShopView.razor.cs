@@ -35,7 +35,7 @@ namespace BlazorPunterHomeApp.Pages
         public async void ItemClicked(SelectableShoppingListItem item, bool skipSleep = false)
         {
             item.IsChecked = !item.IsChecked;
-            await ShoppingListService.UpdateCheckedForItem(item.Item.Id, item.IsChecked);
+            //await ShoppingListService.UpdateCheckedForItem(item.Item., item.IsChecked);
             if (!skipSleep)
             {
                 StateHasChanged();

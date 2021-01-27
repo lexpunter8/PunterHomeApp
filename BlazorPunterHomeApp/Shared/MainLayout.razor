@@ -1,24 +1,25 @@
 ﻿@inherits LayoutComponentBase
-
-<div class="sidebar">
+@inject AppState State
+@inject NavigationManager MyNavigationManager
+@*<div class="sidebar">
         <NavMenu />
-    </div>
+    </div>*@
 
-<div class="main">
-        <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-            @*<a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<div class="container-fluid min-vh-100 " style="margin:0 !important; padding:0 !important">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-expand-md navbar-expand-sm navbar-light bg-light px-0" style="max-height:50px">
+        <a class="navbar-brand mx-2" href="#">Navbar</a>
+        <button class="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                            Home
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
+        <div class="collapse navbar-collapse bg-light px-2" id="navbarSupportedContent">
+            <ul class="navbar-nav justify-content-center">
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        Home
+                    </NavLink>
+                </li>
+                @*<li class="nav-item">
                         <NavLink class="nav-link" href="counter">
                             Counter
                         </NavLink>
@@ -27,64 +28,51 @@
                         <NavLink class="nav-link" href="fetchdata">
                             Fetch data
                         </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="products">
-                            Products
-                        </NavLink>
-                    </li>
+                    </li>*@
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="products">
+                        Products
+                    </NavLink>
+                </li>
 
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="recipes">
-                            Recipes
-                        </NavLink>
-                    </li>
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
-            </div>*@
-        </nav>
-        @*<nav class="navbar navbar-expand-lg navbar-expand-md navbar-expand-sm navbar-expand-xl navbar-expand navbar-light bg-light">
-            <a class="navbar-brand" href="" Match="NavLinkMatch.All"><Icon Name="IconName.Home"></Icon></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="recipes">
+                        Recipes
+                    </NavLink>
+                </li>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                            Home
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="counter">
-                            Counter
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="fetchdata">
-                            Fetch data
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="products">
-                            Products
-                        </NavLink>
-                    </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="shoppinglist">
+                        Shopping list
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="recipes">
-                            Recipes
-                        </NavLink>
-                    </li>
-                </ul>
-            </div>
-        </nav>*@
+        <div class="d-flex flex-column align-items-stretch  full-wo-nav">
 
-    <div class="content px-md-4 px-sm-0 px-0">
-        @Body
-    </div>
+            @Body
+        </div>
 </div>
+
+@code
+{
+    public bool OnLandingPage = true;
+
+    protected override Task OnInitializedAsync()
+    {
+        State.PageChanged += PageChanged;
+
+        OnLandingPage = State.CurrentPage == EPage.HomePage;
+        return base.OnInitializedAsync();
+    }
+
+
+    private void PageChanged(object s, EventArgs a)
+    {
+        OnLandingPage = State.CurrentPage == EPage.HomePage;
+        StateHasChanged();
+    }
+}
+

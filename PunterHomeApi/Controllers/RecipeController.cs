@@ -30,9 +30,19 @@ namespace PunterHomeApp.Controllers
             {
                 Id = r.Id,
                 Name = r.Name,
+                Type = r.Type,
                 Steps = r.Steps.ToList(),
+               
                 Ingredients = r.Ingredients.Select(ConvertRecipeToApiModel).ToList()
             });
+        }
+
+        [HttpPost("search")]
+        public async Task<IActionResult> Search([FromBody] SearchRecipeParameters parameters)
+        {
+            var result = await recipeService.Search(parameters);
+
+            return Ok(result);
         }
 
         private ApiIngredientModel ConvertRecipeToApiModel(IIngredient ingredient)
@@ -90,12 +100,12 @@ namespace PunterHomeApp.Controllers
         }
 
         // POST api/values
-        [HttpPost("{name}")]
-        public IActionResult Post(string name)
+        [HttpPost]
+        public IActionResult Post([FromBody] NewRecipeApiModel recipe)
         {
             try
             {
-                recipeService.CreateRecipe(name);
+                recipeService.CreateRecipe(recipe.Name, recipe.Type);
             }
             catch (Exception e)
             {
@@ -126,7 +136,7 @@ namespace PunterHomeApp.Controllers
         {
             try
             {
-                recipeService.AddRecipeIngredientsToShoppingList(model.RecipeId, model.NumberOfPersons, model.ShoppingListIdId);
+                recipeService.AddRecipeIngredientsToShoppingList(model.RecipeId, model.NumberOfPersons, model.ShoppingListIdId, model.OnlyUnavailableItems);
             }
             catch (Exception e)
             {

@@ -36,7 +36,7 @@ namespace BlazorPunterHomeApp.Components
         {
             Product.UnitQuantity = NewProductQuantity.UnitQuantityTypeVolume;
             Product.UnitQuantityType = NewProductQuantity.MeasurementType;
-            await ProductService.AddProduct(Product);
+            //await ProductService.AddProduct(Product);
             await BlazoredModal.CloseAsync(ModalResult.Ok(Product));
         }
 

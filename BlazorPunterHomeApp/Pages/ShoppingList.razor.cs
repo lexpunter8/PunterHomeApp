@@ -1,5 +1,6 @@
 ﻿using BlazorPunterHomeApp.Data;
 using Microsoft.AspNetCore.Components;
+using PunterHomeDomain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,25 +17,25 @@ namespace BlazorPunterHomeApp.Pages
             await Refresh();
         }
 
-        public List<ShoppingListItem> ListItems { get; set; } = new List<ShoppingListItem>();
+        public List<ShoppingListItemDetailsModel> ListItems { get; set; } = new List<ShoppingListItemDetailsModel>();
 
-        public async void AddQuantityToItem(ShoppingListItem item)
+        public async void AddQuantityToItem(ShoppingListItemDetailsModel item)
         {
-            await ShoppingListService.UpdateCountForItem(item.Id, true);
-            ListItems.FirstOrDefault(i => i.Id == item.Id).Quantity += 1;
+            //await ShoppingListService.UpdateCountForItem(item.Id, true);
+            //ListItems.FirstOrDefault(i => i.Id == item.Id).Quantity += 1;
             StateHasChanged();
         }
-        public async void DecreaseQuantityToItem(ShoppingListItem item)
+        public async void DecreaseQuantityToItem(ShoppingListItemDetailsModel item)
         {
-            await ShoppingListService.UpdateCountForItem(item.Id, false);
-            ListItems.FirstOrDefault(i => i.Id == item.Id).Quantity -= 1;
+            //await ShoppingListService.UpdateCountForItem(item.Id, false);
+            //ListItems.FirstOrDefault(i => i.Id == item.Id).Quantity -= 1;
             StateHasChanged();
         }
 
-        public async void DeleteItem(ShoppingListItem item)
+        public async void DeleteItem(ShoppingListItemDetailsModel item)
         {
-            await ShoppingListService.DeleteItem(item.Id);
-            ListItems.Remove(ListItems.FirstOrDefault(i => i.Id == item.Id));
+            //await ShoppingListService.DeleteItem(item.Id);
+            //ListItems.Remove(ListItems.FirstOrDefault(i => i.Id == item.Id));
             StateHasChanged();
         }
 

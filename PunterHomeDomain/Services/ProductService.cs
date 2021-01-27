@@ -5,16 +5,19 @@ using System.Linq;
 using PunterHomeDomain.Interfaces;
 using PunterHomeApp.ApiModels;
 using PunterHomeDomain.Models;
+using PunterHomeDomain.Services;
 
 namespace PunterHomeApp.Services
 {
     public class ProductService : IProductService
     {
         private readonly IProductDataAdapter myProductDataAdapter;
+        private readonly IProductTagService productTagService;
 
-        public ProductService(IProductDataAdapter productDataAdapter)
+        public ProductService(IProductDataAdapter productDataAdapter, IProductTagService productTagService)
         {
             myProductDataAdapter = productDataAdapter;
+            this.productTagService = productTagService;
         }
 
         public void AddBarcodeToQuantity(int id, string barcode)
@@ -56,7 +59,9 @@ namespace PunterHomeApp.Services
 
         public ProductDetails GetProductById(Guid productId)
         {
-            return myProductDataAdapter.GetProductById(productId);
+            var product = myProductDataAdapter.GetProductById(productId);
+            product.Tags = productTagService.GetTagsForProductAsync(productId).Result;
+            return product;
         }
 
         public ProductDetails GetProductByName(string productName)

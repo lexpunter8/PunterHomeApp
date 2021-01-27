@@ -1,5 +1,6 @@
 ﻿using BlazorPunterHomeApp.crud;
 using Newtonsoft.Json;
+using PunterHomeDomain.Enums;
 using PunterHomeDomain.Models;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace BlazorPunterHomeApp.Data
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public ERecipeType Type { get; set; }
         public IEnumerable<RecipeStepModel> Steps { get; set; }
         public IEnumerable<IngredientModel> Ingredients { get; set; }
         public bool IsRecipeAvailable { get; set; }

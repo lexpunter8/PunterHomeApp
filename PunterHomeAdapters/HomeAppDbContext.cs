@@ -27,6 +27,9 @@ namespace PunterHomeAdapters
 
             modelBuilder.Entity<DbProductTags>()
                 .HasKey(c => new { c.ProductId, c.TagId });
+
+            modelBuilder.Entity<DbRecipeShoppingListItem>()
+                .HasKey(c => new { c.RecipeId, c.ShoppingListItemId });
         }
 
         public DbSet<DbIngredient> Ingredients { get; set; }
@@ -38,5 +41,6 @@ namespace PunterHomeAdapters
         public DbSet<DbShoppingListItem> ShoppingListItems { get; set; }
         public DbSet<DbProductTag> ProductTag { get; set; }
         public DbSet<DbProductTags> ProductTags { get; set; }
+        public DbSet<DbRecipeShoppingListItem> RecipeShoppingListItem { get; set; }
     }
 }

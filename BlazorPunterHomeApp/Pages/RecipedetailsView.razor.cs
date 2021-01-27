@@ -23,6 +23,8 @@ namespace BlazorPunterHomeApp.Pages
         [Inject]
         public IModalService Modal { get; set; }
 
+        public bool IsEditting { get; set; }
+
         public int IngredientMultiplier { get; set; } = 1;
         public RecipeDetailsApiModel Recipedetails { get; set; }
 
@@ -39,11 +41,22 @@ namespace BlazorPunterHomeApp.Pages
 
         }
 
-        public string newRecipeName = string.Empty;
+        public async void IngredientAddedHandler(IngredientModel ingredient)
+        {
+            Recipedetails.Ingredients.Add(new ApiIngredientModel
+            {
+                ProductId = ingredient.ProductId,
+                ProductName = ingredient.ProductName,
+                UnitQuantity = ingredient.UnitQuantity,
+                UnitQuantityType = ingredient.UnitQuantityType
+            });
+
+            await Refresh();
+            StateHasChanged();
+        }
+        
         public string newStepText = string.Empty;
 
-        public RecipeModel[] recipes = new RecipeModel[0];
-        public List<ProductModel> products = new List<ProductModel>();
 
         public async Task RemoveIngredient(Guid id)
         {
@@ -60,7 +73,6 @@ namespace BlazorPunterHomeApp.Pages
             {
                 Recipedetails.Ingredients.FirstOrDefault(i => i.ProductId == item.ProductId).IsAvaliable = item.IsAvaliable;
             }
-
             StateHasChanged();
         }
 
@@ -76,9 +88,9 @@ namespace BlazorPunterHomeApp.Pages
             await Refresh();
         }
 
-        public async void AddIngredientsToShoppingList()
+        public async void AddIngredientsToShoppingList(bool onlyUnavailable = false)
         {
-            await RecipeService.AddToShoppingList(Recipedetails.Id, IngredientMultiplier, Guid.Empty);
+            await RecipeService.AddToShoppingList(Recipedetails.Id, IngredientMultiplier, Guid.Empty, onlyUnavailable);
         }
 
         public async void ShowAddProductModal()

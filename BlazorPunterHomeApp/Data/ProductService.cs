@@ -14,6 +14,7 @@ namespace BlazorPunterHomeApp.Data
     public class ProductService : IProductService
     {
         public event EventHandler RefreshRequired;
+
         public async Task Update(ProductModel product)
         {
             foreach (var q in product.ProductQuantities)
@@ -22,7 +23,7 @@ namespace BlazorPunterHomeApp.Data
                 var data = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var httpClient = new HttpClient();
-                Uri uri = new Uri($"http://localhost:5005/api/productquantity/{q.Id}");
+                Uri uri = new Uri($"http://localhost:5005/api/productquantity/{q.ProductQuantityId}");
                 var response = await httpClient.PutAsync(uri, data);
                 string responseString = await response.Content.ReadAsStringAsync();
             }
@@ -55,29 +56,29 @@ namespace BlazorPunterHomeApp.Data
             string responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ProductModel[]>(responseString);
              var t = result.OrderBy(q => q.Name).ToArray();
+
             return t;
         }
 
-        internal Task AddQuantityToProduct(object newProductQuantity, ProductDetailsModel product)
+        internal Task AddQuantityToProduct(object newProductQuantity, ProductDetailsViewModel product)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ProductDetailsModel> GetProductById(Guid id)
+        public async Task<ProductDetailsViewModel> GetProductById(Guid id)
         {
             var httpClient = new HttpClient();
             Uri uri = new Uri($"http://localhost:5005/api/product/{id}");
             var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             string responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<ProductDetailsModel>(responseString);
-
-            return result;
+            var result = JsonConvert.DeserializeObject<ProductDetails>(responseString);
+            return new ProductDetailsViewModel(result);
         }
 
-        public async Task<bool> DeleteProduct(ProductDetailsModel productToDelete)
+        public async Task<bool> DeleteProduct(ProductDetailsViewModel productToDelete)
         {
             var httpClient = new HttpClient();
-            Uri uri = new Uri($"http://localhost:5005/api/product/{productToDelete.Id}");
+            Uri uri = new Uri($"http://localhost:5005/api/product/{productToDelete.ProductModel.Id}");
             var response = await httpClient.DeleteAsync(uri);
             string responseString = await response.Content.ReadAsStringAsync();
 
@@ -131,7 +132,7 @@ namespace BlazorPunterHomeApp.Data
         }
 
 
-        public async Task AddQuantityToProduct(ProductQuantity quantity, ProductDetailsModel product)
+        public async Task AddQuantityToProduct(ProductQuantity quantity, ProductDetailsViewModel product)
         {
             try
             {
@@ -140,13 +141,12 @@ namespace BlazorPunterHomeApp.Data
 
                 var client = new HttpClient();
 
-                var response = await client.PostAsync(new Uri($"http://localhost:5005/api/productquantity/{product.Id}"), data);
+                var response = await client.PostAsync(new Uri($"http://localhost:5005/api/productquantity/{product.ProductModel.Id}"), data);
 
                 string result = response.Content.ReadAsStringAsync().Result;
 
                 client.Dispose();
 
-                product.ProductQuantities = product.ProductQuantities.Concat(new[] { quantity });
             }
             catch (Exception)
             {

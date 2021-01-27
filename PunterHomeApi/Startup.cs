@@ -45,6 +45,8 @@ namespace PunterHomeApi
             services.AddScoped<IIngredientDataAdapter, IngredientDataAdapter>();
             services.AddScoped<IShoppingListDataAdapter, ShoppingListDataAdapter>();
             services.AddScoped<IShoppingListService, ShoppingListService>();
+            services.AddScoped<ITagDataAdapter, TagDataAdapter>();
+            services.AddScoped<IProductTagService, ProductTagService>();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

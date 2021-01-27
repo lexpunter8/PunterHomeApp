@@ -5,94 +5,126 @@
 
 @if (Recipedetails != null)
 {
-    <div class="col-md-9">
-        <div class="row">
+    <div class="container justify-content-center">
+        <div class="row justify-content-center">
 
             <h2 style="display: inline-block">@Recipedetails.Name</h2>
+            <i class="ml-2 far fa-edit pointer @(IsEditting ? "recipe-available-color" : "")" @onclick="() => IsEditting = !IsEditting"></i>
         </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6 order-2 order-sm-1">
-                <h4>Instructions</h4>
 
-                @foreach (var step in Recipedetails.Steps)
-                {
-                    <div class="row" style="margin:5px 0 0 0">
-                        <div class="justify-content-center align-middle col-md-2">
-                            <span class="circle">@step.Order</span>
-                        </div>
-                        <div class="col-md-10">
-                            <div style="min-height: 50px">@step.Text</div>
-                            <hr />
+        <div class="row justify-content-center">
+            <div class="justify-content-lg-around">
+                <i class="far fa-clock"></i>
+                <span>15 minutes</span>
+                <span>+ 30 minutes</span>
+            </div>
+        </div>
+        <div class="row pt-3 mb-3">
+            <div class="pt-3 col-12 col-md-7 justify-content-center">
+                <div class="col-12 p-3 bg-el-1">
+                    <h4>Instructions</h4>
+                    <hr class="bg-el-0" />
+
+                    <div class="input-group mb-2 @(IsEditting ? "show" : "collapse")">
+                        <input type="text" class="form-control" id="Instruction text" @bind="newStepText" />
+                        <div class="input-group-append">
+                            <button @onclick="AddStep" class="btn btn-outline-primary">Add instruction step</button>
                         </div>
                     </div>
-                }
-            <div class="input-group">
-                <input type="text" class="form-control" id="Instruction text" @bind="newStepText" />
-                <div class="input-group-append">
-                    <button @onclick="AddStep" class="btn btn-outline-secondary">Add instruction step</button>
-                </div>
-            </div>
-            </div>
-            <div class="col-md-6 col-lg-6 order-1 order-sm-2">
-
-                <h4>Ingredients</h4>
-                <h6>Personen</h6>
-                <div class="row">
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-outline-secondary active" @onclick="@(() => ChangePersons(1))">
-                            <input type="radio" name="options" id="option1" checked>1
-                        </label>
-                        <label class="btn btn-outline-secondary" @onclick="@(() => ChangePersons(2))">
-                            <input type="radio" name="options" id="option2">2
-                        </label>
-                        <label class="btn btn-outline-secondary" @onclick="@(() => ChangePersons(3))">
-                            <input type="radio" name="options" id="option3">3
-                        </label>
-                        <label class="btn btn-outline-secondary" @onclick="@(() => ChangePersons(4))">
-                            <input type="radio" name="options" id="option3">4
-                        </label>
-                        <label class="btn btn-outline-secondary" @onclick="@(() => ChangePersons(5))">
-                            <input type="radio" name="options" id="option3">5
-                        </label>
-                        <label class="btn btn-outline-secondary">
-                            <input type="radio" name="options" id="option3">...
-                        </label>
-                    </div>
-                </div>
-                <div class="accordion" id="accordionExample">
-                    @foreach (var details in Recipedetails.Ingredients)
+                    @foreach (var step in Recipedetails.Steps)
                     {
-                        <div class="">
-                                        <div class="row">
-                                            <div class="col-11">
-                                                <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#@($"collapse{details.ProductId}")" aria-expanded="true" aria-controls="@($"collapse{details.ProductId}")">
-                                                    @if (details.IsAvaliable)
-                                                    {
-
-                                                        <Blazorise.Icon Name="Blazorise.IconName.CheckCircle" Class="recipe-available-color" />
-                                                    }
-                                                    else
-                                                    {
-
-                                                        <Blazorise.Icon Name="Blazorise.IconName.TimesCircle" Class="recipe-unavailable-color" />
-                                                    }
-                                                    @(details.UnitQuantity * IngredientMultiplier)
-                                                    @details.UnitQuantityType
-                                                    @details.ProductName
-                                                </button>
-                                            </div>
-                                            <div id="@($"collapse{details.ProductId}")" class="col-1 collapse" aria-labelledby="headingOne" data-parent="#accordionExample" @onclick="@(() => RemoveIngredient(details.ProductId))">
-                                                <Icon Name="IconName.Times"></Icon>
-                                            </div>
-                                        </div>
+                        <div class="row" style="margin:5px 0 0 0">
+                            <div class="justify-content-center align-middle col-md-2">
+                                <span class="circle bg-el-4">@step.Order</span>
+                            </div>
+                            <div class="col-md-10">
+                                <div style="min-height: 50px">@step.Text</div>
+                                <hr class="bg-el-1" />
+                            </div>
                         </div>
                     }
                 </div>
-
-                <button @onclick="ShowAddProductModal" class="btn btn-outline-secondary m-2">Add ingredient</button>
-                <button @onclick="AddIngredientsToShoppingList" class="btn btn-outline-secondary m-2">Add to shopping list</button>
             </div>
+
+            <div class="col-12 pt-3 col-md-5 justify-content-start">
+
+                <div class="p-3 bg-el-1">
+
+                    <h4>Ingredients</h4>
+                    <hr class="bg-el-0" />
+                    <div class="pl-2 d-flex flex-row justify-content-between col-12">
+                        <div class="mt-2">
+                            Hoeveelheid
+                        </div>
+                        <div>
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-outline-primary active" @onclick="@(() => ChangePersons(1))">
+                                    <input type="radio" name="options" id="option1" checked>1
+                                </label>
+                                <label class="btn btn-outline-primary" @onclick="@(() => ChangePersons(2))">
+                                    <input type="radio" name="options" id="option2">2
+                                </label>
+                                <label class="btn btn-outline-primary" @onclick="@(() => ChangePersons(3))">
+                                    <input type="radio" name="options" id="option3">3
+                                </label>
+                                <label class="btn btn-outline-primary" @onclick="@(() => ChangePersons(4))">
+                                    <input type="radio" name="options" id="option3">4
+                                </label>
+                                <label class="btn btn-outline-primary" @onclick="@(() => ChangePersons(5))">
+                                    <input type="radio" name="options" id="option3">5
+                                </label>
+                                <label class="btn btn-outline-primary">
+                                    <input type="radio" name="options" id="option3">...
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pl-2 pt-2 accordion" id="accordionExample">
+                        <ul class="list-unstyled">
+                            @foreach (var details in Recipedetails.Ingredients)
+                            {
+                                <li>
+                                    <div class="flex-row">
+                                        <span>
+                                            @if (details.IsAvaliable)
+                                            {
+                                                <i class="mr-2 fas fa-check-circle recipe-available-color"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="mr-2 fas fa-times-circle recipe-unavailable-color"></i>
+                                            }
+                                            @(details.UnitQuantity * IngredientMultiplier)
+                                            @details.UnitQuantityType
+                                            @details.ProductName
+                                            <i class="fas fa-times pointer @(IsEditting ? "show" : "collapse")" @onclick="@(() => RemoveIngredient(details.ProductId))"></i>
+                                        </span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    @if (IsEditting)
+                    {
+                        <BlazorPunterHomeApp.Components.SearchSelectProductComponent RecipeId="Recipedetails.Id" OnIngredientAdded="IngredientAddedHandler" ></BlazorPunterHomeApp.Components.SearchSelectProductComponent>
+                    }
+
+                    <div class="btn-group">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" @onclick="() => AddIngredientsToShoppingList()">Add ingredients to shoppingcart</button>
+                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" @onclick="() => AddIngredientsToShoppingList(true)" href="#">Only unavailable ingredients</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+
+
+    </div>
 
 }

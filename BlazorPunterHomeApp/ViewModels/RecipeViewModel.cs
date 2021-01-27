@@ -29,9 +29,58 @@ namespace BlazorPunterHomeApp.ViewModels
 
         public RecipeDetailsApiModel CurrentSelectedRecipe { get; set; } = new RecipeDetailsApiModel();
 
-        public async Task<bool> CreateNewRecipe(string newRecipeName)
+
+        public async Task<bool> CreateNewRecipe(NewRecipeValidationModel newRecipe)
         {
-            return await myRecipeApiHandler.Create(newRecipeName);
+            try
+            {
+                var json = JsonConvert.SerializeObject(new NewRecipeApiModel
+                {
+                    Name = newRecipe.Name,
+                    Type = newRecipe.Type
+                });
+
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var client = new HttpClient();
+
+                var response = await client.PostAsync(new Uri("http://localhost:5005/api/recipe"), data);
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                client.Dispose();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+
+            }
+        }
+
+        public async Task<List<RecipeModel>> Search(SearchRecipeParameters parameters)
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(parameters);
+
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var client = new HttpClient();
+
+                var response = await client.PostAsync(new Uri("http://localhost:5005/api/recipe/search"), data);
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                var jsonReslt = JsonConvert.DeserializeObject<List<RecipeModel>>(result);
+                client.Dispose();
+                return jsonReslt;
+            }
+            catch (Exception)
+            {
+                return new List<RecipeModel>();
+
+            }
         }
 
         public async Task<RecipeModel[]> GetRecipes()

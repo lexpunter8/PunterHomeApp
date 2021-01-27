@@ -59,11 +59,11 @@ namespace BlazorPunterHomeApp
             }
         }
 
-        public async Task<ApiIngredientModel[]> AddToShoppingList(Guid recipeId, int numberOfPersons, Guid shoppingListId)
+        public async Task<ApiIngredientModel[]> AddToShoppingList(Guid recipeId, int numberOfPersons, Guid shoppingListId, bool unavailableOnly)
         {
             try
             {
-                var json = JsonConvert.SerializeObject(new RecipeToShoppingListRequestApiModel {NumberOfPersons = numberOfPersons, RecipeId = recipeId, ShoppingListIdId = shoppingListService.ShoppingListId });
+                var json = JsonConvert.SerializeObject(new RecipeToShoppingListRequestApiModel {NumberOfPersons = numberOfPersons, RecipeId = recipeId, ShoppingListIdId = shoppingListService.ShoppingListId, OnlyUnavailableItems = unavailableOnly });
                 var data = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var httpClient = new HttpClient();

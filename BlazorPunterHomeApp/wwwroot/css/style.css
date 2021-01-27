@@ -1,4 +1,162 @@
-﻿
+﻿/*/ X-Small devices (portrait phones, less than 576px)
+// No media query for `xs` since this is the default in Bootstrap*/
+.full-wo-nav {
+    min-height: calc(100vh - 50px)
+}
+
+.animation {
+    animation: fadeIn 0.5s ease-in both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 1;
+        transform: translate3d(0, -40%, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/*// Small devices (landscape phones, 576px and up)*/
+:root {
+    --c-secondary: #fcdab7;
+    --c-primary: #61B38E;
+    --c-bg-primary: #121212;
+    --c-bg-secondary: #292929;
+    --txt-c-bg: #DBDBDB;
+    --bg-el-2: #1d1d1d;
+    --bg-el-3: #212121;
+    --bg-el-4: #242424;
+    --bg-el-5: #272727;
+    --bg-el-6: #2c2c2c;
+    --bg-el-7: #2d2d2d;
+    --bg-el-8: #323232;
+    --bg-el-9: #343434;
+    --bg-el-10: #373737;
+}
+
+.bg-el-0 {
+    background-color: #121212;
+    color: var(--txt-c-bg)
+}
+
+.bg-el-1 {
+    background-color: #292929;
+    color: var(--txt-c-surface)
+}
+
+.bg-el-2 {
+    background-color: var(--bg-el-2);
+    color: var(--txt-c-surface);
+    border-color: none;
+}
+
+.bg-el-3 {
+    background-color: var(--bg-el-3);
+    color: var(--txt-c-surface);
+    border-color: none;
+}
+
+
+.bg-el-4 {
+    background-color: var(--bg-el-4);
+    color: var(--txt-c-surface);
+    border-color: none;
+}
+
+
+.bg-el-5 {
+    background-color: var(--bg-el-5);
+    color: var(--txt-c-surface)
+}
+
+.bg-el-6 {
+    background-color: var(--bg-el-6);
+    color: var(--txt-c-surface)
+}
+
+
+.bg-el-7 {
+    background-color: var(--bg-el-7);
+    color: var(--txt-c-surface)
+}
+
+.c-primary {
+    background-color: var(--c-primary);
+    border-color: none;
+}
+
+.bg-primary {
+    background-color: var(--c-primary) !important;
+    border: 0;
+}
+
+.c-secondary {
+    background-color: var(--c-secondary);
+    border-color: none;
+}
+
+.bg-secondary {
+    background-color: var(--c-secondary);
+    border-color: none;
+}
+
+.no-border {
+    border: 0;
+    box-shadow: none; /* You may want to include this as bootstrap applies these styles too */
+}
+tag-select {
+
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.card-columns {
+    column-count: 2;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+}
+
+.ul-np {
+    padding: 0;
+    list-style-type: none;
+}
+
+.add-tag:hover
+{
+    background-color: darkgreen;
+    cursor: pointer;
+}
+
+.bg-red {
+    background-color: red;
+}   
+
+.bg-green {
+    background-color: forestgreen;
+}
+
+.prodruct-tag {
+    border-radius: 3px 3px 3px 3px;
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 5px 0 5px;
+    margin: 0 10px 0px 0;
+    text-decoration: none;
+    -webkit-transition: color 0.2s;
+}
+
+.delete:hover {
+    color:red;
+}
+
 #container {
     width: 640px;
     margin: 20px auto;

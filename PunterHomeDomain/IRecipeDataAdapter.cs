@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PunterHomeApp.Services;
+using PunterHomeDomain.Enums;
 using PunterHomeDomain.Models;
 
 namespace PunterHomeDomain
@@ -9,7 +10,7 @@ namespace PunterHomeDomain
     public interface IRecipeDataAdapter
     {
         Task<IEnumerable<RecipeApiModel>> GetAllRecipes();
-        void SaveRecipe(RecipeApiModel recipe);
+        void SaveRecipe(string name, ERecipeType type);
         RecipeApiModel GetRecipeById(Guid recipeId);
         Task<bool> AddIngredient(Guid recipeId, IIngredient ingredient);
         void UpdateRecipe(Guid id, string newName);

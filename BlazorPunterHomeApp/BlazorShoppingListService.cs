@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using PunterHomeDomain.ApiModels;
+using PunterHomeDomain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BlazorPunterHomeApp
@@ -14,13 +16,16 @@ namespace BlazorPunterHomeApp
     {
         public Guid ShoppingListId;
 
-        public async Task AddToShoppingList(Guid shoppingListId, int prodQuanId)
+        public async Task AddToShoppingList(Guid shoppingListId, AddProductToShoppingListRequest request)
         {
             try
             {
+                var json = JsonConvert.SerializeObject(request);
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
                 var client = new HttpClient();
 
-                var response = await client.PostAsync(new Uri($"http://localhost:5005/api/shoppinglist/{ShoppingListId}/{prodQuanId}"), null);
+                var response = await client.PostAsync(new Uri($"http://localhost:5005/api/shoppinglist/{ShoppingListId}"), data);
 
                 string result = response.Content.ReadAsStringAsync().Result;
 
@@ -103,7 +108,7 @@ namespace BlazorPunterHomeApp
             }
         }
 
-        public async Task<List<ShoppingListItem>> GetShoppingListItems()
+        public async Task<List<ShoppingListItemDetailsModel>> GetShoppingListItems()
         {
             try
             {
@@ -115,57 +120,22 @@ namespace BlazorPunterHomeApp
 
                 if (result == null || result.Length == 0)
                 {
-                    return new List<ShoppingListItem>();
+                    return new List<ShoppingListItemDetailsModel>();
                 }
                 Uri uriGet = new Uri($"http://localhost:5005/api/shoppinglist/{result.First().Id}");
                 var response1 = await httpClient.GetAsync(uriGet, HttpCompletionOption.ResponseHeadersRead);
                 string responseString1 = await response1.Content.ReadAsStringAsync();
-                var result1 = JsonConvert.DeserializeObject<List<ShoppingListItemApiModel>>(responseString1);
+                var result1 = JsonConvert.DeserializeObject<List<ShoppingListItemDetailsModel>>(responseString1);
 
                 ShoppingListId = result.First().Id;
 
 
-                return result1.Select(r => new ShoppingListItem
-                {
-                    Id = r.Id,
-                    MeasurementType = r.MeasurementType,
-                    MeasurementVolume= r.Volume,
-                    ProductName = r.ProductName,
-                    Quantity = r.Count,
-                    IsChecked = r.IsChecked
-                }).ToList();
+                return result1;
             }
             catch (Exception)
             {
                 return null;
             }
-            return new List<ShoppingListItem>
-            {
-                new ShoppingListItem
-                {
-                    Id = Guid.NewGuid(),
-                    ProductName = "TProduct 1",
-                    MeasurementType = Enums.EUnitMeasurementType.Ml,
-                    MeasurementVolume = 100,
-                    Quantity = 2
-                },
-                new ShoppingListItem
-                {
-                    Id = Guid.NewGuid(),
-                    ProductName = "TProduct 2",
-                    MeasurementType = Enums.EUnitMeasurementType.Gr,
-                    MeasurementVolume = 100,
-                    Quantity = 1
-                },
-                new ShoppingListItem
-                {
-                    Id = Guid.NewGuid(),
-                    ProductName = "TProduct 3",
-                    MeasurementType = Enums.EUnitMeasurementType.Ml,
-                    MeasurementVolume = 500,
-                    Quantity = 2
-                }
-            };
         }
     }
 }

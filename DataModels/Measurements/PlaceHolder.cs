@@ -39,6 +39,8 @@ namespace DataModels.Measurements
                     return new KiloGram();
                 case EUnitMeasurementType.Gr:
                     return new Gram();
+                case EUnitMeasurementType.Mg:
+                    return new MiliGram();
                 default:
                     throw new NotImplementedException();
             }
@@ -82,7 +84,7 @@ namespace DataModels.Measurements
         }
         public override double ConvertTo(EUnitMeasurementType measurementType)
         {
-            if (!new[] { EUnitMeasurementType.Kg, EUnitMeasurementType.Gr }.Contains(measurementType))
+            if (!new[] { EUnitMeasurementType.Kg, EUnitMeasurementType.Gr, EUnitMeasurementType.Mg }.Contains(measurementType))
             {
                 return 0;
             }
@@ -90,6 +92,8 @@ namespace DataModels.Measurements
             var total = UnitQuantityTypeVolume;
             switch (measurementType)
             {
+                case EUnitMeasurementType.Mg:
+                    return total * 1000000;
                 case EUnitMeasurementType.Gr:
                     return total * 1000;
                 case EUnitMeasurementType.Kg:
@@ -107,7 +111,7 @@ namespace DataModels.Measurements
 
         public override double ConvertTo(EUnitMeasurementType measurementType)
         {
-            if (!new[] { EUnitMeasurementType.Kg, EUnitMeasurementType.Gr }.Contains(measurementType))
+            if (!new[] { EUnitMeasurementType.Kg, EUnitMeasurementType.Gr, EUnitMeasurementType.Mg }.Contains(measurementType))
             {
                 return 0;
             }
@@ -115,6 +119,8 @@ namespace DataModels.Measurements
             var total = UnitQuantityTypeVolume;
             switch (measurementType)
             {
+                case EUnitMeasurementType.Mg:
+                    return total * 1000;
                 case EUnitMeasurementType.Gr:
                     return total;
                 case EUnitMeasurementType.Kg:
@@ -124,6 +130,36 @@ namespace DataModels.Measurements
             }
         }
     }
+
+
+    public class MiliGram : BaseMeasurement
+    {
+        public MiliGram() : base(EUnitMeasurementType.Mg)
+        {
+        }
+
+        public override double ConvertTo(EUnitMeasurementType measurementType)
+        {
+            if (!new[] { EUnitMeasurementType.Kg, EUnitMeasurementType.Gr, EUnitMeasurementType.Mg }.Contains(measurementType))
+            {
+                return 0;
+            }
+
+            var total = UnitQuantityTypeVolume;
+            switch (measurementType)
+            {
+                case EUnitMeasurementType.Mg:
+                    return total;
+                case EUnitMeasurementType.Gr:
+                    return total / 1000;
+                case EUnitMeasurementType.Kg:
+                    return total / 1000000;
+                default:
+                    return 0;
+            }
+        }
+    }
+
     public class DeciLiter : BaseMeasurement
     {
         public DeciLiter() : base(EUnitMeasurementType.Dl)

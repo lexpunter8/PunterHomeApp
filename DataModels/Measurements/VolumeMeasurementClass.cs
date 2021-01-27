@@ -17,7 +17,7 @@ namespace DataModels.Measurements
 
     public class MeasurementClassObject
     {
-        public List<MeasurementAmount> Values { get; set; }
+        public List<MeasurementAmount> Values { get; set; } = new List<MeasurementAmount>();
 
         public void Add(MeasurementAmount newAmount)
         {

@@ -1,4 +1,5 @@
-﻿using PunterHomeDomain.ApiModels;
+﻿using DataModels;
+using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Models;
 using System;
 using System.Collections.Generic;

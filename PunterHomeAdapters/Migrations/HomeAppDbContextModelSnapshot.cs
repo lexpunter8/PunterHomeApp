@@ -127,9 +127,31 @@ namespace PunterHomeAdapters.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("Recipes");
+                });
+
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeShoppingListItem", b =>
+                {
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ShoppingListItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("NrOfPersons")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RecipeId", "ShoppingListItemId");
+
+                    b.HasIndex("ShoppingListItemId")
+                        .IsUnique();
+
+                    b.ToTable("RecipeShoppingListItem");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStep", b =>
@@ -180,13 +202,22 @@ namespace PunterHomeAdapters.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("Checked")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Count")
+                    b.Property<int?>("DbProductQuantityId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ProductQuantitiesId")
+                    b.Property<bool>("IsChecked")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MeasurementAmount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MeasurementType")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Reason")
                         .HasColumnType("integer");
 
                     b.Property<Guid?>("ShoppingListId")
@@ -194,7 +225,9 @@ namespace PunterHomeAdapters.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductQuantitiesId");
+                    b.HasIndex("DbProductQuantityId");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("ShoppingListId");
 
@@ -238,6 +271,21 @@ namespace PunterHomeAdapters.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeShoppingListItem", b =>
+                {
+                    b.HasOne("PunterHomeAdapters.Models.DbRecipe", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PunterHomeAdapters.Models.DbShoppingListItem", "ShoppingListItem")
+                        .WithOne("RecipeItem")
+                        .HasForeignKey("PunterHomeAdapters.Models.DbRecipeShoppingListItem", "ShoppingListItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStep", b =>
                 {
                     b.HasOne("PunterHomeAdapters.Models.DbRecipe", "Recipe")
@@ -247,9 +295,13 @@ namespace PunterHomeAdapters.Migrations
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListItem", b =>
                 {
-                    b.HasOne("PunterHomeAdapters.Models.DbProductQuantity", "ProductQuantities")
+                    b.HasOne("PunterHomeAdapters.Models.DbProductQuantity", null)
                         .WithMany("ShoppingListItems")
-                        .HasForeignKey("ProductQuantitiesId");
+                        .HasForeignKey("DbProductQuantityId");
+
+                    b.HasOne("PunterHomeAdapters.Models.DbProduct", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("PunterHomeAdapters.Models.DbShoppingList", "ShoppingList")
                         .WithMany()

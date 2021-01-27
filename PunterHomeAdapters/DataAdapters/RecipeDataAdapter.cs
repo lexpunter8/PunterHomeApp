@@ -7,6 +7,7 @@ using PunterHomeAdapters;
 using PunterHomeAdapters.Models;
 using PunterHomeApp.Services;
 using PunterHomeDomain;
+using PunterHomeDomain.Enums;
 using PunterHomeDomain.Models;
 
 namespace PunterHomeApp.DataAdapters
@@ -113,6 +114,7 @@ namespace PunterHomeApp.DataAdapters
             {
                 Name = recipe.Name,
                 Id = recipe.Id,
+                Type = recipe.Type,
                 Steps = recipe.Steps.Select(s => Convert(s)),
                 Ingredients = recipe.Ingredients.Select(i => ConvertDbIngredient(i))
             };
@@ -162,13 +164,14 @@ namespace PunterHomeApp.DataAdapters
             return result.Select(r => ConvertDbRecipeToRecipe(r));
         }
 
-        public void SaveRecipe(RecipeApiModel recipe)
+        public void SaveRecipe(string name, ERecipeType type)
         {
             using var context = new HomeAppDbContext(myDbOptions);
 
             context.Recipes.Add(new DbRecipe
             {
-                Name = recipe.Name
+                Name = name,
+                Type = type
             });
 
             context.SaveChanges();
@@ -240,5 +243,6 @@ namespace PunterHomeApp.DataAdapters
             context.SaveChanges();
         }
     }
+
 }
 

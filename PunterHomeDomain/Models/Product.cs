@@ -10,6 +10,8 @@ namespace PunterHomeDomain.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+
+        public List<ProductTagModel> Tags { get; set; } = new List<ProductTagModel>();
     }
 
     public class ProductDetails
@@ -18,6 +20,8 @@ namespace PunterHomeDomain.Models
         public string Name { get; set; }
         public IEnumerable<BaseMeasurement> ProductQuantities { get; set; }
         public MeasurementClassObject MeasurementAmounts { get; set; }
+
+        public List<ProductTagModel> Tags { get; set; } = new List<ProductTagModel>();
     }
 
 }

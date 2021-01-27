@@ -156,7 +156,8 @@ namespace PunterHomeApp.DataAdapters
                 retval.Add(new LightProduct
                 {
                     Id = p.Id,
-                    Name = p.Name
+                    Name = p.Name,
+                    Tags = context.ProductTags.Include(t => t.Tag).Where(t => t.ProductId == p.Id).Select(t => new ProductTagModel { Id = t.TagId, Name = t.Tag.Name}).ToList()
                 });
             });
 

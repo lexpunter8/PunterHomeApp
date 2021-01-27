@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Interfaces;
+using PunterHomeDomain.Services;
 
 namespace PunterHomeApi.Controllers
 {
@@ -65,7 +66,7 @@ namespace PunterHomeApi.Controllers
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(Guid id)
         {
-            return DoRequestValidation<IEnumerable<ShoppingListItemApiModel>>(() => myShoppingListService.GetItemsForShoppingList(id).Select(s => s.Convert()));
+            return DoRequestValidation<IEnumerable<ShoppingListItemDetailsModel>>(() => myShoppingListService.GetItemsForShoppingList(id));
         }
 
         // POST: api/ShoppingList
@@ -75,10 +76,10 @@ namespace PunterHomeApi.Controllers
         }
 
         // POST: api/ShoppingList
-        [HttpPost("{shoppingListID}/{newProductQuantity}")]
-        public void Post(Guid shoppingListID, int newProductQuantity)
+        [HttpPost("{shoppingListID}")]
+        public void Post(Guid shoppingListID, [FromBody] AddProductToShoppingListRequest request)
         {
-            myShoppingListService.AddProductToShoppingList(shoppingListID, newProductQuantity);
+            myShoppingListService.AddProductToShoppingList(shoppingListID, request);
         }
 
         // POST: api/ShoppingList
@@ -142,12 +143,10 @@ namespace PunterHomeApi.Controllers
         {
             return new ShoppingListItemApiModel
             {
-                Count = model.Count,
                 Id = model.Id,
                 MeasurementType = model.MeasurementType,
-                ProductName = model.ProductName,
                 ShoppingListId = model.ShoppingListId,
-                Volume = model.Volume,
+                Volume = model.MeasurementAmount,
                 IsChecked = model.IsChecked
             };
         }

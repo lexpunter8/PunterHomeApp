@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PunterHomeDomain.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,12 +20,12 @@ namespace BlazorPunterHomeApp.Data
 
     public class SelectableShoppingListItem
     {
-        public SelectableShoppingListItem(ShoppingListItem item)
+        public SelectableShoppingListItem(ShoppingListItemDetailsModel item)
         {
             Item = item;
         }
 
-        public bool IsChecked { get => Item.IsChecked; set => Item.IsChecked = value; }
-        public ShoppingListItem Item { get; }
+        public bool IsChecked { get; set; }
+        public ShoppingListItemDetailsModel Item { get; }
     }
 }

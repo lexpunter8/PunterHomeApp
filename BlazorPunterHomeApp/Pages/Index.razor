@@ -1,9 +1,16 @@
 ﻿@page "/"
+<div class="landing-page-bg container-fluid">
+    <img src="Resources/home-page-burger.jpg" class="img-fluid" alt="Not found">
+    <div class="card bg-dark text-white">
+        <div class="card-img-overlay">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            <p class="card-text">@Environment.CurrentDirectory</p>
+        </div>
+    </div>
 
-<h1>Hello, world!</h1>
+</div>
+    
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-<div id="interactive" class="viewport"></div>
+@code {
+}

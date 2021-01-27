@@ -1,7 +1,7 @@
 ﻿@page "/shoppinglist"
 
 
-<div class="container-fluid">
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-xl-10 col-md-10">
             <h3>ShoppingList</h3>
@@ -16,32 +16,50 @@
                 <div class="row">
 
                     <div class="col-4">
-                        @($"{item.MeasurementVolume} {item.MeasurementType}")
+                        @($"{item.StaticAmount + item.DynamicAmountRequested - item.DynamicAmountAvailable} {item.MeasurementType}")
                     </div>
                     <div class="col-6">
-                        <div class="input-group float-right">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary" type="button" @onclick="() => DecreaseQuantityToItem(item)"><Icon Name="IconName.ExpandMore"></Icon></button>
-                                <span class="input-group-text">@item.Quantity</span>
-                            </div>
-                            <div class="input-group-append">
-
-                                <button class="btn btn-secondary" type="button" @onclick="() => AddQuantityToItem(item)"><Icon Name="IconName.ExpandLess"></Icon></button>
-                            </div>
+                        @*<div class="input-group float-right">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-primary" type="button" @onclick="() => DecreaseQuantityToItem(item)"><Icon Name="IconName.ExpandMore"></Icon></button>
+                            <span class="input-group-text">@item.Quantity</span>
                         </div>
+                        <div class="input-group-append">
+
+                            <button class="btn btn-primary" type="button" @onclick="() => AddQuantityToItem(item)"><Icon Name="IconName.ExpandLess"></Icon></button>
+                        </div>
+                    </div>*@
 
                     </div>
                     <div class="col-1">
                         <button class="btn"><Icon Name="IconName.Delete" @onclick="() => DeleteItem(item)"></Icon></button>
                     </div>
                 </div>
+                <h6>Static</h6>
+                <ul class="list-unstyled">
+                    @foreach (var s in item.StaticItems)
+                    {
+                        <li>
+                            @s.MeasurementAmount @s.MeasurementType @s.ProductName @s.Reason
+                        </li>
+                    }
+                </ul>
+                <h6>Dynamic A: @item.DynamicAmountAvailable R:@item.DynamicAmountRequested</h6>
+                <ul class="list-unstyled">
+                    @foreach (var s in item.DynamicItems)
+                    {
+                        <li>
+                            @s.MeasurementAmount @s.MeasurementType @s.ProductName @s.Reason @s.RecipeItem.RecipeName
+                        </li>
+                    }
+                </ul>
                 <div class="row">
                     <div class="col-12"><hr /></div>
                 </div>
             }
 
+            </div>
         </div>
-    </div>
 
     @if (ListItems.Count > 0)
     {

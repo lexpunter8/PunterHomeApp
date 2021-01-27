@@ -14,39 +14,42 @@ namespace BlazorPunterHomeApp.Data
         public Guid Id { get; set; }
 
         public string Name { get; set; }
-        public IEnumerable<ProductQuantity> ProductQuantities { get; set; }
+        public IEnumerable<BaseMeasurement> ProductQuantities { get; set; }
 
         public int Quantity { get; set; }
 
         [JsonIgnore]
         public bool IsSelected { get; set; }
+        public List<ProductTagModel> Tags { get; set; } = new List<ProductTagModel>();
     }
 
-    public class ProductDetailsModel : INotifyPropertyChanged
+    public class ProductDetailsViewModel : INotifyPropertyChanged
     {
+        public ProductDetailsViewModel(ProductDetails productModel)
+        {
+            ProductModel = productModel;
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Guid Id { get; set; }
+        //public IEnumerable<ProductQuantity> ProductQuantities { get; set; }
 
-        public string Name { get; set; }
-        public IEnumerable<ProductQuantity> ProductQuantities { get; set; }
-
-        public int Quantity { get; set; }
-        public MeasurementClassObject MeasurementAmounts { get; set; }
+        public ProductDetails ProductModel { get; }
 
         public string GetQuantityString()
         {
-            if (MeasurementAmounts == null)
+            if (ProductModel.MeasurementAmounts == null)
             {
                 return "None";
             }
 
             string s = string.Empty;
 
-            for (int i = 0; i < MeasurementAmounts.Values.Count; i++)
+            for (int i = 0; i < ProductModel.MeasurementAmounts.Values.Count; i++)
             {
-                s += $"{MeasurementAmounts.Values[i]}";
-                if (i == MeasurementAmounts.Values.Count - 1)
+                s += $"{ProductModel.MeasurementAmounts.Values[i]}";
+                if (i == ProductModel.MeasurementAmounts.Values.Count - 1)
                 {
                     continue;
                 }

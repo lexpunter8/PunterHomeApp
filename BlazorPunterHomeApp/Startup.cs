@@ -15,6 +15,7 @@ using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using PunterHomeDomain.Interfaces;
+using RazorShared;
 
 namespace BlazorPunterHomeApp
 {
@@ -47,6 +48,8 @@ namespace BlazorPunterHomeApp
             services.AddSingleton<BlazorRecipeService>();
             services.AddSingleton<BlazorShoppingListService>();
             services.AddSingleton<IBarcodeScannerService, BarcodeScannerService>();
+            services.AddSingleton<IBlazorTagService, BlazorTagService>();
+            services.AddSingleton<AppState>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

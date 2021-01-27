@@ -3,6 +3,12 @@ using System.Linq;
 
 public class Enums
 {
+    public enum EShoppingListReason
+    {
+        Default,
+        Manual,
+        Recipe
+    }
     public enum EUnitMeasurementType
     {
         [Description("Choose..")]

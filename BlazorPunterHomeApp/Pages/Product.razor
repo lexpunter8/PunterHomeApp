@@ -3,7 +3,7 @@
 @using PunterHomeApp.ApiModels;
 @using DataModels.Helpers;
 @using BlazorPunterHomeApp.ViewModels;
-
+@using static Enums;
 @using PunterHomeDomain.Models;
 @using BlazorPunterHomeApp.Components;
 
@@ -15,7 +15,143 @@
 @inject IBarcodeScannerService barcodeScannerService;
 
 
-<div class="container-fluid">
+<div class="container-fluid bg-el-1">
+    <div class="bg-el-0" style="position:absolute; top: 0; right: 0; width: 50%; height:100%; min-height: 100px;">
+    </div>
+    <div class="container-xl justify-content-center">
+
+        <div class="row">
+
+            <div class="col-12 col-md-auto bg-el-1 pl-2 pr-5">
+                    <div style="width:220px" class="p-2">
+                        @*<BlazorPunterHomeApp.Components.RecipeFilterComponent FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>*@
+                    </div>
+                </div>
+
+            @*
+                recipe card
+            *@
+            <div class="col-12 col-md bg-el-0">
+
+                @if (myIsCreatingProduct)
+                {
+
+                    <div class="row p-2 ml-3 bg-el-1 animation" id="newRecipeCollapse">
+                        <div class="col-12">
+                            <label class="h4">Create recipe</label>
+                            <EditForm Model="NewProductModel" OnValidSubmit="HandleNewProductSubmit">
+                                <DataAnnotationsValidator />
+                                <div class="form-group">
+                                    <label>Recipe name</label>
+                                    <input type="text" @bind-value="NewProductModel.Name" class="form-control" id="inputAddress" placeholder="Recipe name">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Recipe type</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Size</span>
+                                            <input type="number" class="form-control" @bind="NewProductModel.UnitQuantity">
+                                        </div>
+
+                                        <select class="custom-select" id="inputGroupSelect01" @bind="NewProductModel.UnitQuantityType">
+                                            @foreach (var cnt in Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList())
+                                            {
+                                                <option value="@cnt">@cnt.GetEnumDescription()</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex justify-content-end p-2">
+
+                                    <div>
+                                        <button class="btn btn-primary" type="submit">Add recipe</button>
+                                    </div>
+                                    <div>
+                                        <button class="ml-2 btn btn-outline-primary" @onclick="ToggleCreateProduct">Cancel</button>
+                                    </div>
+                                </div>
+                            </EditForm>
+                        </div>
+                    </div>
+                }
+                @if (!myIsCreatingProduct)
+                {
+
+                    <div class="row">
+                        <button class="btn btn-primary" type="button" @onclick="ToggleCreateProduct">
+                            Create recipe
+                        </button>
+
+                    </div>
+                }
+
+                <div class="row ml-1 mt-3">
+                    <div class="col-12 col-md-9">
+                        <div class=" input-group">
+                            <input type="text" class="form-control" placeholder="Search recipe" id="name" @bind-value="searchTest" aria-describedby="button-addon2" />
+
+                            <div class="input-group-append">
+
+                                <button class="btn btn-primary" type="button" @onclick="Search"><Icon Name="IconName.Search"></Icon></button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group col-12 col-md-3">
+                        <select id="inputState" class="form-control">
+                            <option selected>Newest</option>
+                            <option>A-Z</option>
+                            <option>Z-A</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row ml-2 mt-2">
+                    <div class="col-12 col-md-6">
+                        <span class="ml-2 h2">@products.Length Products</span>
+                    </div>
+                </div>
+
+                <div class="row ml-1">
+                    @foreach (var cnt in products)
+                    {
+                        <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-4">
+                            <a href="@($"product/{cnt.Id}")" class="custom-card">
+                                <div class="card" style="margin-top:5px;">
+                                    <div class="card-body bg-el-1">
+                                        <h5 class="card-title">@cnt.Name</h5>
+                                        <ul class="ul-np">
+                                            @foreach (var label in cnt.Tags)
+                                            {
+                                                <li style="margin-left:1px" class="prodruct-tag bg-green">
+
+                                                    <span style="font-size: 12px;font-weight: bold; text-transform: uppercase; color:white">
+                                                        @label.Name
+                                                    </span>
+                                                </li>
+
+                                            }
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </a>
+
+
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<div class="container-fluid collapse">
     <div class="row">
         <div class="col-md-4 col-sm-9 col-10">
 
@@ -31,58 +167,23 @@
         @foreach (var cnt in products)
         {
             <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-4">
-                <a href="@($"product/{cnt.Id}")" @onclick="@(e => ItemClick(e, cnt))" class="custom-card">
+                <a href="@($"product/{cnt.Id}")" class="custom-card">
                     <div class="card" style="margin-top:5px;">
                         <div class="card-body">
                             <h5 class="card-title">@cnt.Name</h5>
-                            <div class="@(cnt.IsSelected ? "show" : "collapse")">
-                                @if (cnt.IsSelected && SelectedProduct != null)
+                            <ul class="ul-np">
+                                @foreach (var label in cnt.Tags)
                                 {
-                                    <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete product</label>
-                                    <p>@SelectedProduct.CurrentSelectedProduct.GetQuantityString()</p>
+                                    <li style="margin-left:1px" class="prodruct-tag bg-green">
 
-                                    @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
-                                    {
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="input-group mb-3 ">
-                                                    <div class="input-group-prepend">
-                                                        <button type="button" @onclick="@(e => DecreaseQuantity(prodQuan.Id))" class="btn btn-outline-danger" data-type="minus" data-field="quant[2]">
-                                                            <Icon Name="IconName.ExpandMore"></Icon>
-                                                        </button>
-                                                        <span class="input-group-text">
-                                                            @prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType
-                                                        </span>
-                                                    </div>
-                                                    <div class="input-group-append">
+                                        <span style="font-size: 12px;font-weight: bold; text-transform: uppercase; color:white">
+                                            @label.Name
+                                        </span>
+                                    </li>
 
-                                                        <button type="button" @onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn-sm btn-outline-success" data-type="plus" data-field="quant[2]">
-                                                            <Icon Name="IconName.ExpandLess"></Icon>
-                                                        </button>
-
-                                                        <button type="button" @onclick="@(e => HandleAddToCart(prodQuan.Id))" class="btn-lg btn-outline-dark">
-                                                            <Icon Name="IconName.ShoppingCart"></Icon>
-                                                        </button>
-
-                                                        <button type="button" @onclick="@(e => HandleDeleteProductQuantity(prodQuan.Id))" class="btn-sm btn-danger" data-type="plus" data-field="quant[2]">
-                                                            <Icon Name="IconName.Delete"></Icon>
-                                                        </button>
-
-                                                        <button type="button" @onclick="@(e => HandleAddBarcode(prodQuan.Id))" class="btn-sm btn-danger" data-type="plus" data-field="quant[2]">
-                                                            <Icon Name="IconName.Camera"></Icon>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                    <div class="row">
-                                        <button @onclick="ShowAddProductQuantityModal" class="btn btn-outline-secondary">Add quantity</button>
-                                    </div>
                                 }
+                            </ul>
 
-
-                            </div>
                         </div>
                     </div>
                 </a>
@@ -93,50 +194,68 @@
         }
     </div>
 
-    @if (SelectedProduct != null && false)
-    {
-        <div id="details" class="col-sm-12 col-md-6">
-            <h4>@SelectedProduct.CurrentSelectedProduct.Name</h4>
-            <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete product</label>
-            <p>@SelectedProduct.CurrentSelectedProduct.Id</p>
-            <p>@SelectedProduct.CurrentSelectedProduct.GetQuantityString()</p>
+    @*@if (SelectedProduct != null && false)
+        {
+            <div id="details" class="col-sm-12 col-md-6">
+                <h4>@SelectedProduct.CurrentSelectedProduct.Name</h4>
+                <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete product</label>
+                <p>@SelectedProduct.CurrentSelectedProduct.Id</p>
+                <p>@SelectedProduct.CurrentSelectedProduct.GetQuantityString()</p>
 
-            @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
-            {
+                @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
+                {
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                @prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType<br>
+                                <div class="input-group col-6">
+                                    <span class="input-group-btn">
+                                        <button type="button" @onclick="@(e => DecreaseQuantity(prodQuan.Id))" class="btn btn-square btn-danger btn-number" data-type="minus" data-field="quant[2]">
+                                            <span class="glyphicon glyphicon-minus">-</span>
+                                        </button>
+                                    </span>
+                                    <span class="input-group-btn">
+                                        <button type="button" @onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn btn-square btn-success btn-number" data-type="plus" data-field="quant[2]">
+                                            <span class="glyphicon glyphicon-plus">+</span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </p>
+                        </div>
+                        <div class="col">
+                            <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProductQuantity(prodQuan.Id))">Delete product quantity</label>
+                        </div>
+                    </div>
+                }
+
                 <div class="row">
-                    <div class="col">
-                        <p>
-                            @prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType<br>
-                            <div class="input-group col-6">
-                                <span class="input-group-btn">
-                                    <button type="button" @onclick="@(e => DecreaseQuantity(prodQuan.Id))" class="btn btn-square btn-danger btn-number" data-type="minus" data-field="quant[2]">
-                                        <span class="glyphicon glyphicon-minus">-</span>
-                                    </button>
-                                </span>
-                                <span class="input-group-btn">
-                                    <button type="button" @onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn btn-square btn-success btn-number" data-type="plus" data-field="quant[2]">
-                                        <span class="glyphicon glyphicon-plus">+</span>
-                                    </button>
-                                </span>
-                            </div>
-                        </p>
-                    </div>
-                    <div class="col">
-                        <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProductQuantity(prodQuan.Id))">Delete product quantity</label>
-                    </div>
+                    <button @onclick="ShowAddProductQuantityModal" class="btn btn-outline-secondary">Add quantity</button>
                 </div>
-            }
-
-            <div class="row">
-                <button @onclick="ShowAddProductQuantityModal" class="btn btn-outline-secondary">Add quantity</button>
             </div>
-        </div>
-    }
+        }*@
 </div>
 
 @code {
     public NewProductApiModel newProduct = new NewProductApiModel();
     private ProductModel[] products = new ProductModel[0];
+    private bool myIsCreatingProduct;
+    private NewProductApiModel NewProductModel = new NewProductApiModel();
+
+    private async void HandleNewProductSubmit()
+    {
+        await ProductService.AddProduct(NewProductModel);
+        ToggleCreateProduct();
+
+    }
+
+    private void ToggleCreateProduct()
+    {
+        if (myIsCreatingProduct)
+        {
+            NewProductModel = new NewProductApiModel();
+        }
+        myIsCreatingProduct = !myIsCreatingProduct;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -186,98 +305,9 @@
 
     }
 
-    private async void HandleDeleteProductQuantity(int id)
+    private string searchTest = string.Empty;
+    private void Search()
     {
-        var currentSelected = products.FirstOrDefault(c => c.IsSelected);
-        await ProductService.DeleteProductQuantity(id);
-        products.FirstOrDefault(p => p.Id == currentSelected?.Id).IsSelected = true;
-        StateHasChanged();
-    }
 
-    private async void HandleAddToCart(int quantityId)
-    {
-        await ShoppingListService.AddToShoppingList(Guid.Empty, quantityId);
-    }
-
-    private async void HandleDeleteProduct(ProductDetailsModel vm)
-    {
-        await ProductService.DeleteProduct(vm);
-        StateHasChanged();
-    }
-
-    private async void ShowAddProductQuantityModal()
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(NewEditProductQuantityComponent.Product), SelectedProduct.CurrentSelectedProduct);
-
-        var adddQuantityModal = Modal.Show<NewEditProductQuantityComponent>("Add product quantity", parameters);
-
-        var result = await adddQuantityModal.Result;
-
-        if (!result.Cancelled)
-        {
-            StateHasChanged();
-        }
-    }
-
-    private async void HandleSubmit()
-    {
-        await ProductService.AddProduct(newProduct);
-        newProduct = new NewProductApiModel();
-
-        products = await ProductService.GetProducts();
-        StateHasChanged();
-    }
-
-    private async void HandleAddQuantity()
-    {
-        await ProductService.AddQuantityToProduct(SelectedProduct.NewProductQuantity, SelectedProduct.CurrentSelectedProduct);
-        SelectedProduct.NewProductQuantity = new PunterHomeDomain.Models.ProductQuantity();
-        StateHasChanged();
-    }
-
-    private BlazorPunterHomeApp.ViewModels.ProductViewModel SelectedProduct;
-
-    private async void ItemClick(MouseEventArgs e, ProductModel product)
-    {
-        foreach (var p in products.Where(p => p.IsSelected))
-        {
-            p.IsSelected = false;
-        }
-        product.IsSelected = true;
-        var productDetails = await ProductService.GetProductById(product.Id);
-        if (SelectedProduct == null)
-        {
-            SelectedProduct = new ViewModels.ProductViewModel(productDetails);
-            SelectedProduct.PropertyChanged += (a, b) => StateHasChanged();
-        }
-        else
-        {
-            SelectedProduct.SetProduct(productDetails);
-        }
-        StateHasChanged();
-    }
-
-    private async void IncreaseQuantity(int prodQuanId)
-    {
-        await ProductService.IncreaseProductQuantity(prodQuanId);
-
-        var productDetails = await ProductService.GetProductById(SelectedProduct.CurrentSelectedProduct.Id);
-        SelectedProduct.SetProduct(productDetails);
-        StateHasChanged();
-    }
-
-    private async void DecreaseQuantity(int prodQuanId)
-    {
-        await ProductService.DecreaseProductQuantity(prodQuanId);
-        var productDetails = await ProductService.GetProductById(SelectedProduct.CurrentSelectedProduct.Id);
-        SelectedProduct.SetProduct(productDetails);
-        StateHasChanged();
-    }
-
-    private async void HandleAddBarcode(int prodQuanId)
-    {
-        var barcode = await barcodeScannerService.ScanBarcode(Modal);
-        ProductService.AddBarcodeToQuantity(prodQuanId, barcode.Barcode);
     }
 }
