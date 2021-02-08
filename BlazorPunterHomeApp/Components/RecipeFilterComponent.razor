@@ -1,29 +1,29 @@
 ﻿@using DataModels.Helpers;
 
-<div class="pt-md-5 navbar navbar-dark">
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
+<div class="d-flex flex-column align-self-stretch" >
+    <button class="btn btn-light" @onclick="ToggleNavMenu">
+        Filter
     </button>
 </div>
 
 <div class="col-12 d-flex flex-column">
 
-    @if (TypeFilterSelected)
-    {
-        <div class="d-flex flex-row justify-content-start">
+    <div class="@NavMenuCssClass">
+        @if (TypeFilterSelected)
+        {
+            <div class="d-flex flex-row justify-content-start">
 
-            <span class="font-weight-bold text-lowercase mr-auto" style="font-size:0.9rem;">Type</span>
+                <span class="font-weight-bold text-lowercase mr-auto" style="font-size:0.9rem;">Type</span>
 
-            <span class="text-lowercase" style="font-size:0.9rem;">@FilterParameters.Type.GetEnumDescription()</span>
-            <span class="font-weight-bold text-lowercase ml-3 pointer" style="font-size:0.9rem;"><i class="fas fa-times text-danger" @onclick="() => TypeFilterChanged(PunterHomeDomain.Enums.ERecipeType.None)"></i></span>
-        </div>
-    }
-    else
-    {
+                <span class="text-lowercase" style="font-size:0.9rem;">@FilterParameters.Type.GetEnumDescription()</span>
+                <span class="font-weight-bold text-lowercase ml-3 pointer" style="font-size:0.9rem;"><i class="fas fa-times text-danger" @onclick="() => TypeFilterChanged(PunterHomeDomain.Enums.ERecipeType.None)"></i></span>
+            </div>
+        }
+        else
+        {
 
-        <div class="d-flex flex-column">
-            <span class="font-weight-bold text-lowercase" style="font-size:0.9rem;">Type</span>
-            <div class="@NavMenuCssClass">
+            <div class="d-flex flex-column">
+                <span class="font-weight-bold text-lowercase" style="font-size:0.9rem;">Type</span>
                 <ul class="list-unstyled" style="font-size:0.9rem;">
                     @foreach (var i in GetRecipeTypesInfo())
                     {
@@ -39,7 +39,7 @@
                     }
                 </ul>
             </div>
-        </div>
-    }
-    <hr class="bg-el-0"/>
-</div>
+        }
+        <hr class="bg-el-0" />
+    </div>
+    </div>

@@ -20,12 +20,11 @@ namespace BlazorPunterHomeApp.Data
 
     public class SelectableShoppingListItem
     {
-        public SelectableShoppingListItem(ShoppingListItemDetailsModel item)
+        public SelectableShoppingListItem(ShoppingListShopItem item)
         {
             Item = item;
         }
 
-        public bool IsChecked { get; set; }
-        public ShoppingListItemDetailsModel Item { get; }
+        public ShoppingListShopItem Item { get; }
     }
 }

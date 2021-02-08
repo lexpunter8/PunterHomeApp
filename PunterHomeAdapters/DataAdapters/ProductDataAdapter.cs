@@ -24,6 +24,11 @@ namespace PunterHomeApp.DataAdapters
 
         public void AddProduct(LightProduct product, out Guid newID)
         {
+            if (string.IsNullOrEmpty(product.Name))
+            {
+                newID = Guid.Empty;
+                return;
+            }
             DbProduct newProduct = new DbProduct
             {
                 Id = Guid.NewGuid(),
@@ -197,7 +202,7 @@ namespace PunterHomeApp.DataAdapters
                     {
                         new MeasurementAmount
                         {
-                            Amount = quantity.QuantityTypeVolume,
+                            Amount = quantity.QuantityTypeVolume * value,
                             Type = quantity.UnitQuantityType
                         }
                     }
@@ -210,7 +215,7 @@ namespace PunterHomeApp.DataAdapters
             var measurementClass = JsonConvert.DeserializeObject<MeasurementClassObject>(quantity.ProductId.MeasurementValues);
             measurementClass.Add(new MeasurementAmount
             {
-                Amount = quantity.QuantityTypeVolume,
+                Amount = quantity.QuantityTypeVolume * value,
                 Type = quantity.UnitQuantityType
             });
             //if (measurementClass.Values.Any(v => v.Type == quantity.UnitQuantityType))

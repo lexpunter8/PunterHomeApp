@@ -48,7 +48,7 @@ namespace BlazorPunterHomeApp.Data
             string responseString = await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<ProductModel[]> GetProducts()
+        public async Task<List<ProductModel>> GetProducts()
         {
             var httpClient = new HttpClient();
             Uri uri = new Uri("http://localhost:5005/api/product");
@@ -57,7 +57,7 @@ namespace BlazorPunterHomeApp.Data
             var result = JsonConvert.DeserializeObject<ProductModel[]>(responseString);
              var t = result.OrderBy(q => q.Name).ToArray();
 
-            return t;
+            return t.ToList();
         }
 
         internal Task AddQuantityToProduct(object newProductQuantity, ProductDetailsViewModel product)

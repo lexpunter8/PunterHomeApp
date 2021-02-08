@@ -6,9 +6,18 @@ using static Enums;
 
 namespace DataModels.Measurements
 {
+    public class MeasurementForShopItemModel
+    {
+        public MeasurementForShopItemModel(BaseMeasurement measurement)
+        {
+            Measurement = measurement;
+        }
 
+        public int Count { get; set; }
+        public BaseMeasurement Measurement { get; }
+    }
 
-    public class BaseMeasurement
+    public class BaseMeasurement  
     {
         public BaseMeasurement(EUnitMeasurementType measurementType)
         {
@@ -41,9 +50,58 @@ namespace DataModels.Measurements
                     return new Gram();
                 case EUnitMeasurementType.Mg:
                     return new MiliGram();
+                case EUnitMeasurementType.Piece:
+                    return new Piece();
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        public static BaseMeasurement GetMeasurement(BaseMeasurement m)
+        {
+            BaseMeasurement baseMeasurement;
+            switch (m.MeasurementType)
+            {
+                case EUnitMeasurementType.Liter:
+                    baseMeasurement = new Liter();
+                    break;
+                case EUnitMeasurementType.Ml:
+                    baseMeasurement = new MiliLiter();
+                    break;
+                case EUnitMeasurementType.Dl:
+                    baseMeasurement = new DeciLiter();
+                    break;
+                case EUnitMeasurementType.Kg:
+                    baseMeasurement = new KiloGram();
+                    break;
+                case EUnitMeasurementType.Gr:
+                    baseMeasurement = new Gram();
+                    break;
+                case EUnitMeasurementType.Mg:
+                    baseMeasurement = new MiliGram();
+                    break;
+                case EUnitMeasurementType.Piece:
+                    baseMeasurement = new Piece();
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+            baseMeasurement.ProductQuantityId = m.ProductQuantityId;
+            baseMeasurement.UnitQuantityTypeVolume = m.UnitQuantityTypeVolume;
+            baseMeasurement.Barcode = m.Barcode;
+            return baseMeasurement;
+        }
+    }
+
+    public class Piece : BaseMeasurement
+    {
+        public Piece() : base(EUnitMeasurementType.Piece)
+        {
+        }
+
+        public override double ConvertTo(EUnitMeasurementType measurementType)
+        {
+            return UnitQuantityTypeVolume;
         }
     }
 

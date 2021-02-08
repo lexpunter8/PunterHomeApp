@@ -1,0 +1,29 @@
+﻿@if (ShowModal)
+{
+    <div class="modal-backdrop show"></div>
+
+    <div class="modal fade show" id="qModal" tabindex="1"
+         role="dialog" aria-labelledby="qModalLabel"
+         aria-hidden="true" style="display:block">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header"></div>
+                <div class="modal-body">
+                    <div class="row p-2">
+                        Required: @RequiredAmount @MeasurementType
+                        Current: @CurrentSelectedAmount @MeasurementType
+                    </div>
+                    <ul class="list-group">
+                        @foreach (var item in MeasurementsOptions)
+                        {
+                            <li class="list-group-item" @onclick="() => MeasurementClicked(item)">@(item.SelectedCount > 0 ? $"{item.SelectedCount} x" : "") @item.Measurement.UnitQuantityTypeVolume @item.Measurement.MeasurementType</li>
+                        }
+                    </ul>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+
+        </div>
+
+    </div>
+    }

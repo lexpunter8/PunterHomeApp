@@ -8,6 +8,17 @@ using System.Threading.Tasks;
 
 namespace BlazorPunterHomeApp.Pages
 {
+    public class ShoppingListDetailsViewModel
+    {
+        public ShoppingListDetailsViewModel(ShoppingListItemDetailsModel model)
+        {
+            Model = model;
+        }
+
+        public bool ShowInfo { get; set; }
+
+        public ShoppingListItemDetailsModel Model { get; }
+    }
     public partial class ShoppingList : ComponentBase
     {
         [Inject]
@@ -17,7 +28,7 @@ namespace BlazorPunterHomeApp.Pages
             await Refresh();
         }
 
-        public List<ShoppingListItemDetailsModel> ListItems { get; set; } = new List<ShoppingListItemDetailsModel>();
+        public List<ShoppingListDetailsViewModel> ListItems { get; set; } = new List<ShoppingListDetailsViewModel>();
 
         public async void AddQuantityToItem(ShoppingListItemDetailsModel item)
         {
@@ -41,8 +52,21 @@ namespace BlazorPunterHomeApp.Pages
 
         public async Task Refresh()
         {
-            ListItems = await ShoppingListService.GetShoppingListItems();
+            var items = await ShoppingListService.GetShoppingListItems();
+
+            ListItems = items.Select(i => new ShoppingListDetailsViewModel(i)).ToList();
             StateHasChanged();
+        }
+
+        public void ShowInfo(ShoppingListDetailsViewModel item)
+        {
+            if (item.ShowInfo)
+            {
+                item.ShowInfo = false;
+                return;
+            }
+            ListItems.ForEach(i => i.ShowInfo = false);
+            item.ShowInfo = true;
         }
     }
 

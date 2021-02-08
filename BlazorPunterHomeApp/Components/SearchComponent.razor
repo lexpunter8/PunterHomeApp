@@ -1,0 +1,21 @@
+﻿<EditForm Model="SearchModel" OnValidSubmit="() => OnSearch.InvokeAsync(SearchModel)" class="row mt-3">
+    <div class="col-12 col-md-9">
+        <div class=" input-group">
+            <input type="text" class="form-control" placeholder="@TextPlaceholder" id="name" @bind-value="SearchModel.SearchText" aria-describedby="button-addon2" />
+
+            <div class="input-group-append">
+
+                <button class="btn btn-primary" type="button" @onclick="() => OnSearch.InvokeAsync(SearchModel)"><Icon Name="IconName.Search"></Icon></button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group col-12 col-md-3">
+        <select id="inputState" class="form-control" @bind="SortOrder">
+            <option value="@ESortOrder.Ascending">A-Z</option>
+            <option value="@ESortOrder.Descending">Z-A</option>
+        </select>
+    </div>
+</EditForm>
+

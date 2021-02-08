@@ -12,6 +12,16 @@ using System.Threading.Tasks;
 
 namespace BlazorPunterHomeApp.Pages
 {
+    public class EditableRecipeStep
+    {
+        public EditableRecipeStep(RecipeStep step)
+        {
+            Step = step;
+        }
+
+        public RecipeStep Step { get; }
+        public bool IsEditting { get; set; }
+    }
     public partial class RecipedetailsViewBase : ComponentBase
     {
         [Parameter]
@@ -27,10 +37,10 @@ namespace BlazorPunterHomeApp.Pages
 
         public int IngredientMultiplier { get; set; } = 1;
         public RecipeDetailsApiModel Recipedetails { get; set; }
-
+        public List<EditableRecipeStep> RecipeSteps { get; set; } = new List<EditableRecipeStep>();
         protected async override void OnParametersSet()
         {
-            Recipedetails = await RecipeService.GetRecipeById(Id);
+            Refresh();
             StateHasChanged();
 
         }
@@ -76,6 +86,13 @@ namespace BlazorPunterHomeApp.Pages
             StateHasChanged();
         }
 
+        public async void UpdateStep(EditableRecipeStep step)
+        {
+            await RecipeService.UpdateStep(step.Step);
+            step.IsEditting = false;
+            StateHasChanged();
+        }
+
         public async void AddStep()
         {
             await RecipeService.AddStep(new RecipeStep
@@ -111,7 +128,8 @@ namespace BlazorPunterHomeApp.Pages
 
         private async Task Refresh()
         {
-            Recipedetails = await RecipeService.GetRecipeById(Recipedetails.Id);
+            Recipedetails = await RecipeService.GetRecipeById(Id);
+            RecipeSteps = Recipedetails.Steps.Select(s => new EditableRecipeStep(s)).ToList();
             StateHasChanged();
         }
     }

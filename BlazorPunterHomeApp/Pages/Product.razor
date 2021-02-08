@@ -15,105 +15,94 @@
 @inject IBarcodeScannerService barcodeScannerService;
 
 
-<div class="container-fluid bg-el-1">
-    <div class="bg-el-0" style="position:absolute; top: 0; right: 0; width: 50%; height:100%; min-height: 100px;">
-    </div>
-    <div class="container-xl justify-content-center">
+    <div class="container-fluid justify-content-center p-0">
 
-        <div class="row">
+        <div class="row p-0 m-0">
 
-            <div class="col-12 col-md-auto bg-el-1 pl-2 pr-5">
+            <div class="col-12 col-md-3 bg-el-1 pr-5 d-flex flex-column">
+                <div class="d-flex justify-content-center justify-content-md-end">
+
                     <div style="width:220px" class="p-2">
-                        @*<BlazorPunterHomeApp.Components.RecipeFilterComponent FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>*@
+                        @*<BlazorPunterHomeApp.Components.RecipeFilterComponent RecipeState="State" FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>*@
                     </div>
                 </div>
+            </div>
 
             @*
                 recipe card
             *@
-            <div class="col-12 col-md bg-el-0">
+        <div class="col-12 col-md bg-el-0">
+            <div class="container-md">
 
                 @if (myIsCreatingProduct)
                 {
 
-                    <div class="row p-2 ml-3 bg-el-1 animation" id="newRecipeCollapse">
+                    <div class="row p-2 bg-el-1 animation" id="newRecipeCollapse">
                         <div class="col-12">
-                            <label class="h4">Create recipe</label>
+                            <label class="h4">Product aanmaken</label>
                             <EditForm Model="NewProductModel" OnValidSubmit="HandleNewProductSubmit">
                                 <DataAnnotationsValidator />
                                 <div class="form-group">
-                                    <label>Recipe name</label>
-                                    <input type="text" @bind-value="NewProductModel.Name" class="form-control" id="inputAddress" placeholder="Recipe name">
+                                    <label>Product naam</label>
+                                    <ValidationMessage For="@(() => NewProductModel.Name)" />
+                                    <InputText @bind-Value="NewProductModel.Name" class="form-control" id="inputAddress" placeholder="Product naam" />
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label>Recipe type</label>
+                                    <label>Product hoeveelheid</label>
+                                    <ValidationMessage For="@(() => NewProductModel.UnitQuantity)" />
+                                    <ValidationMessage For="@(() => NewProductModel.UnitQuantityType)" />
                                     <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Size</span>
-                                            <input type="number" class="form-control" @bind="NewProductModel.UnitQuantity">
-                                        </div>
+                                        <InputNumber class="form-control" @bind-Value="NewProductModel.UnitQuantity" />
 
-                                        <select class="custom-select" id="inputGroupSelect01" @bind="NewProductModel.UnitQuantityType">
+                                        <InputSelect class="custom-select" id="inputGroupSelect01" @bind-Value="NewProductModel.UnitQuantityType">
                                             @foreach (var cnt in Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList())
-                                            {
+                                                {
                                                 <option value="@cnt">@cnt.GetEnumDescription()</option>
-                                            }
-                                        </select>
+                                                }
+                                        </InputSelect>
                                     </div>
                                 </div>
                                 <div class="form-group d-flex justify-content-end p-2">
 
                                     <div>
-                                        <button class="btn btn-primary" type="submit">Add recipe</button>
+                                        <button class="btn btn-primary mx-2" type="submit">Product toevoegen</button>
                                     </div>
                                     <div>
-                                        <button class="ml-2 btn btn-outline-primary" @onclick="ToggleCreateProduct">Cancel</button>
+                                        <button class="btn btn-outline-primary" @onclick="ToggleCreateProduct">Cancel</button>
                                     </div>
                                 </div>
                             </EditForm>
                         </div>
                     </div>
                 }
-                @if (!myIsCreatingProduct)
-                {
 
-                    <div class="row">
-                        <button class="btn btn-primary" type="button" @onclick="ToggleCreateProduct">
-                            Create recipe
-                        </button>
-
-                    </div>
-                }
-
-                <div class="row ml-1 mt-3">
-                    <div class="col-12 col-md-9">
-                        <div class=" input-group">
-                            <input type="text" class="form-control" placeholder="Search recipe" id="name" @bind-value="searchTest" aria-describedby="button-addon2" />
-
-                            <div class="input-group-append">
-
-                                <button class="btn btn-primary" type="button" @onclick="Search"><Icon Name="IconName.Search"></Icon></button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="form-group col-12 col-md-3">
-                        <select id="inputState" class="form-control">
-                            <option selected>Newest</option>
-                            <option>A-Z</option>
-                            <option>Z-A</option>
-                        </select>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <SearchComponent TextPlaceholder="Zoek product" OnSearch="Search" @ref="SearchComponent"></SearchComponent>
+                        
                     </div>
                 </div>
 
-                <div class="row ml-2 mt-2">
+                <div class="row mt-2">
                     <div class="col-12 col-md-6">
-                        <span class="ml-2 h2">@products.Length Products</span>
+
+                        <span class="h2">@products.Count Products</span>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        @if (!myIsCreatingProduct)
+                        {
+                            <div class="d-flex flex-column align-self-stretch align-self-md- justify-content-md-end">
+
+                                <button class="btn btn-primary" type="button" @onclick="ToggleCreateProduct">
+                                    Create product
+                                </button>
+                            </div>
+
+                        }
                     </div>
                 </div>
 
-                <div class="row ml-1">
+                <div class="row">
                     @foreach (var cnt in products)
                     {
                         <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-4">
@@ -145,116 +134,43 @@
                 </div>
             </div>
         </div>
-
-    </div>
-</div>
-
-
-
-<div class="container-fluid collapse">
-    <div class="row">
-        <div class="col-md-4 col-sm-9 col-10">
-
-            <h3>Products</h3>
         </div>
-        <div class="col-md-2 col-sm-3 col-2">
-            <div id="scanner-container"></div>
-            <button @onclick="ShowNewProductModal" class="btn btn-primary" style="float: right;"><Icon Name="IconName.Add"></Icon></button>
-            <button @onclick="ShowNewScanBarcodeModal" class="btn btn-primary" style="float: right;"><Icon Name="IconName.Camera"></Icon></button>
-        </div>
+
     </div>
-    <div class="row">
-        @foreach (var cnt in products)
-        {
-            <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-4">
-                <a href="@($"product/{cnt.Id}")" class="custom-card">
-                    <div class="card" style="margin-top:5px;">
-                        <div class="card-body">
-                            <h5 class="card-title">@cnt.Name</h5>
-                            <ul class="ul-np">
-                                @foreach (var label in cnt.Tags)
-                                {
-                                    <li style="margin-left:1px" class="prodruct-tag bg-green">
-
-                                        <span style="font-size: 12px;font-weight: bold; text-transform: uppercase; color:white">
-                                            @label.Name
-                                        </span>
-                                    </li>
-
-                                }
-                            </ul>
-
-                        </div>
-                    </div>
-                </a>
-
-
-            </div>
-
-        }
-    </div>
-
-    @*@if (SelectedProduct != null && false)
-        {
-            <div id="details" class="col-sm-12 col-md-6">
-                <h4>@SelectedProduct.CurrentSelectedProduct.Name</h4>
-                <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProduct(SelectedProduct.CurrentSelectedProduct))">Delete product</label>
-                <p>@SelectedProduct.CurrentSelectedProduct.Id</p>
-                <p>@SelectedProduct.CurrentSelectedProduct.GetQuantityString()</p>
-
-                @foreach (var prodQuan in SelectedProduct.CurrentSelectedProduct.ProductQuantities)
-                {
-                    <div class="row">
-                        <div class="col">
-                            <p>
-                                @prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType<br>
-                                <div class="input-group col-6">
-                                    <span class="input-group-btn">
-                                        <button type="button" @onclick="@(e => DecreaseQuantity(prodQuan.Id))" class="btn btn-square btn-danger btn-number" data-type="minus" data-field="quant[2]">
-                                            <span class="glyphicon glyphicon-minus">-</span>
-                                        </button>
-                                    </span>
-                                    <span class="input-group-btn">
-                                        <button type="button" @onclick="@(e => IncreaseQuantity(prodQuan.Id))" class="btn btn-square btn-success btn-number" data-type="plus" data-field="quant[2]">
-                                            <span class="glyphicon glyphicon-plus">+</span>
-                                        </button>
-                                    </span>
-                                </div>
-                            </p>
-                        </div>
-                        <div class="col">
-                            <label style="cursor:pointer; font-size:10pt; color:red" @onclick="@(e => HandleDeleteProductQuantity(prodQuan.Id))">Delete product quantity</label>
-                        </div>
-                    </div>
-                }
-
-                <div class="row">
-                    <button @onclick="ShowAddProductQuantityModal" class="btn btn-outline-secondary">Add quantity</button>
-                </div>
-            </div>
-        }*@
-</div>
 
 @code {
+    public SearchComponent SearchComponent { get; set; }
     public NewProductApiModel newProduct = new NewProductApiModel();
-    private ProductModel[] products = new ProductModel[0];
+    private List<ProductModel> products = new List<ProductModel>();
     private bool myIsCreatingProduct;
-    private NewProductApiModel NewProductModel = new NewProductApiModel();
+    private NewProductValidationModel NewProductModel = new NewProductValidationModel();
 
     private async void HandleNewProductSubmit()
     {
-        await ProductService.AddProduct(NewProductModel);
+        if (string.IsNullOrEmpty(NewProductModel.Name) || NewProductModel.UnitQuantityType == EUnitMeasurementType.None)
+        {
+            return;
+        }
+        await ProductService.AddProduct(new NewProductApiModel
+        {
+            Name = NewProductModel.Name,
+            UnitQuantity = NewProductModel.UnitQuantity,
+            UnitQuantityType = NewProductModel.UnitQuantityType
+        });
         ToggleCreateProduct();
 
     }
 
-    private void ToggleCreateProduct()
+    private async void ToggleCreateProduct()
     {
         if (myIsCreatingProduct)
         {
-            NewProductModel = new NewProductApiModel();
+            NewProductModel = new NewProductValidationModel();
         }
         myIsCreatingProduct = !myIsCreatingProduct;
+
+        products = await ProductService.GetProducts();
+        StateHasChanged();
     }
 
     protected override async Task OnInitializedAsync()
@@ -264,7 +180,7 @@
         {
             products = await ProductService.GetProducts();
 
-            InvokeAsync(() => StateHasChanged());
+            await InvokeAsync(() => StateHasChanged());
         };
     }
 
@@ -305,9 +221,15 @@
 
     }
 
-    private string searchTest = string.Empty;
-    private void Search()
+    private string searchText = string.Empty;
+    private async void Refresh()
     {
+        products = await ProductService.SearchProducts(SearchComponent.SearchModel.SearchText);
+        StateHasChanged();
+    }
 
+    public void Search(SearchModel model)
+    {
+        Refresh();
     }
 }

@@ -80,6 +80,29 @@ namespace BlazorPunterHomeApp
             }
         }
 
+        public async Task UpdateStep(RecipeStep step)
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(step);
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var client = new HttpClient();
+
+                var response = await client.PutAsync(new Uri($"http://localhost:5005/api/RecipeStep"), data);
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                client.Dispose();
+
+            }
+            catch (Exception)
+            {
+
+
+            }
+        }
+
         public async Task AddStep(RecipeStep newStep, Guid recipeId)
         {
             try

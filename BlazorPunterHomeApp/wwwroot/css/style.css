@@ -1,4 +1,16 @@
-﻿/*/ X-Small devices (portrait phones, less than 576px)
+﻿.validation-message{
+    color: #CF6679;
+}
+
+.invalid {
+    outline-color: #CF6679;
+}
+
+.valid {
+    outline-color: #61b38e;
+}
+
+/*/ X-Small devices (portrait phones, less than 576px)
 // No media query for `xs` since this is the default in Bootstrap*/
 .full-wo-nav {
     min-height: calc(100vh - 50px)

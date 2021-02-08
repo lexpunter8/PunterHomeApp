@@ -138,7 +138,8 @@ namespace PunterHomeApp.DataAdapters
             {
                 Id = recipe.Id,
                 Order = recipe.Order,
-                Text = recipe.Text
+                Text = recipe.Text,
+                RecipeId = recipe.Recipe.Id
             };
         }
 
@@ -241,6 +242,47 @@ namespace PunterHomeApp.DataAdapters
 
             context.RecipeSteps.Remove(step);
             context.SaveChanges();
+        }
+
+        public void UpdateStep(Guid stepId, string text = null, int order = 0)
+        {
+            if (text == null && order == 0)
+            {
+                return;
+            }
+
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var step = context.RecipeSteps.FirstOrDefault(s => s.Id == stepId);
+
+            if (text != null)
+            {
+                step.Text = text;
+            }
+
+            if (order != 0)
+            {
+                step.Order = order;
+            }
+
+            context.SaveChanges();
+        }
+
+        public IEnumerable<RecipeStep> GetStepForRecipe(Guid guid)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            return context.RecipeSteps
+                .Include(s => s.Recipe)
+                .Where(r => r.Recipe.Id == guid)
+                .Select(s => new RecipeStep
+                            {
+                                Id = s.Id,
+                                Order = s.Order,
+                                RecipeId = s.Recipe.Id,
+                                Text = s.Text
+                            })
+                .ToList();
         }
     }
 

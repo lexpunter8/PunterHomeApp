@@ -11,7 +11,7 @@ public class Enums
     }
     public enum EUnitMeasurementType
     {
-        [Description("Choose..")]
+        [Description("Selecteer..")]
         None,
         [Description("Kilogram")]
         Kg,
@@ -26,6 +26,8 @@ public class Enums
         [Description("Mililiter")]
         Ml,
         Cl,
+        [Description("Stuk")]
+        Piece
     }
 
     public enum EMeasurementClass

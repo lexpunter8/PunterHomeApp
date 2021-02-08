@@ -145,11 +145,69 @@ namespace PunterHomeApp.Services
             recipeAdapter.RemoveStep(stepId);
         }
 
+        public void UpdateStep(RecipeStep step)
+        {
+            var allStepForRecipe = recipeAdapter.GetStepForRecipe(step.RecipeId).ToList();
+            var recipeToUpdate = allStepForRecipe.FirstOrDefault(r => r.Id == step.Id);
+
+            bool isTextChanged = !string.IsNullOrEmpty(step.Text) && step.Text != recipeToUpdate.Text;
+            if ( isTextChanged && step.Order == recipeToUpdate.Order)
+            {
+                recipeAdapter.UpdateStep(step.Id, step.Text);
+                return;
+            }
+
+            allStepForRecipe.Remove(recipeToUpdate);
+            allStepForRecipe.Insert(step.Order - 1, recipeToUpdate);
+
+            int order = 1;
+            foreach (var item in allStepForRecipe)
+            {
+                item.Order = order++;
+                if (item.Id == recipeToUpdate.Id)
+                {
+                    recipeAdapter.UpdateStep(step.Id, isTextChanged ? step.Text : null, step.Order);
+                    continue;
+                }
+                recipeAdapter.UpdateStep(item.Id, order: item.Order);
+            }
+
+        }
+
+        public void UpdateStep1(RecipeStep step)
+        {
+            var allStepForRecipe = recipeAdapter.GetStepForRecipe(step.RecipeId);
+            var recipeToUpdate = allStepForRecipe.FirstOrDefault(r => r.Id == step.Id);
+
+            if (step.Order < recipeToUpdate.Order)
+            {
+
+                var stepsBetween = allStepForRecipe.Where(r => r.Order >= step.Order && r.Order < recipeToUpdate.Order);
+                foreach (var item in stepsBetween)
+                {
+                    item.Order++;
+                    recipeAdapter.UpdateStep(item.Id, item.Text, item.Order);
+                }
+
+            }
+            else
+            {
+                var stepsBetween = allStepForRecipe.Where(r => r.Order <= step.Order && r.Order > recipeToUpdate.Order);
+                foreach (var item in stepsBetween)
+                {
+                    item.Order--;
+                    recipeAdapter.UpdateStep(item.Id, item.Text, item.Order);
+                }
+            }
+
+            recipeAdapter.UpdateStep(step.Id, step.Text, step.Order);
+
+        }
         public async Task<IEnumerable<RecipeApiModel>> Search(SearchRecipeParameters parameters)
         {
             var all = await recipeAdapter.GetAllRecipes();
 
-            BaseRecipeFilter filter = new RecipeNameFilter(parameters.Name);
+            BaseFilter<RecipeApiModel> filter = new NameFilter<RecipeApiModel>(parameters.Name);
             if(parameters.Type != ERecipeType.None)
             {
                 filter = new RecipeTypeFilter(parameters.Type, filter);
@@ -182,21 +240,25 @@ namespace PunterHomeApp.Services
         IEnumerable<T> Filter(IEnumerable<T> items);
     }
 
-    public class RecipeNameFilter : BaseRecipeFilter
+    public class NameFilter<T> : BaseFilter<T> where T : IName
     {
         private readonly string filterName;
 
-        public RecipeNameFilter(string filterName, BaseRecipeFilter previous = null) : base(previous)
+        public NameFilter(string filterName, BaseFilter<T> previous = null) : base(previous)
         {
             this.filterName = filterName;
         }
-        protected override IEnumerable<RecipeApiModel> FilterAction(IEnumerable<RecipeApiModel> items)
+        protected override IEnumerable<T> FilterAction(IEnumerable<T> items)
         {
-            return items.Where(i => i.Name.Contains(filterName));
+            return items.Where(i => i.Name.ToLower().Contains(filterName.ToLower()));
         }
     }
+    public interface IName
+    {
+        public string Name { get; set; }
+    }
 
-    public class RecipeTypeFilter : BaseRecipeFilter
+    public class RecipeTypeFilter : BaseFilter<RecipeApiModel> 
     {
         private readonly ERecipeType typeFilter;
 
@@ -211,19 +273,19 @@ namespace PunterHomeApp.Services
         }
     }
 
-    public abstract class BaseRecipeFilter : IFilter<RecipeApiModel>
+    public abstract class BaseFilter<T> : IFilter<T>
     {
-        private readonly IFilter<RecipeApiModel> previousFilter;
+        private readonly IFilter<T> previousFilter;
 
-        public BaseRecipeFilter(IFilter<RecipeApiModel> previousFilter)
+        public BaseFilter(IFilter<T> previousFilter)
         {
             this.previousFilter = previousFilter;
         }
 
 
-        protected abstract IEnumerable<RecipeApiModel> FilterAction(IEnumerable<RecipeApiModel> items);
+        protected abstract IEnumerable<T> FilterAction(IEnumerable<T> items);
 
-        public IEnumerable<RecipeApiModel> Filter(IEnumerable<RecipeApiModel> items)
+        public IEnumerable<T> Filter(IEnumerable<T> items)
         {
             var filtered = previousFilter?.Filter(items) ?? items;
             return FilterAction(filtered);

@@ -11,9 +11,23 @@ using static Enums;
 
 namespace PunterHomeDomain.Services
 {
-    public class StaticShoppingListItem
+    public class QuantityWithInfo
     {
+        public QuantityWithInfo(BaseMeasurement measurement)
+        {
+            Measurement = measurement;
+        }
 
+        public BaseMeasurement Measurement { get; }
+        public double MaxPossibleForRequestMin => RequestedAmount / NormalizedValue;
+        public double DifferenceMin => RequestedAmount - (NormalizedValue * (MaxPossibleForRequestMin >= 1 ? Math.Floor(MaxPossibleForRequestMin) : 1));
+        public double DifferencePercentageMin => MaxPossibleForRequestMin - Math.Floor(MaxPossibleForRequestMin);
+        public double NormalizedValue { get; internal set; }
+        public double RequestedAmount { get; internal set; }
+
+
+        public double MaxPossibleForRequestMax => Math.Ceiling(RequestedAmount / NormalizedValue);
+        public double DifferenceMax => Math.Abs(RequestedAmount - (NormalizedValue * MaxPossibleForRequestMax));
     }
 
     public class DynamicShoppingListItem
@@ -21,17 +35,31 @@ namespace PunterHomeDomain.Services
 
     }
 
+    public class ShoppingListShopItem
+    {
+        public Guid ProductId { get; set; }
+        public BaseMeasurement Measurement { get; set; }
+        public int Amount { get; set; }
+        public bool IsChecked { get; set; }
+        public Guid Id { get; set; }
+        public string ProductName { get; set; }
+        public List<MeasurementForShopItemModel> MeasurementsForChecked { get; set; } = new List<MeasurementForShopItemModel>();
+    }
+
     public class ShoppingListItemDetailsModel
     {
-        public List<ShoppingListItemModel> StaticItems { get; set; } = new List<ShoppingListItemModel>();
-        public List<ShoppingListItemModel> DynamicItems { get; set; } = new List<ShoppingListItemModel>();
+        public List<ShoppingListItemInfoModel> StaticItems { get; set; } = new List<ShoppingListItemInfoModel>();
+        public List<ShoppingListItemInfoModel> DynamicItems { get; set; } = new List<ShoppingListItemInfoModel>();
 
+        public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public string ProductName { get; set; }
         public double DynamicAmountRequested { get; set; }
         public double DynamicAmountAvailable { get; set; }
         public double StaticAmount { get; set; }
         public EUnitMeasurementType MeasurementType { get; set; }
+        public bool IsChecked { get; set; }
+        public double TotalAmount => StaticAmount + (DynamicAmountRequested - DynamicAmountAvailable);
     }
 
     public class ShoppingListService : IShoppingListService
@@ -51,31 +79,111 @@ namespace PunterHomeDomain.Services
         {
             return myShoppingListDataAdapter.GetShoppingLists();
         }
+        public List<ShoppingListShopItem> GetShoppingListShopItems(Guid shoppingListId)
+        {
+            List<ShoppingListItemDetailsModel> items = GetItemsForShoppingList(shoppingListId);
+            List<ShoppingListShopItem> shopItems = new List<ShoppingListShopItem>();
+            var shoppingListITems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId);
+
+            foreach (var item in items)
+            {
+                var totRequestedAmount = item.StaticAmount + (item.DynamicAmountRequested < item.DynamicAmountAvailable ? 0 : item.DynamicAmountRequested - item.DynamicAmountAvailable);
+                var product = myProductDataAdapter.GetProductById(item.ProductId);
+
+                var list = product.ProductQuantities.ToList();
+                list.Sort(new ProductQuantitySorter());
+
+                var quantitiesWithHigherAmount = list.Where(i => i.ConvertTo(item.MeasurementType) > totRequestedAmount);
+
+                // if any with higher amount then required, we can add the lowest , which is the first
+                if (quantitiesWithHigherAmount.Any() && false)
+                {
+                    var newShopItem = new ShoppingListShopItem
+                    {
+                        Id = item.Id,
+                        ProductName = item.ProductName,
+                        Amount = 1,
+                        Measurement = quantitiesWithHigherAmount.First(),
+                        IsChecked = item.IsChecked, /// TODO,
+                        ProductId = item.ProductId,
+                        MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id)
+                    };
+                    shopItems.Add(newShopItem);
+                    continue;
+                }
+
+                // TODO if not lowest
+                var result = GetQuantityWithInfos(list, item.MeasurementType, totRequestedAmount);
+
+                var resultZeroDiff = result.Where(r => r.DifferenceMin == 0);
+
+                if (resultZeroDiff.Any())
+                {
+                    var minAmount = resultZeroDiff.Min(r => r.MaxPossibleForRequestMin);
+                    var itemToUse = resultZeroDiff.First(r => r.MaxPossibleForRequestMin == minAmount);
+                    shopItems.Add(new ShoppingListShopItem
+                    {
+                        Amount = Convert.ToInt32(itemToUse.MaxPossibleForRequestMin),
+                        Measurement = itemToUse.Measurement,
+                        IsChecked = item.IsChecked, /// TODO,
+                        ProductId = item.ProductId,
+                        Id = item.Id,
+                        ProductName = item.ProductName,
+                        MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id)
+                    });
+                    continue;
+                }
+
+                result.OrderBy(r => r.DifferenceMax).ThenBy(s => s.MaxPossibleForRequestMax);
+
+                shopItems.Add(new ShoppingListShopItem
+                {
+                    Amount = Convert.ToInt32(result.First().MaxPossibleForRequestMax),
+                    Measurement = result.First().Measurement,
+                    IsChecked = item.IsChecked, /// TODO,
+                    ProductId = item.ProductId,
+                        Id = item.Id,
+                    ProductName = item.ProductName,
+                    MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id)
+                });
+            }
+
+
+            return shopItems;
+        }
+
+        public List<QuantityWithInfo> GetQuantityWithInfos(List<BaseMeasurement> measurements, EUnitMeasurementType measurementType, double totRequestedAmount)
+        {
+            var infos = new List<QuantityWithInfo>();
+
+            foreach (var item in measurements)
+            {
+                var newInfo = new QuantityWithInfo(item);
+                newInfo.NormalizedValue = item.ConvertTo(measurementType);
+                newInfo.RequestedAmount = totRequestedAmount;
+
+                infos.Add(newInfo);
+            }
+
+            infos.OrderBy(i => i.MaxPossibleForRequestMin);
+            return infos;
+        }
 
         public List<ShoppingListItemDetailsModel> GetItemsForShoppingList(Guid shoppingListId)
         {
-             var allItems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId);
-            Dictionary<Guid, List<ShoppingListItemModel>> productIdWithShoppingItem = new Dictionary<Guid, List<ShoppingListItemModel>>();
-
-            foreach (var item in allItems)
-            {
-                if (productIdWithShoppingItem.ContainsKey(item.ProductId))
-                {
-                    productIdWithShoppingItem[item.ProductId].Add(item);
-                    continue;
-                }
-                productIdWithShoppingItem.Add(item.ProductId, new List<ShoppingListItemModel> { item });
-            }
-
+            List<ShoppingListItemModel> allProducts = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId);
+            
             var detailItems = new List<ShoppingListItemDetailsModel>();
-            foreach (var item in productIdWithShoppingItem)
+            foreach (ShoppingListItemModel sItem in allProducts)
             {
+                ProductDetails product = myProductDataAdapter.GetProductById(sItem.ProductId);
+                //List<ShoppingListItemInfoModel> infoItems = myShoppingListDataAdapter.GetInfoItemsForShoppingListItem(sItem.Id);
                 ShoppingListItemDetailsModel details = new ShoppingListItemDetailsModel();
 
-                var measurementType = item.Value.First().MeasurementType;
+                var measurementType = sItem.InfoItems.First().MeasurementType;
                 MeasurementClassObject amountObject = new MeasurementClassObject();
 
-                item.Value.Where(i => i.RecipeItem == null).ToList().ForEach(a =>
+                sItem.InfoItems.Where(i => i.RecipeItem == null).ToList().ForEach(a =>
                 {
                     details.StaticItems.Add(a);
                     amountObject.Values.Add(new MeasurementAmount
@@ -90,7 +198,7 @@ namespace PunterHomeDomain.Services
 
                 MeasurementClassObject amountDynamicObject = new MeasurementClassObject();
 
-                item.Value.Where(i => i.RecipeItem != null).ToList().ForEach(a => {
+                sItem.InfoItems.Where(i => i.RecipeItem != null).ToList().ForEach(a => {
                     details.DynamicItems.Add(a);
                     
                     amountDynamicObject.Values.Add(                    
@@ -106,13 +214,14 @@ namespace PunterHomeDomain.Services
                 details.DynamicAmountRequested = totalDynamicAmount;
                 details.StaticAmount = totalStaticAmount;
                 details.MeasurementType = measurementType;
-                details.ProductId = item.Key;
-                details.ProductName = item.Value.First().ProductName;
-                var prod = myProductDataAdapter.GetProductById(item.Key);
+                details.ProductId = sItem.ProductId;
+                details.ProductName = sItem.ProductName;
+                details.Id = sItem.Id;
+                details.IsChecked = sItem.IsChecked;
 
-                if (prod.MeasurementAmounts != null)
+                if (product.MeasurementAmounts != null)
                 {
-                    details.DynamicAmountAvailable = prod.MeasurementAmounts.GetTotalAmount(measurementType);
+                    details.DynamicAmountAvailable = product.MeasurementAmounts.GetTotalAmount(measurementType);
                 }
                 detailItems.Add(details);
             }
@@ -171,13 +280,25 @@ namespace PunterHomeDomain.Services
 
         public void AddQuantityToProductForCheckedItems(Guid shoppingListId)
         {
-        //    var checkedItems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId).Where(i => i.IsChecked);
+            var checkedItems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId).Where(i => i.IsChecked);
 
-        //    foreach (var item in checkedItems)
-        //    {
-        //        myProductDataAdapter.IncreaseProductQuantity(item.ProductQuantityId, item.Count);
-        //        myShoppingListDataAdapter.RemoveProductFromShoppingList(item.Id);
-        //    }
+
+            foreach (var item in checkedItems)
+            {
+                List<MeasurementForShopItemModel> checkedMeasurements = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id);
+                checkedMeasurements.ForEach(m => myProductDataAdapter.IncreaseProductQuantity(m.Measurement.ProductQuantityId, m.Count));
+                
+                myShoppingListDataAdapter.RemoveProductFromShoppingList(item.Id);
+            }
+        }
+
+        public void AddMeasurementsToShopItems(List<AddMeasurementsToShoppingListItem> request)
+        {
+            foreach (var item in request)
+            {
+                myShoppingListDataAdapter.AddMeasurementsToItem(item.ShoppingListItemId, item.MeasurementId, item.Count);
+
+            }
         }
     }
 }

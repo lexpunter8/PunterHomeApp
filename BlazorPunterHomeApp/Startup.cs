@@ -16,6 +16,7 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using PunterHomeDomain.Interfaces;
 using RazorShared;
+using RazorShared.DragAndDrop;
 
 namespace BlazorPunterHomeApp
 {
@@ -50,6 +51,7 @@ namespace BlazorPunterHomeApp
             services.AddSingleton<IBarcodeScannerService, BarcodeScannerService>();
             services.AddSingleton<IBlazorTagService, BlazorTagService>();
             services.AddSingleton<AppState>();
+            services.AddSingleton<DragAndDropService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

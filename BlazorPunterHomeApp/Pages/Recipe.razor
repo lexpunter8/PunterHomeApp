@@ -11,98 +11,95 @@
 @using PunterHomeDomain.Enums;
 @using BlazorPunterHomeApp.Components;
 
-<div class="container-fluid bg-el-1 full-wo-nav">
+@*<div class="container-fluid bg-el-0 full-wo-nav">
     <div class="bg-el-0" style="position:absolute; top: 0; right: 0; width: 50%; height:100%; min-height: 100px;">
-    </div>
-    <div class="container-xl justify-content-center">
-        <div class="row p-0 m-0">
+    </div>*@
+<div class="container-fluid justify-content-center p-0">
+    @if (myIsCreatingNewRecipe)
+    {
+        <div class="row p-2 bg-el-7 animation d-flex justify-content-center" id="newRecipeCollapse">
+            <div class="col-12 col-md-4">
+                <label class="h4">Create recipe</label>
+                <EditForm Model="@NewRecipeModel" OnValidSubmit="HandleSubmit">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label>Recipe name</label>
+                        <ValidationMessage For="@(() => NewRecipeModel.Name)" />
+                        <InputText @bind-Value="@NewRecipeModel.Name" class="form-control" id="inputAddress" placeholder="Recipe name" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Recipe type</label>
+                        <ValidationMessage For="@(() => NewRecipeModel.Type)" />
+                        <InputSelect class="custom-select" id="inputGroupSelect01" @bind-Value="NewRecipeModel.Type">
+                            <option value="">Select</option>
+                            @foreach (var cnt in NewRecipeModel.SelectableUnitQuantityTypes)
+                                {
+                                <option value="@cnt">@cnt.GetEnumDescription()</option>
+                                }
+                        </InputSelect>
+                    </div>
+                    <div class="form-group d-flex justify-content-end p-2">
 
-            <div class="col-12 col-md-auto bg-el-1 pl-2 pr-5 d-flex flex-column">
-                <div style="width:220px" class="p-2 flex-grow-1">
+                        <div>
+                            <button class="btn btn-primary" type="submit">Add recipe</button>
+                        </div>
+                        <div>
+                            <button class="ml-2 btn btn-outline-primary" @onclick="ToggleCreateRecipe">Cancel</button>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    }
+
+
+    <div class="row p-0 m-0">
+
+        <div class="col-12 col-md-3 bg-el-1 pl-2 pr-5 d-flex flex-column">
+            <div class="d-flex justify-content-center justify-content-md-end">
+
+                <div style="width:220px" class="p-2">
                     <BlazorPunterHomeApp.Components.RecipeFilterComponent RecipeState="State" FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>
                 </div>
             </div>
+        </div>
 
-            @*
-                recipe card
-            *@
+        @*
+            recipe card
+        *@
         <div class="col-12 col-md bg-el-0">
+            <div class="container-md">
 
-            @if (myIsCreatingNewRecipe)
-            {
 
-            <div class="row p-2 ml-3 bg-el-1 animation" id="newRecipeCollapse">
-                <div class="col-12">
-                    <label class="h4">Create recipe</label>
-                    <EditForm Model="NewRecipeModel" OnValidSubmit="HandleSubmit">
-                        <DataAnnotationsValidator />
-                        <div class="form-group">
-                            <label>Recipe name</label>
-                            <input type="text" @bind-value="NewRecipeModel.Name" class="form-control" id="inputAddress" placeholder="Recipe name">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label>Recipe type</label>
-                            <select class="custom-select" id="inputGroupSelect01" @bind="NewRecipeModel.Type">
-                                @foreach (var cnt in NewRecipeModel.SelectableUnitQuantityTypes)
-                                {
-                                    <option value="@cnt">@cnt.GetEnumDescription()</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="form-group d-flex justify-content-end p-2">
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <SearchComponent OnSearch="Search" OnSortOrderChanged="Sort" @ref="SearchComponent"></SearchComponent>
 
-                            <div >
-                                <button class="btn btn-primary" type="submit">Add recipe</button>
-                            </div>
-                            <div >
-                                <button class="ml-2 btn btn-outline-primary"  @onclick="ToggleCreateRecipe">Cancel</button>
-                            </div>
-                        </div>
-                    </EditForm>
-                </div>
-            </div>
-            }
-            
 
-            <div class="row ml-1 mt-3">
-                <div class="col-12 col-md-9">
-                    <div class=" input-group">
-                        <input type="text" class="form-control" placeholder="Search recipe" id="name" @bind-value="serachText" aria-describedby="button-addon2" />
-
-                        <div class="input-group-append">
-
-                            <button class="btn btn-primary" type="button" @onclick="Search"><Icon Name="IconName.Search"></Icon></button>
-                        </div>
                     </div>
 
                 </div>
 
-                <div class="form-group col-12 col-md-3">
-                    <select id="inputState" class="form-control">
-                        <option selected>Newest</option>
-                        <option>A-Z</option>
-                        <option>Z-A</option>
-                    </select>
-                </div>
-            </div>
+                <div class="row mt-2">
+                    <div class="col-12 col-md-6">
 
-            <div class="row ml-2 mr-2 mt-2">
-                <div class="d-flex col-12 justify-content-between">
-                    <span class="ml-2 h2">@State.Recipes.Count recipes</span>
-                    @if (!myIsCreatingNewRecipe)
-                    {
+                        <span class="h2">@State.Recipes.Count Recipes</span>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        @if (!myIsCreatingNewRecipe)
+                        {
+                            <div class="d-flex flex-column align-self-stretch align-self-md- justify-content-md-end">
 
-                        <div class="row">
-                            <button class="btn btn-primary" type="button" @onclick="ToggleCreateRecipe">
-                                Create recipe
-                            </button>
+                                <button class="btn btn-primary" type="button" @onclick="ToggleCreateRecipe">
+                                    Create recipe
+                                </button>
+                            </div>
 
-                        </div>
-                    }
-                </div>
+                        }
+                    </div>
                 </div>
 
-                <div class="row ml-1">
+                <div class="row">
                     @foreach (var cnt in State.Recipes)
                     {
 
@@ -128,9 +125,10 @@
                 </div>
             </div>
         </div>
-
     </div>
+
 </div>
+@*</div>*@
 
 
 @code {
@@ -138,12 +136,13 @@
     private string RecipeUnAvailableColorString = "DB5853";
     private RecipeViewModel RecipeViewModel;
     private NewRecipeValidationModel NewRecipeModel = new NewRecipeValidationModel();
-    private string serachText = string.Empty;
+    public string serachText { get; set; } = string.Empty;
 
     private RecipeModel[] allRecipes = new RecipeModel[0];
     private SearchRecipeParameters FilterParameters = new SearchRecipeParameters();
 
     private RecipeFilterStateObject State = new RecipeFilterStateObject();
+    private SearchComponent SearchComponent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -151,6 +150,7 @@
 
         allRecipes = await RecipeViewModel.GetRecipes();
         State.Recipes = allRecipes.ToList();
+        Sort(SearchComponent.SortOrder);
 
         RecipeViewModel.PropertyChanged += async (a, b) => await InvokeAsync(() => StateHasChanged());
     }
@@ -160,6 +160,7 @@
         await RecipeViewModel.CreateNewRecipe(NewRecipeModel);
         allRecipes = await RecipeViewModel.GetRecipes();
         State.Recipes = allRecipes.ToList();
+        Sort(SearchComponent.SortOrder);
         StateHasChanged();
 
         NavigationManager.NavigateTo($"recipe/{State.Recipes.First(r => r.Name == NewRecipeModel.Name).Id}");
@@ -167,15 +168,39 @@
         NewRecipeModel = new NewRecipeValidationModel();
     }
 
-    private ERecipeType selectedType;
-    private async void Search()
+    public void Sort(ESortOrder order)
     {
-        FilterParameters.Name = serachText;
+        if (order == ESortOrder.Ascending)
+        {
+            State.Recipes = State.Recipes.OrderBy(o => o.Name).ToList();
+            StateHasChanged();
+            return;
+        }
+        State.Recipes = State.Recipes.OrderByDescending(o => o.Name).ToList();
+        StateHasChanged();
+    }
+
+    private ERecipeType selectedType;
+
+    public async void Search(SearchModel model)
+    {
+        FilterParameters.Name = model.SearchText;
         var result = await RecipeViewModel.Search(FilterParameters);
         State.Recipes = result.ToList();
+        Sort(SearchComponent.SortOrder);
         StateHasChanged();
         State.RaiseChanged();
     }
+
+    //private async void SearchR()
+    //{
+    //    FilterParameters.Name = serachText;
+    //    var result = await RecipeViewModel.Search(FilterParameters);
+    //    State.Recipes = result.ToList();
+    //    ChangeSortOrder();
+    //    StateHasChanged();
+    //    State.RaiseChanged();
+    //}
 
     private void TypeClicked(ERecipeType type)
     {
@@ -195,6 +220,6 @@
 
     private void FilterChangedHandler()
     {
-        Search();
+        Search(SearchComponent.SearchModel);
     }
 }

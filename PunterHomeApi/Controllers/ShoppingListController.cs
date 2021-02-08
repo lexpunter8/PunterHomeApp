@@ -69,10 +69,38 @@ namespace PunterHomeApi.Controllers
             return DoRequestValidation<IEnumerable<ShoppingListItemDetailsModel>>(() => myShoppingListService.GetItemsForShoppingList(id));
         }
 
+        [HttpGet("{id}/shop")]
+        public IActionResult GetShopListItem(Guid id)
+        {
+            try
+            {
+                var result = myShoppingListService.GetShoppingListShopItems(id);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+        }
+
+
+
         // POST: api/ShoppingList
         [HttpPost]
         public void Post([FromBody] string value)
         {
+        }
+
+
+        // POST: api/ShoppingList
+        [HttpPost("addmeasurement")]
+        public void Post([FromBody] List<AddMeasurementsToShoppingListItem> request)
+        {
+            myShoppingListService.AddMeasurementsToShopItems(request);
         }
 
         // POST: api/ShoppingList
@@ -139,16 +167,16 @@ namespace PunterHomeApi.Controllers
             };
         }
 
-        public static ShoppingListItemApiModel Convert(this ShoppingListItemModel model)
-        {
-            return new ShoppingListItemApiModel
-            {
-                Id = model.Id,
-                MeasurementType = model.MeasurementType,
-                ShoppingListId = model.ShoppingListId,
-                Volume = model.MeasurementAmount,
-                IsChecked = model.IsChecked
-            };
-        }
+        //public static ShoppingListItemApiModel Convert(this ShoppingListItemModel model)
+        //{
+        //    return new ShoppingListItemApiModel
+        //    {
+        //        Id = model.Id,
+        //        MeasurementType = model.MeasurementType,
+        //        ShoppingListId = model.ShoppingListId,
+        //        Volume = model.MeasurementAmount,
+        //        IsChecked = model.IsChecked
+        //    };
+        //}
     }
 }

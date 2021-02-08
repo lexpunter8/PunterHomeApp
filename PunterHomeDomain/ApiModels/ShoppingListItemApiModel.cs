@@ -6,6 +6,16 @@ using static Enums;
 
 namespace PunterHomeDomain.ApiModels
 {
+    public class ShoppingListItemInfoModel
+    {
+        public Guid Id { get; set; }
+        public EUnitMeasurementType MeasurementType { get; set; }
+        public int MeasurementAmount { get; set; }
+        public RecipeShoppingListItemModel RecipeItem { get; set; }
+        public EShoppingListReason Reason { get; set; }
+
+    }
+
 
     public class ShoppingListItemModel
     {
@@ -13,13 +23,10 @@ namespace PunterHomeDomain.ApiModels
         public Guid ShoppingListId { get; set; }
         public Guid ProductId { get; set; }
 
-        public EUnitMeasurementType MeasurementType { get; set; }
-        public int MeasurementAmount { get; set; }
-        public RecipeShoppingListItemModel RecipeItem { get; set; }
-        public bool IsChecked { get; set; }
-        public EShoppingListReason Reason { get; set; }
         public string ProductName { get; set; }
+        public bool IsChecked { get; set; }
 
+        public List<ShoppingListItemInfoModel> InfoItems { get; set; }
         //public Guid Id { get; set; }
         //public EUnitMeasurementType MeasurementType { get; set; }
         //public double MeasurementVolume { get; set; }

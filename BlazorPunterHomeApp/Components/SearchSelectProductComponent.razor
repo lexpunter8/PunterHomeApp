@@ -3,15 +3,24 @@
 
 @inject ProductService ProductService
 @inject RecipeService RecipeService
-<div class="container p-3">
+    <div class="row">
+        <div class="col-12">
 
-    <div class=" input-group">
-        <input type="text" class="form-control" placeholder="Search recipe" id="name" @bind-value="SearchTextString" aria-describedby="button-addon2" />
+            <EditForm Model="SearchModel" OnValidSubmit="Search">
+                <div class="">
 
-        <div class="input-group-append">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Zoek product" id="name" @bind-value="SearchModel.SearchText" aria-describedby="button-addon2" />
 
-            <button class="btn btn-primary" type="button" @onclick="Search"><Icon Name="IconName.Search"></Icon></button>
+                        <div class="input-group-append">
+
+                            <button class="btn btn-primary" type="submit"><Icon Name="IconName.Search"></Icon></button>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
         </div>
+
     </div>
 
     <div class="row">
@@ -61,4 +70,3 @@
             </ul>
         </div>
     </div>
-</div>

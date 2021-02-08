@@ -1,8 +1,8 @@
 ﻿@page "/recipe/{Id:guid}"
-@using BlazorPunterHomeApp.Pages
+@using RazorShared.DragAndDrop;
 @inject Blazored.Modal.Services.IModalService Modal
 @inherits RecipedetailsViewBase
-
+<Test></Test>
 @if (Recipedetails != null)
 {
     <div class="container justify-content-center">
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="row pt-3 mb-3">
-            <div class="pt-3 col-12 col-md-7 justify-content-center">
+            <div class="pt-3 col-12 col-xl-7 justify-content-center">
                 <div class="col-12 p-3 bg-el-1">
                     <h4>Instructions</h4>
                     <hr class="bg-el-0" />
@@ -31,14 +31,30 @@
                             <button @onclick="AddStep" class="btn btn-outline-primary">Add instruction step</button>
                         </div>
                     </div>
-                    @foreach (var step in Recipedetails.Steps)
+                    @foreach (var step in RecipeSteps)
                     {
                         <div class="row" style="margin:5px 0 0 0">
-                            <div class="justify-content-center align-middle col-md-2">
-                                <span class="circle bg-el-4">@step.Order</span>
+                            <div class="justify-content-center align-middle col-md-2" @ondr>
+                                
+                                <span class="circle bg-el-4">@step.Step.Order</span>
                             </div>
                             <div class="col-md-10">
-                                <div style="min-height: 50px">@step.Text</div>
+                                <div style="min-height: 50px">
+                                    @{
+                                        @if (step.IsEditting && IsEditting)
+                                        {
+                                            <EditForm Model="step.Step" OnValidSubmit="(() => UpdateStep(step))" @onfocusout="(() => UpdateStep(step))">
+                                                <InputText @bind-Value="step.Step.Text" autofocus></InputText>
+                                            </EditForm>
+                                        }
+                                        else
+                                        {
+                                            <span @onclick="(() => step.IsEditting = true)">@step.Step.Text</span>
+                                        }
+                                    }
+
+                                </div>
+                                
                                 <hr class="bg-el-1" />
                             </div>
                         </div>
@@ -46,17 +62,17 @@
                 </div>
             </div>
 
-            <div class="col-12 pt-3 col-md-5 justify-content-start">
+            <div class="col-12 pt-3 col-xl-5 justify-content-start">
 
                 <div class="p-3 bg-el-1">
 
                     <h4>Ingredients</h4>
                     <hr class="bg-el-0" />
-                    <div class="pl-2 d-flex flex-row justify-content-between col-12">
-                        <div class="mt-2">
+                    <div class="p-2 row">
+                        <div class="col-12 col-sm-5 mt-2 d-flex justify-content-start">
                             Hoeveelheid
                         </div>
-                        <div>
+                        <div class="col-12 col-sm-7 d-flex justify-content-start justify-content-sm-end">
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-outline-primary active" @onclick="@(() => ChangePersons(1))">
                                     <input type="radio" name="options" id="option1" checked>1
@@ -79,7 +95,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="pl-2 pt-2 accordion" id="accordionExample">
+                    <div class="p-2 p-2 accordion" id="accordionExample">
                         <ul class="list-unstyled">
                             @foreach (var details in Recipedetails.Ingredients)
                             {
@@ -106,7 +122,10 @@
                     </div>
                     @if (IsEditting)
                     {
-                        <BlazorPunterHomeApp.Components.SearchSelectProductComponent RecipeId="Recipedetails.Id" OnIngredientAdded="IngredientAddedHandler" ></BlazorPunterHomeApp.Components.SearchSelectProductComponent>
+                        <div class="mb-5 p-1">
+                            <BlazorPunterHomeApp.Components.SearchSelectProductComponent RecipeId="Recipedetails.Id" OnIngredientAdded="IngredientAddedHandler"></BlazorPunterHomeApp.Components.SearchSelectProductComponent>
+
+                        </div>
                     }
 
                     <div class="btn-group">

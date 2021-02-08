@@ -34,6 +34,9 @@ namespace BlazorPunterHomeApp.Components
         [Inject]
         public IBlazorTagService TagService { get; set; }
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
         public ProductDetailsViewModel Product { get; set; }
         public ProductQuantity NewProductQuantity { get; private set; } = new ProductQuantity();
         public List<TagModel> AllTags { get; set; } = new List<TagModel>();
@@ -41,14 +44,13 @@ namespace BlazorPunterHomeApp.Components
         protected async override Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
-            Product = await ProductService.GetProductById(ProductId);
-            AllTags = await TagService.GetAllTags();
+            Refresh();
         }
 
         private async void HandleDeleteProductQuantity(int id)
         {
             await ProductService.DeleteProductQuantity(id);
-            StateHasChanged();
+            Refresh();
         }
 
         private async void HandleAddToCart(BaseMeasurement measurement)
@@ -65,6 +67,14 @@ namespace BlazorPunterHomeApp.Components
         private async void HandleDeleteProduct(ProductDetailsViewModel vm)
         {
             await ProductService.DeleteProduct(vm);
+            NavigationManager.NavigateTo("/products");
+            StateHasChanged();
+        }
+
+        private async void Refresh()
+        {
+            Product = await ProductService.GetProductById(ProductId);
+            AllTags = await TagService.GetAllTags();
             StateHasChanged();
         }
 
@@ -79,6 +89,7 @@ namespace BlazorPunterHomeApp.Components
 
             if (!result.Cancelled)
             {
+                Refresh();
                 StateHasChanged();
             }
         }

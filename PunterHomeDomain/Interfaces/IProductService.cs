@@ -1,4 +1,5 @@
-﻿using PunterHomeApp.ApiModels;
+﻿using DataModels.Measurements;
+using PunterHomeApp.ApiModels;
 using PunterHomeDomain.Models;
 using System;
 using System.Collections.Generic;
@@ -21,5 +22,6 @@ namespace PunterHomeDomain.Interfaces
         Task UpdateProductQuantity(int id, int value, bool increase);
         void AddBarcodeToQuantity(int id, string barcode);
         Guid GetProductByQuantityBarcode(string barcode);
+        IEnumerable<BaseMeasurement> GetMeasurementsForProduct(Guid id);
     }
 }

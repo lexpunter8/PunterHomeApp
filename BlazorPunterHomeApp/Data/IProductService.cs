@@ -14,7 +14,7 @@ namespace BlazorPunterHomeApp.Data
         Task AddQuantityToProduct(ProductQuantity quantity, ProductDetailsViewModel product);
         Task<bool> DeleteProduct(ProductDetailsViewModel productToDelete);
         Task<bool> DeleteProductQuantity(int id);
-        Task<ProductModel[]> GetProducts();
+        Task<List<ProductModel>> GetProducts();
         Task Update(ProductModel product);
         Task<List<ProductModel>> SearchProducts(string searchText);
     }

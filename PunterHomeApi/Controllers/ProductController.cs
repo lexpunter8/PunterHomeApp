@@ -51,6 +51,20 @@ namespace PunterHomeApp.Controllers
         }
 
 
+        [HttpGet("measeurements/{id}")]
+        public IActionResult GetMeasurementsForProduct(Guid id)
+        {
+            var result = myProductService.GetMeasurementsForProduct(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+
         // GET api/values/5
         [HttpGet("barcode/{barcode}")]
         public IActionResult GetByBarcode(string barcode)

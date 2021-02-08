@@ -6,7 +6,7 @@ using PunterHomeDomain.Interfaces;
 
 namespace PunterHomeDomain.Models
 {
-    public class LightProduct
+    public class LightProduct : IName
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

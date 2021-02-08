@@ -1,7 +1,10 @@
 ﻿@page "/shoppinglist/{Id:guid}/shop"
 
 
-@*<div class="container-fluid">
+<div class="container-fluid">
+    <BlazorPunterHomeApp.Components.SelectMeasurementsForShopItem @ref="SelectModal" RequiredAmount="ModalRequiredAmount"
+                                                                  MeasurementType="ModalMeasurementType"
+                                                                  MeasurementsOptions="MeasurementOptions" OnConfirm="ModalOnConfirm"></BlazorPunterHomeApp.Components.SelectMeasurementsForShopItem>
     <div class="row justify-content-center">
         <div class="col-xl-10 col-md-10">
             <h3>ShoppingList</h3>
@@ -9,7 +12,7 @@
             {
                 <div class="row justify-content-end">
                     <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Item.Id" name="@item.Item.Id" @onclick="@(() => ItemClicked(item))" @bind="item.IsChecked">
+                        <input type="checkbox" id="@item.Item.Id" name="@item.Item.Id" @onclick="@(() => ItemClicked(item))">
                         <label for="@item.Item.Id"></label>
 
                     </div>
@@ -19,15 +22,15 @@
                         </div>
                         <div class="row">
 
-                            <div class="col-4">
-                                @($"{item.Item.Quantity} x {item.Item.MeasurementVolume} {item.Item.MeasurementType}")
+                            <div class="col-12">
+                                @($"{item.Item.Amount} x {item.Item.Measurement.UnitQuantityTypeVolume} {item.Item.Measurement.MeasurementType}")
                             </div>
 
                         </div>
 
                     </div>
                 </div>
-                <hr style="        background-color: #DBDBDB" class="row" />
+                <hr style="background-color: #DBDBDB" class="row" />
             }
 
             <h3>Checked items</h3>
@@ -36,7 +39,7 @@
             {
                 <div class="row">
                     <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Item.Id" name="@item.Item.Id" @onclick="@(() => ItemClicked(item, true))" @bind="item.IsChecked">
+                        <input type="checkbox" id="@item.Item.Id" name="@item.Item.Id" @onclick="@(() => ItemClicked(item, true))" checked>
                         <label for="@item.Item.Id"></label>
                     </div>
                     <div class="col-10 col-md-11" @onclick="@(() => ItemClicked(item))">
@@ -45,8 +48,12 @@
                         </div>
                         <div class="row">
 
-                            <div class="col-4">
-                                @($"{item.Item.MeasurementVolume} {item.Item.MeasurementType}")
+                            <div class="col-12">
+                                @for (int i = 0; i < item.Item.MeasurementsForChecked.Count; i++)
+                                {
+                                    string prepend = i == 0 ? "" : " | ";
+                                    @($"{prepend}{item.Item.MeasurementsForChecked[i].Count} x {item.Item.MeasurementsForChecked[i].Measurement.UnitQuantityTypeVolume} {item.Item.MeasurementsForChecked[i].Measurement.MeasurementType}")
+                                }
                             </div>
 
                         </div>
@@ -54,10 +61,9 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-12"><hr /></div>
-                </div>
+
+                <hr style="background-color: #DBDBDB" class="row" />
             }
         </div>
     </div>
-</div>*@
+</div>

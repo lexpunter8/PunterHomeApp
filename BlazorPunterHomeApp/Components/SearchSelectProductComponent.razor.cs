@@ -22,13 +22,12 @@ namespace BlazorPunterHomeApp.Components
         public List<EUnitMeasurementType> SelectableUnitQuantityTypes => Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList();
 
         public SelectableProduct CurrentSelectedProduct { get; set; }
-        public string SearchTextString { get; set; }
         public List<SelectableProduct> Products { get; private set; } = new List<SelectableProduct>();
-        
+        public SearchModel SearchModel { get; set; } = new SearchModel();
 
         public async void Search()
         {
-            var products = await ProductService.SearchProducts(SearchTextString);
+            var products = await ProductService.SearchProducts(SearchModel.SearchText);
 
             Products = products.Select(p => {
                 return new SelectableProduct(p)

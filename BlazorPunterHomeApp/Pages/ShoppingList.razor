@@ -2,64 +2,72 @@
 
 
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-xl-10 col-md-10">
+        <div class="row justify-content-center">
+
             <h3>ShoppingList</h3>
-            @foreach (var item in ListItems)
-            {
-                <div class="row">
-                    <div class="col-12">
-                        <strong>@item.ProductName</strong>
-
-                    </div>
-                </div>
-                <div class="row">
-
-                    <div class="col-4">
-                        @($"{item.StaticAmount + item.DynamicAmountRequested - item.DynamicAmountAvailable} {item.MeasurementType}")
-                    </div>
-                    <div class="col-6">
-                        @*<div class="input-group float-right">
-                        <div class="input-group-prepend">
-                            <button class="btn btn-outline-primary" type="button" @onclick="() => DecreaseQuantityToItem(item)"><Icon Name="IconName.ExpandMore"></Icon></button>
-                            <span class="input-group-text">@item.Quantity</span>
-                        </div>
-                        <div class="input-group-append">
-
-                            <button class="btn btn-primary" type="button" @onclick="() => AddQuantityToItem(item)"><Icon Name="IconName.ExpandLess"></Icon></button>
-                        </div>
-                    </div>*@
-
-                    </div>
-                    <div class="col-1">
-                        <button class="btn"><Icon Name="IconName.Delete" @onclick="() => DeleteItem(item)"></Icon></button>
-                    </div>
-                </div>
-                <h6>Static</h6>
-                <ul class="list-unstyled">
-                    @foreach (var s in item.StaticItems)
-                    {
-                        <li>
-                            @s.MeasurementAmount @s.MeasurementType @s.ProductName @s.Reason
-                        </li>
-                    }
-                </ul>
-                <h6>Dynamic A: @item.DynamicAmountAvailable R:@item.DynamicAmountRequested</h6>
-                <ul class="list-unstyled">
-                    @foreach (var s in item.DynamicItems)
-                    {
-                        <li>
-                            @s.MeasurementAmount @s.MeasurementType @s.ProductName @s.Reason @s.RecipeItem.RecipeName
-                        </li>
-                    }
-                </ul>
-                <div class="row">
-                    <div class="col-12"><hr /></div>
-                </div>
-            }
-
-            </div>
         </div>
+        <div class="row justify-content-center p-3 bg-el-1">
+            <div class="col-12">
+                @foreach (var item in ListItems)
+                {
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-between">
+                            <span>
+                                <strong class="h5">@item.Model.ProductName</strong><br />
+                                @if (item.Model.TotalAmount < 0)
+                                {
+                                    <del>@(item.Model.StaticAmount + item.Model.DynamicAmountRequested)</del> <span>beschikbaar</span>
+                                }
+                                else
+                                {
+                                    @($"{item.Model.TotalAmount} {item.Model.MeasurementType}")
+                                }
+                            </span>
+                            <div>
+                                @if (item.ShowInfo)
+                                {
+                                    <i class="fas fa-times recipe-available-color h5" @onclick="() => ShowInfo(item)"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-info-circle h5" @onclick="() => ShowInfo(item)"></i>
+
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                    @if (item.ShowInfo)
+                    {
+                        <div class="pl-2">
+                            <ul class="list-unstyled">
+                                <li>
+                                    @item.Model.StaticAmount @item.Model.MeasurementType handmatig toegevoegd
+                                </li>
+                            </ul>
+                            <h6>A: @item.Model.DynamicAmountAvailable R:@item.Model.DynamicAmountRequested</h6>
+                            <ul class="list-unstyled">
+                                @foreach (var s in item.Model.DynamicItems)
+                                {
+                                    <li>
+                                        @s.MeasurementAmount @s.MeasurementType @s.RecipeItem.RecipeName
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                    }
+
+                    <div class="row">
+                        <div class="col-12"><hr class="bg-el-0" /></div>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+
+    </div>
 
     @if (ListItems.Count > 0)
     {
@@ -70,5 +78,3 @@
             </a>
         </div>
     }
-
-</div>

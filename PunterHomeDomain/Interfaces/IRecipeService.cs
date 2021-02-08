@@ -19,5 +19,6 @@ namespace PunterHomeDomain.Interfaces
         void RemoveStep(Guid step);
         void AddRecipeIngredientsToShoppingList(Guid recipeId, int numberOfPersons, Guid shoppingListId, bool onlyUnavailableItems);
         Task<IEnumerable<RecipeApiModel>> Search(SearchRecipeParameters parameters);
+        void UpdateStep(RecipeStep step);
     }
 }

@@ -6,6 +6,7 @@ using PunterHomeDomain.Interfaces;
 using PunterHomeApp.ApiModels;
 using PunterHomeDomain.Models;
 using PunterHomeDomain.Services;
+using DataModels.Measurements;
 
 namespace PunterHomeApp.Services
 {
@@ -27,16 +28,14 @@ namespace PunterHomeApp.Services
 
         public void AddProduct(NewProductApiModel product)
         {
+            if (string.IsNullOrEmpty(product.Name))
+            {
+                return;
+            }
+
             myProductDataAdapter.AddProduct(new LightProduct
             {
-                Name = product.Name,
-                //ProductQuantities = new List<BaseMeasurement>
-                //{
-                //    new BaseMeasurement(product.UnitQuantityType)
-                //    {
-                //        UnitQuantityTypeVolume = product.UnitQuantity
-                //    }
-                //}
+                Name = product.Name
             }, out Guid newId);
 
             myProductDataAdapter.AddQuantityToProduct(new ProductQuantity
@@ -55,6 +54,11 @@ namespace PunterHomeApp.Services
         public async Task DeleteProductQuantityById(int id)
         {
             await myProductDataAdapter.DeleteProductQuantityById(id);
+        }
+
+        public IEnumerable<BaseMeasurement> GetMeasurementsForProduct(Guid id)
+        {
+            return myProductDataAdapter.GetProductById(id).ProductQuantities;
         }
 
         public ProductDetails GetProductById(Guid productId)
@@ -82,7 +86,10 @@ namespace PunterHomeApp.Services
         public async Task<IEnumerable<LightProduct>> SearchProductsAsync(string searchText)
         {
             var result = await myProductDataAdapter.GetProducts();
-            return result.Where(p => p.Name.ToLower().Contains(searchText.ToLower()));
+
+            BaseFilter<LightProduct> filter = new NameFilter<LightProduct>(searchText);
+
+            return filter.Filter(result);
         }
 
         public async Task<bool> TryDeleteProductById(Guid id)
@@ -125,5 +132,6 @@ namespace PunterHomeApp.Services
             }
             await myProductDataAdapter.DereaseProductQuantity(id, value);
         }
+
     }
 }
