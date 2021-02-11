@@ -54,7 +54,6 @@ namespace PunterHomeApi.Controllers
         {
             try
             {
-
                 myRecipeService.UpdateStep(value);
                 return Ok();
             }

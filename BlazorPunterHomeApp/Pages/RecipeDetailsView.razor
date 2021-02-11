@@ -1,12 +1,10 @@
 ﻿@page "/recipe/{Id:guid}"
-@using RazorShared.DragAndDrop;
 @inject Blazored.Modal.Services.IModalService Modal
 @inherits RecipedetailsViewBase
-<Test></Test>
 @if (Recipedetails != null)
 {
     <div class="container justify-content-center">
-        <div class="row justify-content-center">
+        <div class="row mt-2 justify-content-center">
 
             <h2 style="display: inline-block">@Recipedetails.Name</h2>
             <i class="ml-2 far fa-edit pointer @(IsEditting ? "recipe-available-color" : "")" @onclick="() => IsEditting = !IsEditting"></i>
@@ -20,7 +18,7 @@
             </div>
         </div>
         <div class="row pt-3 mb-3">
-            <div class="pt-3 col-12 col-xl-7 justify-content-center">
+            <div class="pt-3 col-12 col-xl-7 justify-content-center order-last order-md-first">
                 <div class="col-12 p-3 bg-el-1">
                     <h4>Instructions</h4>
                     <hr class="bg-el-0" />
@@ -31,38 +29,80 @@
                             <button @onclick="AddStep" class="btn btn-outline-primary">Add instruction step</button>
                         </div>
                     </div>
-                    @foreach (var step in RecipeSteps)
-                    {
-                        <div class="row" style="margin:5px 0 0 0">
-                            <div class="justify-content-center align-middle col-md-2" @ondr>
-                                
-                                <span class="circle bg-el-4">@step.Step.Order</span>
-                            </div>
-                            <div class="col-md-10">
-                                <div style="min-height: 50px">
-                                    @{
+                    <div class="row">
+                        <ul ondragover="event.preventDefault();" class="list-unstyled col-12">
+
+                            @foreach (var step in RecipeSteps)
+                            {
+                            <li draggable="true" @key="step.Step.Id" @ondrop="@(() => Drop(step))" @ondrag="@(() => StartDrag(step))">
+                                <div class="row">
+                                    <div class="col-auto my-1">
+                                        <span class="circle @(step.IsOrderEditting ? "bg-c-primary": "bg-el-4")" @onclick="@(() => ToggleOrderEditting(step))">@step.Step.Order</span>
+                                    </div>
+
+                                    <div class="col mr-2" style="min-height: 50px">
                                         @if (step.IsEditting && IsEditting)
                                         {
                                             <EditForm Model="step.Step" OnValidSubmit="(() => UpdateStep(step))" @onfocusout="(() => UpdateStep(step))">
-                                                <InputText @bind-Value="step.Step.Text" autofocus></InputText>
+                                                    <div class="input-group mb-2 @(IsEditting ? "show" : "collapse")">
+                                                        <textarea class="form-control" rows="4" @bind="@step.Step.Text"></textarea>
+                                                        <div class="input-group-append" style="padding:0">
+                                                            <span class="btn-group-vertical">
+
+                                                                <button type="submit" class="btn btn-outline-primary" style="border-top-left-radius: 0; border-bottom-left-radius:0; border-bottom-right-radius:0;">
+                                                                    <i class="fas fa-save"></i>
+                                                                </button>
+                                                                <button class="btn btn-outline-primary" style="border-top-left-radius: 0; border-bottom-left-radius:0; margin:0; border-top-right-radius:0;">
+                                                                    <i class="fas fa-save"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                             </EditForm>
                                         }
                                         else
                                         {
-                                            <span @onclick="(() => step.IsEditting = true)">@step.Step.Text</span>
+                                            <span class="mr-2" @onclick="(() => ToggleTextEditting(step))">@step.Step.Text</span>
                                         }
-                                    }
-
+                                    </div>
                                 </div>
-                                
-                                <hr class="bg-el-1" />
-                            </div>
-                        </div>
+
+                                <hr class="mx-2 bg-secondary" />
+                                @*<div class="" style="margin:5px 0 0 0">
+            <div class="justify-content-center align-middle col-md-2" @ondr>
+
+                <span class="circle bg-el-4">@step.Step.Order</span>
+            </div>
+            <div class="col-md-10">
+                <div style="min-height: 50px">
+                    @{
+                        @if (step.IsEditting && IsEditting)
+                        {
+                            <EditForm Model="step.Step" OnValidSubmit="(() => UpdateStep(step))" @onfocusout="(() => UpdateStep(step))">
+                                <InputText @bind-Value="step.Step.Text" autofocus></InputText>
+                            </EditForm>
+                        }
+                        else
+                        {
+                            <span @onclick="(() => step.IsEditting = true)">@step.Step.Text</span>
+                        }
                     }
+
+                </div>
+            </div>
+        </div>*@
+                            </li>
+                                
+                            }
+                        </ul>
+
+
+
+                    </div>
                 </div>
             </div>
 
-            <div class="col-12 pt-3 col-xl-5 justify-content-start">
+            <div class="col-12 pt-3 col-xl-5 justify-content-start order-first order-md-last">
 
                 <div class="p-3 bg-el-1">
 

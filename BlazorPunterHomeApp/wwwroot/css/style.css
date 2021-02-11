@@ -96,7 +96,7 @@
     color: var(--txt-c-surface)
 }
 
-.c-primary {
+.bg-c-primary {
     background-color: var(--c-primary);
     border-color: none;
 }

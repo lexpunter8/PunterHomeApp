@@ -21,6 +21,7 @@ namespace BlazorPunterHomeApp.Pages
 
         public RecipeStep Step { get; }
         public bool IsEditting { get; set; }
+        public bool IsOrderEditting { get; set; }
     }
     public partial class RecipedetailsViewBase : ComponentBase
     {
@@ -40,7 +41,7 @@ namespace BlazorPunterHomeApp.Pages
         public List<EditableRecipeStep> RecipeSteps { get; set; } = new List<EditableRecipeStep>();
         protected async override void OnParametersSet()
         {
-            Refresh();
+            await Refresh();
             StateHasChanged();
 
         }
@@ -84,6 +85,19 @@ namespace BlazorPunterHomeApp.Pages
                 Recipedetails.Ingredients.FirstOrDefault(i => i.ProductId == item.ProductId).IsAvaliable = item.IsAvaliable;
             }
             StateHasChanged();
+        }
+
+        public async void Drop(EditableRecipeStep step)
+        {
+            startDragStep.Step.Order = step.Step.Order;
+            await RecipeService.UpdateStep(startDragStep.Step);
+            await Refresh();
+        }
+
+        EditableRecipeStep startDragStep;
+        public void StartDrag(EditableRecipeStep step)
+        {
+            startDragStep = step;
         }
 
         public async void UpdateStep(EditableRecipeStep step)
@@ -131,6 +145,39 @@ namespace BlazorPunterHomeApp.Pages
             Recipedetails = await RecipeService.GetRecipeById(Id);
             RecipeSteps = Recipedetails.Steps.Select(s => new EditableRecipeStep(s)).ToList();
             StateHasChanged();
+        }
+
+        public void ToggleOrderEditting(EditableRecipeStep step)
+        {
+            if (!IsEditting)
+            {
+                return;
+            }
+            var currentSelected = RecipeSteps.FirstOrDefault(s => s.IsOrderEditting);
+            if (currentSelected != null)
+            {
+                startDragStep = currentSelected;
+                Drop(step);
+                return;
+            }
+            bool currentVal = step.IsOrderEditting;
+            RecipeSteps.ForEach(s => s.IsOrderEditting = false);
+            RecipeSteps.ForEach(s => s.IsEditting = false);
+
+            step.IsOrderEditting = !currentVal;
+        }
+
+        public void ToggleTextEditting(EditableRecipeStep step)
+        {
+            if (!IsEditting)
+            {
+                return;
+            }
+            bool currentVal = step.IsEditting;
+            RecipeSteps.ForEach(s => s.IsEditting = false);
+            RecipeSteps.ForEach(s => s.IsOrderEditting = false);
+
+            step.IsEditting = !currentVal;
         }
     }
 }

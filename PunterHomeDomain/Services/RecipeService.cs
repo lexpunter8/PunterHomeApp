@@ -157,6 +157,7 @@ namespace PunterHomeApp.Services
                 return;
             }
 
+            allStepForRecipe.OrderBy(s => s.Order);
             allStepForRecipe.Remove(recipeToUpdate);
             allStepForRecipe.Insert(step.Order - 1, recipeToUpdate);
 
