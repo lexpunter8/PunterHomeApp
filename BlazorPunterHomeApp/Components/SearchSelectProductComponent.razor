@@ -10,7 +10,7 @@
                 <div class="">
 
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Zoek product" id="name" @bind-value="SearchModel.SearchText" aria-describedby="button-addon2" />
+                        <input type="text" @ref="SearchInputControl" class="form-control" placeholder="Zoek product" id="name" @bind-value="SearchModel.SearchText" aria-describedby="button-addon2" />
 
                         <div class="input-group-append">
 

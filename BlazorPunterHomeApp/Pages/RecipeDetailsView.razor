@@ -7,7 +7,7 @@
         <div class="row mt-2 justify-content-center">
 
             <h2 style="display: inline-block">@Recipedetails.Name</h2>
-            <i class="ml-2 far fa-edit pointer @(IsEditting ? "recipe-available-color" : "")" @onclick="() => IsEditting = !IsEditting"></i>
+            <i class="ml-2 far fa-edit pointer @(IsEditting ? "recipe-available-color" : "")" @onclick="ToggleIsEdtting"></i>
         </div>
 
         <div class="row justify-content-center">
@@ -23,18 +23,22 @@
                     <h4>Instructions</h4>
                     <hr class="bg-el-0" />
 
-                    <div class="input-group mb-2 @(IsEditting ? "show" : "collapse")">
-                        <input type="text" class="form-control" id="Instruction text" @bind="newStepText" />
-                        <div class="input-group-append">
-                            <button @onclick="AddStep" class="btn btn-outline-primary">Add instruction step</button>
-                        </div>
+                    <div class="col-12">
+                        <EditForm OnValidSubmit="AddStep" Model="newStepText">
+                            <div class="input-group mb-2 @(IsEditting ? "show" : "collapse")">
+                                <textarea rows="4" @ref="AddInstructionTextContol" type="text" class="form-control" id="Instruction text" @bind="newStepText.Text" />
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-outline-primary">Add instruction step</button>
+                                </div>
+                            </div>
+                        </EditForm>
                     </div>
                     <div class="row">
                         <ul ondragover="event.preventDefault();" class="list-unstyled col-12">
 
                             @foreach (var step in RecipeSteps)
                             {
-                            <li draggable="true" @key="step.Step.Id" @ondrop="@(() => Drop(step))" @ondrag="@(() => StartDrag(step))">
+                            <li draggable="@(IsEditting && !step.IsEditting)" @key="step.Step.Id" @ondrop="@(() => Drop(step))" @ondrag="@(() => StartDrag(step))">
                                 <div class="row">
                                     <div class="col-auto my-1">
                                         <span class="circle @(step.IsOrderEditting ? "bg-c-primary": "bg-el-4")" @onclick="@(() => ToggleOrderEditting(step))">@step.Step.Order</span>
@@ -45,15 +49,15 @@
                                         {
                                             <EditForm Model="step.Step" OnValidSubmit="(() => UpdateStep(step))" @onfocusout="(() => UpdateStep(step))">
                                                     <div class="input-group mb-2 @(IsEditting ? "show" : "collapse")">
-                                                        <textarea class="form-control" rows="4" @bind="@step.Step.Text"></textarea>
+                                                        <textarea @ref="FocusElement" class="form-control" rows="4" @bind="@step.Step.Text" autofocus></textarea>
                                                         <div class="input-group-append" style="padding:0">
                                                             <span class="btn-group-vertical">
 
                                                                 <button type="submit" class="btn btn-outline-primary" style="border-top-left-radius: 0; border-bottom-left-radius:0; border-bottom-right-radius:0;">
                                                                     <i class="fas fa-save"></i>
                                                                 </button>
-                                                                <button class="btn btn-outline-primary" style="border-top-left-radius: 0; border-bottom-left-radius:0; margin:0; border-top-right-radius:0;">
-                                                                    <i class="fas fa-save"></i>
+                                                                <button @onclick="(() => UpdateStep(step, true))" class="btn btn-outline-primary" style="border-top-left-radius: 0; border-bottom-left-radius:0; margin:0; border-top-right-radius:0;">
+                                                                    <i class="far fa-window-close"></i>
                                                                 </button>
                                                             </span>
                                                         </div>
@@ -163,7 +167,7 @@
                     @if (IsEditting)
                     {
                         <div class="mb-5 p-1">
-                            <BlazorPunterHomeApp.Components.SearchSelectProductComponent RecipeId="Recipedetails.Id" OnIngredientAdded="IngredientAddedHandler"></BlazorPunterHomeApp.Components.SearchSelectProductComponent>
+                            <BlazorPunterHomeApp.Components.SearchSelectProductComponent @ref="SearchProductControl" RecipeId="Recipedetails.Id" OnIngredientAdded="IngredientAddedHandler"></BlazorPunterHomeApp.Components.SearchSelectProductComponent>
 
                         </div>
                     }

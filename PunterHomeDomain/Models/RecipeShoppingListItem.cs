@@ -11,6 +11,7 @@ namespace PunterHomeDomain.Models
             public Guid RecipeId { get; set; }
             public int NrOfPersons { get; set; }
             public string RecipeName { get; set; }
+            public bool IsOnlyUnavailable { get; set; }
 
     }
         public class ProductShoppingListItemModel

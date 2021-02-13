@@ -2,9 +2,11 @@
 using Blazored.Modal.Services;
 using BlazorPunterHomeApp.Data;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using static Enums;
 
 namespace BlazorPunterHomeApp.Components
@@ -24,6 +26,7 @@ namespace BlazorPunterHomeApp.Components
         public SelectableProduct CurrentSelectedProduct { get; set; }
         public List<SelectableProduct> Products { get; private set; } = new List<SelectableProduct>();
         public SearchModel SearchModel { get; set; } = new SearchModel();
+        public ElementReference SearchInputControl { get; set; }
 
         public async void Search()
         {
@@ -36,6 +39,7 @@ namespace BlazorPunterHomeApp.Components
                 
                 }).ToList();
             StateHasChanged();
+            SearchInputControl.FocusAsync();
         }
 
         [Parameter]

@@ -12,7 +12,7 @@ namespace PunterHomeDomain.ApiModels
         public int MeasurementAmount { get; set; }
         public EShoppingListReason Reason { get; set; }
         public Guid ShoppingListId { get; set; }
-
+        public bool RecipeOnlyAvailable { get; set; }
         public Guid RecipeId { get; set; }
         public int NrOfPersons { get; set; }
     }

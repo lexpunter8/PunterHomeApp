@@ -35,5 +35,6 @@ namespace PunterHomeAdapters.Models
         public DbShoppingListItemInfo ShoppingListItem { get; set; }
         public DbRecipe Recipe { get; set; }
         public int NrOfPersons { get; set; }
+        public bool IsOnlyUnavailable { get; set; }
     }
 }

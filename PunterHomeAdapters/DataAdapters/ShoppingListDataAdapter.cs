@@ -80,7 +80,8 @@ namespace PunterHomeAdapters.DataAdapters
                 NrOfPersons = recipeItem.NrOfPersons,
                 RecipeId = recipeItem.RecipeId,
                 ShoppingListItemId = recipeItem.ShoppingListItemId,
-                RecipeName = recipeItem.Recipe.Name
+                RecipeName = recipeItem.Recipe.Name,
+                IsOnlyUnavailable = recipeItem.IsOnlyUnavailable
             };
         }
 
@@ -117,7 +118,8 @@ namespace PunterHomeAdapters.DataAdapters
                 newItemInfo.RecipeItem = new DbRecipeShoppingListItem
                 {
                     RecipeId = request.RecipeId,
-                    NrOfPersons = request.NrOfPersons
+                    NrOfPersons = request.NrOfPersons,
+                    IsOnlyUnavailable = request.RecipeOnlyAvailable
                 };
             }
 

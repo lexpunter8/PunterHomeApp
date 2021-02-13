@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace BlazorPunterHomeApp.Pages
 {
+    public class TextInputModel
+    {
+        public string Text { get; set; } = string.Empty;
+    }
     public class EditableRecipeStep
     {
         public EditableRecipeStep(RecipeStep step)
@@ -39,6 +43,25 @@ namespace BlazorPunterHomeApp.Pages
         public int IngredientMultiplier { get; set; } = 1;
         public RecipeDetailsApiModel Recipedetails { get; set; }
         public List<EditableRecipeStep> RecipeSteps { get; set; } = new List<EditableRecipeStep>();
+        public SearchSelectProductComponent SearchProductControl { get; set; }
+
+        public ElementReference AddInstructionTextContol { get; set; }
+        public ElementReference FocusElement { get; set; }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+            Focus();
+
+        }
+
+        public void Focus()
+        {
+            if (FocusElement.Context != null)
+            {
+                FocusElement.FocusAsync();
+            }
+        }
         protected async override void OnParametersSet()
         {
             await Refresh();
@@ -65,8 +88,8 @@ namespace BlazorPunterHomeApp.Pages
             await Refresh();
             StateHasChanged();
         }
-        
-        public string newStepText = string.Empty;
+
+        public TextInputModel newStepText { get; set; } = new TextInputModel();
 
 
         public async Task RemoveIngredient(Guid id)
@@ -100,8 +123,14 @@ namespace BlazorPunterHomeApp.Pages
             startDragStep = step;
         }
 
-        public async void UpdateStep(EditableRecipeStep step)
+        public async void UpdateStep(EditableRecipeStep step, bool isCancel = false)
         {
+            if (isCancel)
+            {
+                step.IsEditting = false;
+                await Refresh();
+                return;
+            }
             await RecipeService.UpdateStep(step.Step);
             step.IsEditting = false;
             StateHasChanged();
@@ -112,11 +141,12 @@ namespace BlazorPunterHomeApp.Pages
             await RecipeService.AddStep(new RecipeStep
             {
                 Order = Recipedetails.Steps.Count + 1,
-                Text = newStepText
+                Text = newStepText.Text
             }, Recipedetails.Id);
-            newStepText = string.Empty;
+            newStepText.Text = string.Empty;
 
             await Refresh();
+            await AddInstructionTextContol.FocusAsync();
         }
 
         public async void AddIngredientsToShoppingList(bool onlyUnavailable = false)
@@ -138,6 +168,12 @@ namespace BlazorPunterHomeApp.Pages
             {
                 await Refresh();
             }
+        }
+
+        public void ToggleIsEdtting()
+        {
+            IsEditting = !IsEditting;
+
         }
 
         private async Task Refresh()
@@ -178,6 +214,7 @@ namespace BlazorPunterHomeApp.Pages
             RecipeSteps.ForEach(s => s.IsOrderEditting = false);
 
             step.IsEditting = !currentVal;
+            Focus();
         }
     }
 }

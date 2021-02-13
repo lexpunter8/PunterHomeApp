@@ -59,7 +59,7 @@ namespace PunterHomeDomain.Services
         public double StaticAmount { get; set; }
         public EUnitMeasurementType MeasurementType { get; set; }
         public bool IsChecked { get; set; }
-        public double TotalAmount => StaticAmount + (DynamicAmountRequested - DynamicAmountAvailable);
+        public double TotalAmount => StaticAmount + Math.Max(0, (DynamicAmountRequested - DynamicAmountAvailable));
     }
 
     public class ShoppingListService : IShoppingListService
@@ -88,6 +88,10 @@ namespace PunterHomeDomain.Services
             foreach (var item in items)
             {
                 var totRequestedAmount = item.StaticAmount + (item.DynamicAmountRequested < item.DynamicAmountAvailable ? 0 : item.DynamicAmountRequested - item.DynamicAmountAvailable);
+                if (totRequestedAmount == 0)
+                {
+                    continue;
+                }
                 var product = myProductDataAdapter.GetProductById(item.ProductId);
 
                 var list = product.ProductQuantities.ToList();
@@ -193,12 +197,21 @@ namespace PunterHomeDomain.Services
                     });
                 });
 
-                double totalStaticAmount = amountObject.GetTotalAmount(measurementType);
-
-
                 MeasurementClassObject amountDynamicObject = new MeasurementClassObject();
 
                 sItem.InfoItems.Where(i => i.RecipeItem != null).ToList().ForEach(a => {
+                    if (a.RecipeItem.IsOnlyUnavailable)
+                    {
+                        details.StaticItems.Add(a);
+
+                        amountObject.Values.Add(
+                        new MeasurementAmount
+                        {
+                            Amount = a.MeasurementAmount,
+                            Type = a.MeasurementType
+                        });
+                        return;
+                    }
                     details.DynamicItems.Add(a);
                     
                     amountDynamicObject.Values.Add(                    
@@ -210,6 +223,7 @@ namespace PunterHomeDomain.Services
                 });
 
                 double totalDynamicAmount = amountDynamicObject.GetTotalAmount(measurementType);
+                double totalStaticAmount = amountObject.GetTotalAmount(measurementType);
 
                 details.DynamicAmountRequested = totalDynamicAmount;
                 details.StaticAmount = totalStaticAmount;

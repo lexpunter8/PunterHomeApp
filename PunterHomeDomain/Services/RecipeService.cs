@@ -101,7 +101,8 @@ namespace PunterHomeApp.Services
                     NrOfPersons = numberOfPersons,
                     ProductId = ingredient.ProductId,
                     Reason = EShoppingListReason.Recipe,
-                    RecipeId = recipeId
+                    RecipeId = recipeId,
+                    RecipeOnlyAvailable = onlyUnavailable
                 };
 
                 myShoppingListService.AddProductToShoppingList(shoppingListId, request);

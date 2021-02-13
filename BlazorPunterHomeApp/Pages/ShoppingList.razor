@@ -14,9 +14,9 @@
                         <div class="col-12 d-flex justify-content-between">
                             <span>
                                 <strong class="h5">@item.Model.ProductName</strong><br />
-                                @if (item.Model.TotalAmount < 0)
+                                @if (item.Model.TotalAmount <= 0)
                                 {
-                                    <del>@(item.Model.StaticAmount + item.Model.DynamicAmountRequested)</del> <span>beschikbaar</span>
+                                    <del>@(item.Model.StaticAmount + item.Model.DynamicAmountRequested) @item.Model.MeasurementType</del> <span>beschikbaar (@item.Model.DynamicAmountAvailable @item.Model.MeasurementType)</span>
                                 }
                                 else
                                 {
@@ -41,18 +41,28 @@
                     {
                         <div class="pl-2">
                             <ul class="list-unstyled">
-                                <li>
-                                    @item.Model.StaticAmount @item.Model.MeasurementType handmatig toegevoegd
-                                </li>
+                                @{
+                                    var staticItems = item.Model.StaticItems.GroupBy(s => s.Reason).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
+                                    @foreach (var s in staticItems)
+                                    {
+                                        <li>
+                                            @s.Value @s.Key.First().MeasurementType @(s.Key.First().Reason == Enums.EShoppingListReason.Manual ? "Handmatig toegevoegd" : $"{s.Key.First().RecipeItem.RecipeName} ({s.Key.Sum(s => s.RecipeItem.NrOfPersons)}p)")
+                                        </li>
+                                    }
+                                }
                             </ul>
                             <h6>A: @item.Model.DynamicAmountAvailable R:@item.Model.DynamicAmountRequested</h6>
                             <ul class="list-unstyled">
-                                @foreach (var s in item.Model.DynamicItems)
-                                {
-                                    <li>
-                                        @s.MeasurementAmount @s.MeasurementType @s.RecipeItem.RecipeName
-                                    </li>
+                                @{
+                                    var dynamicItems = item.Model.DynamicItems.GroupBy(s => s.RecipeItem.RecipeName).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
+                                    @foreach (var s in dynamicItems)
+                                    {
+                                <li>
+                                    @s.Value @s.Key.First().MeasurementType @(s.Key.Key) (@(s.Key.Sum(s => s.RecipeItem.NrOfPersons))p)
+                                </li>
+                                    }
                                 }
+
                             </ul>
                         </div>
 
