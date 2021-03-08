@@ -10,8 +10,8 @@ namespace PunterHomeDomain.Interfaces
     public interface IShoppingListDataAdapter
     {
         List<ShoppingListItemModel> GetItemsForShoppingList(Guid shoppingListId);
-        List<ShoppingListItemInfoModel> GetInfoItemsForShoppingListItem(Guid shoppingListItemId);
         List<ShoppingListModel> GetShoppingLists();
+        List<ShoppingListProductModel> GetProductsForShoppingListId(Guid shoppingListId);
 
         void AddProductToShoppingList(Guid shoppingListId, AddProductToShoppingListRequest request);
         void RemoveProductFromShoppingList(Guid listItemId);

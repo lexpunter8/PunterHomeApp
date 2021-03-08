@@ -57,10 +57,9 @@ namespace PunterHomeApp.DataAdapters
             var result = context.Recipes
                                     .Include(r => r.Ingredients)
                                     .ThenInclude(i => i.Recipe).Include(r => r.Steps)
-                                    .ThenInclude(s => s.Recipe)
                                     .FirstOrDefault(d => d.Id == recipeId);
 
-            result.Ingredients.ForEach(i => i.Product = context.Products.Include(p => p.ProductQuantities).FirstOrDefault(p => p.Id == i.ProductId));
+            result.Ingredients.ForEach(i => i.Product = context.Products.FirstOrDefault(p => p.Id == i.ProductId));
             //result.Ingredients.ForEach(i => i.Product = context.Products.FirstOrDefault(p => p.Id == i.ProductId));
 
 

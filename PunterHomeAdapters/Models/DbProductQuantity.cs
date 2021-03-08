@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PunterHomeAdapters.Models
 {
     public class DbProductQuantity
     {
         public int Id { get; set; }
-        public DbProduct ProductId { get; set; }
+        public DbProduct Product { get; set; }
+        public Guid ProductId { get; set; }
+
+        public List<DbShoppingListProductsMeasurement> ShoppingListProductsMeasurements { get; set; }
+
         public IEnumerable<DbShoppingListItem> ShoppingListItems { get; set; }
         public List<DbShoppingListItemMeasurement> ShoppingListItemMeasurements { get; set; }
         public int QuantityTypeVolume { get; set; }

@@ -12,7 +12,8 @@ namespace PunterHomeDomain.Interfaces
     {
         void AddProductToShoppingList(Guid shoppingListId, AddProductToShoppingListRequest request);
         void RemoveProductFromShoppingList(Guid itemId);
-        List<ShoppingListItemDetailsModel> GetItemsForShoppingList(Guid shoppingListId);
+        List<ShoppingListItemDetailsModel> GetProductItemsForShoppingList(Guid shoppingListId);
+        List<ShoppingListItemModel> GetItemsForShoppingList(Guid shoppingListId);
         List<ShoppingListShopItem> GetShoppingListShopItems(Guid shoppingListId);
         List<ShoppingListModel> GetShoppingLists();
         void UpdateShoppingListCount(Guid shoppingListItemId, int delta);

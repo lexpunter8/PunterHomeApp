@@ -1,19 +1,24 @@
 ﻿@page "/shoppinglist/{Id:guid}/shop"
 
 
-<div class="container-fluid">
+<div class="container">
     <BlazorPunterHomeApp.Components.SelectMeasurementsForShopItem @ref="SelectModal" RequiredAmount="ModalRequiredAmount"
                                                                   MeasurementType="ModalMeasurementType"
                                                                   MeasurementsOptions="MeasurementOptions" OnConfirm="ModalOnConfirm"></BlazorPunterHomeApp.Components.SelectMeasurementsForShopItem>
+
+    <div class="row justify-content-center p-2">
+                <h3>Winkelen</h3>
+    </div>
     <div class="row justify-content-center">
-        <div class="col-xl-10 col-md-10">
-            <h3>ShoppingList</h3>
+        <div class="col-xl-10 col-md-10 p-3 bg-el-1">
+            <h4>Nog te kopen producten</h4>
+            <hr style="background-color: #61B38E" class="mb-3"/>
             @foreach (var item in UnCheckedListItems)
             {
                 <div class="row justify-content-end">
                     <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Item.Id" name="@item.Item.Id" @onclick="@(() => ItemClicked(item))">
-                        <label for="@item.Item.Id"></label>
+                        <input type="checkbox" id="@item.Item.ProductId" name="@item.Item.ProductId" @onclick="@(() => ItemClicked(item))">
+                        <label for="@item.Item.ProductId"></label>
 
                     </div>
                     <div class="col-10 col-md-11" @onclick="@(() => ItemClicked(item))">
@@ -23,24 +28,25 @@
                         <div class="row">
 
                             <div class="col-12">
-                                @($"{item.Item.Amount} x {item.Item.Measurement.UnitQuantityTypeVolume} {item.Item.Measurement.MeasurementType}")
+                                @($"{item.Item.Measurement.UnitQuantityTypeVolume} {item.Item.Measurement.MeasurementType}")
                             </div>
 
                         </div>
 
                     </div>
                 </div>
-                <hr style="background-color: #DBDBDB" class="row" />
+                <hr class="row bg-el-0 mx-2" />
             }
-
-            <h3>Checked items</h3>
-            <button class="btn btn-outline-secondary" @onclick="@(() => ShoppingListService.AddQuantityForCheckedItems(ShoppingListService.ShoppingListId))">Add checked to product</button>
+            </div>
+        <div class="mt-3 col-xl-10 col-md-10 p-3 bg-el-1">
+            <h4>Afgevinkte producten</h4>
+            <hr style="background-color: #61B38E" />
             @foreach (var item in CheckedListItems)
             {
                 <div class="row">
                     <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Item.Id" name="@item.Item.Id" @onclick="@(() => ItemClicked(item, true))" checked>
-                        <label for="@item.Item.Id"></label>
+                        <input type="checkbox" id="@item.Item.ProductId" name="@item.Item.ProductId" @onclick="@(() => ItemClicked(item, true))" checked>
+                        <label for="@item.Item.ProductId"></label>
                     </div>
                     <div class="col-10 col-md-11" @onclick="@(() => ItemClicked(item))">
                         <div class="row">
@@ -62,8 +68,16 @@
                 </div>
 
 
-                <hr style="background-color: #DBDBDB" class="row" />
+                <hr class="row bg-el-0 mx-2" />
+            }
+            @if (CheckedListItems.Count > 0)
+            {
+                <button class="btn btn-outline-primary mb-2" @onclick="@(() => ShoppingListService.AddQuantityForCheckedItems(ShoppingListService.ShoppingListId))">Gekochte producten bijwerken</button>
+            }
+            else
+            {
+                <span>Nog geen producten afgevinkt</span>
             }
         </div>
-    </div>
+        </div>
 </div>

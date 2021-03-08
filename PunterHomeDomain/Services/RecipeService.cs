@@ -92,21 +92,14 @@ namespace PunterHomeApp.Services
         {
             var recipe = recipeAdapter.GetRecipeById(recipeId);
 
-            foreach (var ingredient in recipe.Ingredients)
+            var request = new AddProductToShoppingListRequest
             {
-                var request = new AddProductToShoppingListRequest
-                {
-                    MeasurementAmount = ingredient.UnitQuantity * numberOfPersons,
-                    MeasurementType = ingredient.UnitQuantityType,
-                    NrOfPersons = numberOfPersons,
-                    ProductId = ingredient.ProductId,
-                    Reason = EShoppingListReason.Recipe,
-                    RecipeId = recipeId,
-                    RecipeOnlyAvailable = onlyUnavailable
-                };
+                NrOfPersons = numberOfPersons,
+                RecipeId = recipeId,
+                RecipeOnlyAvailable = onlyUnavailable
+            };
 
-                myShoppingListService.AddProductToShoppingList(shoppingListId, request);
-            }
+            myShoppingListService.AddProductToShoppingList(shoppingListId, request);
         }
 
         public bool IsIngedientAvailable(Ingredient i, ProductDetails p, int numberOfPersons = 1)

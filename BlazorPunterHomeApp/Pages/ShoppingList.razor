@@ -2,29 +2,36 @@
 
 
 <div class="container">
-        <div class="row justify-content-center">
+    <div class="row justify-content-center p-2">
 
-            <h3>ShoppingList</h3>
-        </div>
-        <div class="row justify-content-center p-3 bg-el-1">
-            <div class="col-12">
-                @foreach (var item in ListItems)
-                {
-                    <div class="row">
-                        <div class="col-12 d-flex justify-content-between">
-                            <span>
-                                <strong class="h5">@item.Model.ProductName</strong><br />
-                                @if (item.Model.TotalAmount <= 0)
-                                {
-                                    <del>@(item.Model.StaticAmount + item.Model.DynamicAmountRequested) @item.Model.MeasurementType</del> <span>beschikbaar (@item.Model.DynamicAmountAvailable @item.Model.MeasurementType)</span>
-                                }
-                                else
-                                {
-                                    @($"{item.Model.TotalAmount} {item.Model.MeasurementType}")
-                                }
-                            </span>
-                            <div>
-                                @if (item.ShowInfo)
+        <h3>Boodschappenlijst</h3>
+    </div>
+    <div class="row justify-content-center p-4">
+        <div class="col-12 bg-el-1 p-2">
+            @foreach (var item in ListItems)
+            {
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between">
+                        <span>
+                            <strong class="h5">@item.Name</strong><br />
+                            @if (item.Model.Recipe != null)
+                            {
+                        <span>
+                            @*<i class="fas fa-utensils"></i>*@
+                            @*<i class="fas fa-receipt"></i>*@
+                            @($"{item.Model.StaticCount + item.Model.DynamicCount} personen")
+                        </span>
+                            }
+                            else
+                            {
+                        <span>
+
+                            @($"{item.Model.Product.Measurement.UnitQuantityTypeVolume} {item.Model.Product.Measurement.MeasurementType}")
+                        </span>
+                            }
+                        </span>
+                        <div>
+                            @*@if (item.ShowInfo)
                                 {
                                     <i class="fas fa-times recipe-available-color h5" @onclick="() => ShowInfo(item)"></i>
                                 }
@@ -32,16 +39,16 @@
                                 {
                                     <i class="fas fa-info-circle h5" @onclick="() => ShowInfo(item)"></i>
 
-                                }
-                            </div>
-
+                                }*@
                         </div>
+
                     </div>
-                    @if (item.ShowInfo)
-                    {
-                        <div class="pl-2">
-                            <ul class="list-unstyled">
-                                @{
+                </div>
+                @if (item.ShowInfo)
+                {
+                    <div class="pl-2">
+                        <ul class="list-unstyled">
+                            @*@{
                                     var staticItems = item.Model.StaticItems.GroupBy(s => s.Reason).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
                                     @foreach (var s in staticItems)
                                     {
@@ -49,11 +56,11 @@
                                             @s.Value @s.Key.First().MeasurementType @(s.Key.First().Reason == Enums.EShoppingListReason.Manual ? "Handmatig toegevoegd" : $"{s.Key.First().RecipeItem.RecipeName} ({s.Key.Sum(s => s.RecipeItem.NrOfPersons)}p)")
                                         </li>
                                     }
-                                }
-                            </ul>
-                            <h6>A: @item.Model.DynamicAmountAvailable R:@item.Model.DynamicAmountRequested</h6>
-                            <ul class="list-unstyled">
-                                @{
+                                }*@
+                        </ul>
+                        @*<h6>A: @item.Model.DynamicAmountAvailable R:@item.Model.DynamicAmountRequested</h6>*@
+                        <ul class="list-unstyled">
+                            @*@{
                                     var dynamicItems = item.Model.DynamicItems.GroupBy(s => s.RecipeItem.RecipeName).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
                                     @foreach (var s in dynamicItems)
                                     {
@@ -61,30 +68,30 @@
                                     @s.Value @s.Key.First().MeasurementType @(s.Key.Key) (@(s.Key.Sum(s => s.RecipeItem.NrOfPersons))p)
                                 </li>
                                     }
-                                }
+                                }*@
 
-                            </ul>
-                        </div>
-
-                    }
-
-                    <div class="row">
-                        <div class="col-12"><hr class="bg-el-0" /></div>
+                        </ul>
                     </div>
+
                 }
-            </div>
 
+                <div class="row">
+                    <div class="col-12"><hr class="bg-el-0" /></div>
+                </div>
+            }
         </div>
-
 
     </div>
 
-    @if (ListItems.Count > 0)
-    {
 
-        <div class="row justify-content-md-center fixed-bottom">
-            <a href="shoppinglist/@ShoppingListService.ShoppingListId/shop" class="btn btn-primary btn-puntergreen col-12 col-md-6">
-                Start shopping
-            </a>
-        </div>
-    }
+</div>
+
+@if (ListItems.Count > 0)
+{
+
+    <div class="row justify-content-md-center fixed-bottom">
+        <a href="shoppinglist/@ShoppingListService.ShoppingListId/shop" class="btn btn-primary btn-puntergreen col-12 col-md-6">
+            Start shopping
+        </a>
+    </div>
+}

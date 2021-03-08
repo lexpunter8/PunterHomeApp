@@ -18,5 +18,9 @@
     <ProjectReference Include="..\PunterHomeDomain\PunterHomeDomain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\" />
+  </ItemGroup>
+
 
 </Project>

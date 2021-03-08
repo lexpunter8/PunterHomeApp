@@ -1,38 +1,16 @@
-﻿using BlazorPunterHomeApp.Data;
+﻿using BlazorPunterHomeApp;
+using BlazorPunterHomeApp.Pages;
 using Microsoft.AspNetCore.Components;
-using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorPunterHomeApp.Pages
+namespace BlazorPunterHomeApp.Components
 {
-    public class ShoppingListDetailsViewModel
-    {
-        public ShoppingListDetailsViewModel(ShoppingListItemDetailsModel model)
-        {
-            Model = model;
-        }
-
-        public bool ShowInfo { get; set; }
-        public ShoppingListItemDetailsModel Model { get; }
-    }
-
-    public class ShoppingListItemViewModel
-    {
-        public ShoppingListItemViewModel(ShoppingListItemModel model)
-        {
-            Model = model;
-        }
-
-        public bool ShowInfo { get; set; }
-
-        public string Name => Model.Recipe?.RecipeName ?? Model.Product.ProductName;
-        public ShoppingListItemModel Model { get; }
-    }
-    public partial class ShoppingList : ComponentBase
+    public partial class ProductShoppingListComponent : ComponentBase
     {
         [Inject]
         public BlazorShoppingListService ShoppingListService { get; set; }
@@ -41,7 +19,7 @@ namespace BlazorPunterHomeApp.Pages
             await Refresh();
         }
 
-        public List<ShoppingListItemViewModel> ListItems { get; set; } = new List<ShoppingListItemViewModel>();
+        public List<ShoppingListDetailsViewModel> ListItems { get; set; } = new List<ShoppingListDetailsViewModel>();
 
         public async void AddQuantityToItem(ShoppingListItemDetailsModel item)
         {
@@ -67,7 +45,7 @@ namespace BlazorPunterHomeApp.Pages
         {
             var items = await ShoppingListService.GetShoppingListItems();
 
-            ListItems = items.Select(i => new ShoppingListItemViewModel(i)).ToList();
+            //ListItems = items.Select(i => new ShoppingListDetailsViewModel(i)).ToList();
             StateHasChanged();
         }
 
@@ -82,5 +60,4 @@ namespace BlazorPunterHomeApp.Pages
             item.ShowInfo = true;
         }
     }
-
 }

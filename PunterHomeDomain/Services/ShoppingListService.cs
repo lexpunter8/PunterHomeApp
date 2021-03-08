@@ -39,18 +39,13 @@ namespace PunterHomeDomain.Services
     {
         public Guid ProductId { get; set; }
         public BaseMeasurement Measurement { get; set; }
-        public int Amount { get; set; }
         public bool IsChecked { get; set; }
-        public Guid Id { get; set; }
         public string ProductName { get; set; }
         public List<MeasurementForShopItemModel> MeasurementsForChecked { get; set; } = new List<MeasurementForShopItemModel>();
     }
 
     public class ShoppingListItemDetailsModel
     {
-        public List<ShoppingListItemInfoModel> StaticItems { get; set; } = new List<ShoppingListItemInfoModel>();
-        public List<ShoppingListItemInfoModel> DynamicItems { get; set; } = new List<ShoppingListItemInfoModel>();
-
         public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public string ProductName { get; set; }
@@ -81,80 +76,151 @@ namespace PunterHomeDomain.Services
         }
         public List<ShoppingListShopItem> GetShoppingListShopItems(Guid shoppingListId)
         {
-            List<ShoppingListItemDetailsModel> items = GetItemsForShoppingList(shoppingListId);
+            List<ShoppingListItemModel> shoppingListItems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId);
+            var shoppingListProducts = myShoppingListDataAdapter.GetProductsForShoppingListId(shoppingListId);
+
+            List<ShopItemMeasurementAmount> measurementsForProduct = new List<ShopItemMeasurementAmount>();
             List<ShoppingListShopItem> shopItems = new List<ShoppingListShopItem>();
-            var shoppingListITems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId);
-
-            foreach (var item in items)
+            foreach (var item in shoppingListItems)
             {
-                var totRequestedAmount = item.StaticAmount + (item.DynamicAmountRequested < item.DynamicAmountAvailable ? 0 : item.DynamicAmountRequested - item.DynamicAmountAvailable);
-                if (totRequestedAmount == 0)
+                if (item.IsProduct)
                 {
-                    continue;
-                }
-                var product = myProductDataAdapter.GetProductById(item.ProductId);
-
-                var list = product.ProductQuantities.ToList();
-                list.Sort(new ProductQuantitySorter());
-
-                var quantitiesWithHigherAmount = list.Where(i => i.ConvertTo(item.MeasurementType) > totRequestedAmount);
-
-                // if any with higher amount then required, we can add the lowest , which is the first
-                if (quantitiesWithHigherAmount.Any() && false)
-                {
-                    var newShopItem = new ShoppingListShopItem
+                    measurementsForProduct.Add(new ShopItemMeasurementAmount
                     {
-                        Id = item.Id,
-                        ProductName = item.ProductName,
-                        Amount = 1,
-                        Measurement = quantitiesWithHigherAmount.First(),
-                        IsChecked = item.IsChecked, /// TODO,
-                        ProductId = item.ProductId,
-                        MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id)
-                    };
-                    shopItems.Add(newShopItem);
-                    continue;
-                }
-
-                // TODO if not lowest
-                var result = GetQuantityWithInfos(list, item.MeasurementType, totRequestedAmount);
-
-                var resultZeroDiff = result.Where(r => r.DifferenceMin == 0);
-
-                if (resultZeroDiff.Any())
-                {
-                    var minAmount = resultZeroDiff.Min(r => r.MaxPossibleForRequestMin);
-                    var itemToUse = resultZeroDiff.First(r => r.MaxPossibleForRequestMin == minAmount);
-                    shopItems.Add(new ShoppingListShopItem
-                    {
-                        Amount = Convert.ToInt32(itemToUse.MaxPossibleForRequestMin),
-                        Measurement = itemToUse.Measurement,
-                        IsChecked = item.IsChecked, /// TODO,
-                        ProductId = item.ProductId,
-                        Id = item.Id,
-                        ProductName = item.ProductName,
-                        MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id)
+                        ProductId = item.Product.ProductId,
+                        StaticMeasurementAmount = item.StaticCount * item.Product.Measurement.UnitQuantityTypeVolume,
+                        DynamicMeasurementAmount = item.DynamicCount,
+                        MeasurementType = item.Product.Measurement.MeasurementType
                     });
                     continue;
                 }
 
-                result.OrderBy(r => r.DifferenceMax).ThenBy(s => s.MaxPossibleForRequestMax);
+                var ingredients = recipeDataAdapter.GetRecipeById(item.Recipe.RecipeId).Ingredients;
+                foreach (var i in ingredients)
+                {
+                    var product = myProductDataAdapter.GetProductById(i.ProductId);
+
+                    measurementsForProduct.Add(new ShopItemMeasurementAmount
+                    {
+                        ProductId = product.Id,
+                        MeasurementType = i.UnitQuantityType,
+                        DynamicMeasurementAmount = i.UnitQuantity * item.DynamicCount,
+                        StaticMeasurementAmount = i.UnitQuantity * item.StaticCount,
+                    });
+                }
+            }
+
+            var groupedProduct = measurementsForProduct.GroupBy(p => p.ProductId);
+
+            foreach (var prod in groupedProduct)
+            {
+                EUnitMeasurementType measurementType = prod.First().MeasurementType;
+                double dynamicAmount = 0f;
+                double staticAmount = 0f;
+
+                foreach (var m in prod)
+                {
+                    staticAmount += BaseMeasurement.GetMeasurement(m.MeasurementType).AddMeasurementAmount(m.StaticMeasurementAmount)
+                                                                               .ConvertTo(measurementType);
+                    dynamicAmount += BaseMeasurement.GetMeasurement(m.MeasurementType).AddMeasurementAmount(m.DynamicMeasurementAmount)
+                                                                               .ConvertTo(measurementType);
+                }
+                var product = myProductDataAdapter.GetProductById(prod.Key);
+                dynamicAmount -= product.MeasurementAmounts?.GetTotalAmount(measurementType) ?? 0;
+                
+                // set amount to 0 if lower then 0
+                dynamicAmount = Math.Max(0, dynamicAmount);
 
                 shopItems.Add(new ShoppingListShopItem
                 {
-                    Amount = Convert.ToInt32(result.First().MaxPossibleForRequestMax),
-                    Measurement = result.First().Measurement,
-                    IsChecked = item.IsChecked, /// TODO,
-                    ProductId = item.ProductId,
-                        Id = item.Id,
-                    ProductName = item.ProductName,
-                    MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id)
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    IsChecked = shoppingListProducts.FirstOrDefault(p => p.ProductId == product.Id)?.IsChecked ?? false,
+                    Measurement = BaseMeasurement.GetMeasurement(measurementType).AddMeasurementAmount(dynamicAmount + staticAmount),
+                    MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(product.Id)
+                    
                 });
             }
-
-
             return shopItems;
         }
+
+
+        //public List<ShoppingListShopItem> GetShoppingListShopItems(Guid shoppingListId)
+        //{
+        //    List<ShoppingListItemDetailsModel> items = GetProductItemsForShoppingList(shoppingListId);
+        //    List<ShoppingListShopItem> shopItems = new List<ShoppingListShopItem>();
+        //    var shoppingListITems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId);
+
+        //    foreach (var item in items)
+        //    {
+        //        var totRequestedAmount = item.StaticAmount + (item.DynamicAmountRequested < item.DynamicAmountAvailable ? 0 : item.DynamicAmountRequested - item.DynamicAmountAvailable);
+        //        if (totRequestedAmount == 0)
+        //        {
+        //            continue;
+        //        }
+        //        var product = myProductDataAdapter.GetProductById(item.ProductId);
+
+        //        var list = product.ProductQuantities.ToList();
+        //        list.Sort(new ProductQuantitySorter());
+
+        //        var quantitiesWithHigherAmount = list.Where(i => i.ConvertTo(item.MeasurementType) > totRequestedAmount);
+
+        //        // if any with higher amount then required, we can add the lowest , which is the first
+        //        if (quantitiesWithHigherAmount.Any() && false)
+        //        {
+        //            var newShopItem = new ShoppingListShopItem
+        //            {
+        //                Id = item.Id,
+        //                ProductName = item.ProductName,
+        //                Amount = 1,
+        //                Measurement = quantitiesWithHigherAmount.First(),
+        //                IsChecked = item.IsChecked, /// TODO,
+        //                ProductId = item.ProductId,
+        //                MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id)
+        //            };
+        //            shopItems.Add(newShopItem);
+        //            continue;
+        //        }
+
+        //        // TODO if not lowest
+        //        var result = GetQuantityWithInfos(list, item.MeasurementType, totRequestedAmount);
+
+        //        var resultZeroDiff = result.Where(r => r.DifferenceMin == 0);
+
+        //        if (resultZeroDiff.Any())
+        //        {
+        //            var minAmount = resultZeroDiff.Min(r => r.MaxPossibleForRequestMin);
+        //            var itemToUse = resultZeroDiff.First(r => r.MaxPossibleForRequestMin == minAmount);
+        //            shopItems.Add(new ShoppingListShopItem
+        //            {
+        //                Amount = Convert.ToInt32(itemToUse.MaxPossibleForRequestMin),
+        //                Measurement = itemToUse.Measurement,
+        //                IsChecked = item.IsChecked, /// TODO,
+        //                ProductId = item.ProductId,
+        //                Id = item.Id,
+        //                ProductName = item.ProductName,
+        //                MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id)
+        //            });
+        //            continue;
+        //        }
+
+        //        result.OrderBy(r => r.DifferenceMax).ThenBy(s => s.MaxPossibleForRequestMax);
+
+        //        shopItems.Add(new ShoppingListShopItem
+        //        {
+        //            Amount = Convert.ToInt32(result.First().MaxPossibleForRequestMax),
+        //            Measurement = result.First().Measurement,
+        //            IsChecked = item.IsChecked, /// TODO,
+        //            ProductId = item.ProductId,
+        //                Id = item.Id,
+        //            ProductName = item.ProductName,
+        //            MeasurementsForChecked = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id)
+        //        });
+        //    }
+
+
+        //    return shopItems;
+        //}
 
         public List<QuantityWithInfo> GetQuantityWithInfos(List<BaseMeasurement> measurements, EUnitMeasurementType measurementType, double totRequestedAmount)
         {
@@ -173,71 +239,77 @@ namespace PunterHomeDomain.Services
             return infos;
         }
 
-        public List<ShoppingListItemDetailsModel> GetItemsForShoppingList(Guid shoppingListId)
+        public List<ShoppingListItemModel> GetItemsForShoppingList(Guid shoppingListId)
         {
-            List<ShoppingListItemModel> allProducts = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId);
+            List<ShoppingListItemModel> allShoppingItems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId);
+            return allShoppingItems;
+        }
+
+        public List<ShoppingListItemDetailsModel> GetProductItemsForShoppingList(Guid shoppingListId)
+        {
+            List<ShoppingListItemModel> allShoppingItems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId);
             
             var detailItems = new List<ShoppingListItemDetailsModel>();
-            foreach (ShoppingListItemModel sItem in allProducts)
+            foreach (ShoppingListItemModel sItem in allShoppingItems)
             {
-                ProductDetails product = myProductDataAdapter.GetProductById(sItem.ProductId);
-                //List<ShoppingListItemInfoModel> infoItems = myShoppingListDataAdapter.GetInfoItemsForShoppingListItem(sItem.Id);
-                ShoppingListItemDetailsModel details = new ShoppingListItemDetailsModel();
+                //ProductDetails product = myProductDataAdapter.GetProductById(sItem.Product);
+                ////List<ShoppingListItemInfoModel> infoItems = myShoppingListDataAdapter.GetInfoItemsForShoppingListItem(sItem.Id);
+                //ShoppingListItemDetailsModel details = new ShoppingListItemDetailsModel();
 
-                var measurementType = sItem.InfoItems.First().MeasurementType;
-                MeasurementClassObject amountObject = new MeasurementClassObject();
+                //var measurementType = sItem.InfoItems.First().MeasurementType;
+                //MeasurementClassObject amountObject = new MeasurementClassObject();
 
-                sItem.InfoItems.Where(i => i.RecipeItem == null).ToList().ForEach(a =>
-                {
-                    details.StaticItems.Add(a);
-                    amountObject.Values.Add(new MeasurementAmount
-                    {
-                        Amount = a.MeasurementAmount,
-                        Type = a.MeasurementType
-                    });
-                });
+                //sItem.InfoItems.Where(i => i.RecipeItem == null).ToList().ForEach(a =>
+                //{
+                //    details.StaticItems.Add(a);
+                //    amountObject.Values.Add(new MeasurementAmount
+                //    {
+                //        Amount = a.MeasurementAmount,
+                //        Type = a.MeasurementType
+                //    });
+                //});
 
-                MeasurementClassObject amountDynamicObject = new MeasurementClassObject();
+                //MeasurementClassObject amountDynamicObject = new MeasurementClassObject();
 
-                sItem.InfoItems.Where(i => i.RecipeItem != null).ToList().ForEach(a => {
-                    if (a.RecipeItem.IsOnlyUnavailable)
-                    {
-                        details.StaticItems.Add(a);
+                //sItem.InfoItems.Where(i => i.RecipeItem != null).ToList().ForEach(a => {
+                //    if (a.RecipeItem.IsOnlyUnavailable)
+                //    {
+                //        details.StaticItems.Add(a);
 
-                        amountObject.Values.Add(
-                        new MeasurementAmount
-                        {
-                            Amount = a.MeasurementAmount,
-                            Type = a.MeasurementType
-                        });
-                        return;
-                    }
-                    details.DynamicItems.Add(a);
+                //        amountObject.Values.Add(
+                //        new MeasurementAmount
+                //        {
+                //            Amount = a.MeasurementAmount,
+                //            Type = a.MeasurementType
+                //        });
+                //        return;
+                //    }
+                //    details.DynamicItems.Add(a);
                     
-                    amountDynamicObject.Values.Add(                    
-                    new MeasurementAmount
-                    {
-                        Amount = a.MeasurementAmount,
-                        Type = a.MeasurementType
-                    }); 
-                });
+                //    amountDynamicObject.Values.Add(                    
+                //    new MeasurementAmount
+                //    {
+                //        Amount = a.MeasurementAmount,
+                //        Type = a.MeasurementType
+                //    }); 
+                //});
 
-                double totalDynamicAmount = amountDynamicObject.GetTotalAmount(measurementType);
-                double totalStaticAmount = amountObject.GetTotalAmount(measurementType);
+                //double totalDynamicAmount = amountDynamicObject.GetTotalAmount(measurementType);
+                //double totalStaticAmount = amountObject.GetTotalAmount(measurementType);
 
-                details.DynamicAmountRequested = totalDynamicAmount;
-                details.StaticAmount = totalStaticAmount;
-                details.MeasurementType = measurementType;
-                details.ProductId = sItem.ProductId;
-                details.ProductName = sItem.ProductName;
-                details.Id = sItem.Id;
-                details.IsChecked = sItem.IsChecked;
+                //details.DynamicAmountRequested = totalDynamicAmount;
+                //details.StaticAmount = totalStaticAmount;
+                //details.MeasurementType = measurementType;
+                //details.ProductId = sItem.ProductId;
+                //details.ProductName = sItem.Name;
+                //details.Id = sItem.Id;
+                //details.IsChecked = sItem.IsChecked;
 
-                if (product.MeasurementAmounts != null)
-                {
-                    details.DynamicAmountAvailable = product.MeasurementAmounts.GetTotalAmount(measurementType);
-                }
-                detailItems.Add(details);
+                //if (product.MeasurementAmounts != null)
+                //{
+                //    details.DynamicAmountAvailable = product.MeasurementAmounts.GetTotalAmount(measurementType);
+                //}
+                //detailItems.Add(details);
             }
             return detailItems;
         }
@@ -294,15 +366,15 @@ namespace PunterHomeDomain.Services
 
         public void AddQuantityToProductForCheckedItems(Guid shoppingListId)
         {
-            var checkedItems = myShoppingListDataAdapter.GetItemsForShoppingList(shoppingListId).Where(i => i.IsChecked);
+            var checkedItems = myShoppingListDataAdapter.GetProductsForShoppingListId(shoppingListId).Where(i => i.IsChecked);
 
 
             foreach (var item in checkedItems)
             {
-                List<MeasurementForShopItemModel> checkedMeasurements = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.Id);
+                List<MeasurementForShopItemModel> checkedMeasurements = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.ProductId);
                 checkedMeasurements.ForEach(m => myProductDataAdapter.IncreaseProductQuantity(m.Measurement.ProductQuantityId, m.Count));
                 
-                myShoppingListDataAdapter.RemoveProductFromShoppingList(item.Id);
+                //myShoppingListDataAdapter.RemoveProductFromShoppingList(item.Id);
             }
         }
 

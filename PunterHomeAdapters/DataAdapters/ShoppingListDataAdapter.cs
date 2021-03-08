@@ -34,7 +34,7 @@ namespace PunterHomeAdapters.DataAdapters
             using var context = new HomeAppDbContext(myDbOptions);
 
             var items = new List<ShoppingListItemModel>();
-            var listItems = context.ShoppingListItems.Include(i => i.Product).Include(i => i.ItemInfos).ThenInclude(i => i.RecipeItem).ThenInclude(r => r.Recipe).Where(i => i.ShoppingList.Id == shoppingListId).ToList();
+            var listItems = context.ShoppingListItems.Include(i => i.ProductQuantity).ThenInclude(p => p.Product).Include(i => i.Recipe).Where(i => i.ShoppingList.Id == shoppingListId).ToList();
 
             foreach (var i in listItems)
             {
@@ -43,125 +43,122 @@ namespace PunterHomeAdapters.DataAdapters
                     Id = i.Id,
                     ShoppingListId = shoppingListId,
                     IsChecked = i.IsChecked,
-                    ProductId = i.Product.Id,
-                    ProductName = i.Product.Name,
-                    InfoItems = ConvertInfoItems(i.ItemInfos)
+                    StaticCount = i.StaticCount,
+                    DynamicCount = i.DynamicCount
                 };
 
+                if (i.Recipe != null)
+                {
+                    newItem.Recipe = new RecipeShoppingListItem
+                    {
+                        RecipeId = i.Recipe.Id,
+                        RecipeName = i.Recipe.Name
+                    };
+                }
+
+                if (i.ProductQuantity != null)
+                {
+                    newItem.Product = new ProductShoppingListItem
+                    {
+                        ProductId = i.ProductQuantity.ProductId,
+                        ProductName = i.ProductQuantity.Product.Name,
+                        Count = i.StaticCount
+                    };
+                    var q = context.ProductQuantities.FirstOrDefault(p => p.Id == i.ProductQuantityId);
+                    var measurement = BaseMeasurement.GetMeasurement(q.UnitQuantityType);
+                    measurement.UnitQuantityTypeVolume = q.QuantityTypeVolume * i.StaticCount;
+                    measurement.ProductQuantityId = q.Id;
+                    measurement.Barcode = q.Barcode;
+                    newItem.Product.Measurement = measurement;
+                    newItem.StaticCount = i.StaticCount;
+                }
                 items.Add(newItem);
 
             }
             return items;
         }
 
-        private List<ShoppingListItemInfoModel> ConvertInfoItems(List<DbShoppingListItemInfo> itemInfos)
-        {
-            var newList = new List<ShoppingListItemInfoModel>();
-            itemInfos.ForEach(i => newList.Add(new ShoppingListItemInfoModel
-            {
-                Id = i.Id,
-                MeasurementAmount = i.MeasurementAmount,
-                MeasurementType = i.MeasurementType,
-                RecipeItem = ConvertRecipeItem(i.RecipeItem),
-                Reason = i.Reason
-            }));
-
-            return newList;
-        }
-
-        private RecipeShoppingListItemModel ConvertRecipeItem(DbRecipeShoppingListItem recipeItem)
-        {
-            if (recipeItem == null)
-            {
-                return null;
-            }
-            return new RecipeShoppingListItemModel
-            {
-                NrOfPersons = recipeItem.NrOfPersons,
-                RecipeId = recipeItem.RecipeId,
-                ShoppingListItemId = recipeItem.ShoppingListItemId,
-                RecipeName = recipeItem.Recipe.Name,
-                IsOnlyUnavailable = recipeItem.IsOnlyUnavailable
-            };
-        }
 
         public void AddProductToShoppingList(Guid shoppingListId, AddProductToShoppingListRequest request)
         {
             using var context = new HomeAppDbContext(myDbOptions);
 
-            var existingItem = context.ShoppingListItems.FirstOrDefault(o => o.ProductId == request.ProductId);
-            bool addNew = false;
+            bool isAddRecipe = request.RecipeId != null && request.RecipeId != Guid.Empty;
+
+            var existingItem = context.ShoppingListItems.Include(i => i.ProductQuantity)
+                                                        .Include(i => i.Recipe)
+                                                        .FirstOrDefault(o => o.ProductQuantityId == request.ProductMeasurementId || o.RecipeId == request.RecipeId);
             if (existingItem == null)
             {
-                addNew = true;
                 existingItem = new DbShoppingListItem
                 {
                     IsChecked = false,
-                    Product = context.Products.First(p => p.Id == request.ProductId),
-
-                    ShoppingList = context.ShoppingLists.First()
+                    ShoppingList = context.ShoppingLists.First(),
+                    StaticCount = isAddRecipe ? request.RecipeOnlyAvailable ? 0 : request.NrOfPersons : request.MeasurementAmount,
+                    DynamicCount = isAddRecipe ? request.RecipeOnlyAvailable ? request.NrOfPersons : 0 : 0
                 };
 
+                if (isAddRecipe)
+                {
+                    existingItem.ProductQuantityId = null;
+                    existingItem.RecipeId = request.RecipeId;
+
+                    var recipe = context.Recipes.Include(r => r.Ingredients).ThenInclude(i => i.Product).First(r => r.Id == request.RecipeId);
+
+                    foreach (var ingredient in recipe.Ingredients)
+                    {
+                        var shoppingListProduct = context.ShoppingListProducts.FirstOrDefault(sp => ingredient.Product.Id == sp.FkProductId);
+                        if (shoppingListProduct == null)
+                        {
+                            context.ShoppingListProducts.Add(new DbShoppingListProduct
+                            {
+                                FkProductId = ingredient.ProductId,
+                                FkShoppingListId = shoppingListId,
+                                IsChecked = false
+                            });
+                        }
+                    }
+                }
+
+                if (!isAddRecipe)
+                {
+                    existingItem.ProductQuantityId = request.ProductMeasurementId;
+                    existingItem.RecipeId = null;
+
+                    var p = context.ProductQuantities.Include(pq => pq.Product).First(pq => pq.Id == request.ProductMeasurementId);
+                    var shoppingListProduct = context.ShoppingListProducts.FirstOrDefault(sp => p.Product.Id == sp.FkProductId);
+                    if (shoppingListProduct == null)
+                    {
+                        context.ShoppingListProducts.Add(new DbShoppingListProduct
+                        {
+                            FkProductId = p.ProductId,
+                            FkShoppingListId = shoppingListId,
+                            IsChecked = false
+                        });
+                    }
+                }
+                context.ShoppingListItems.Add(existingItem);
+                context.SaveChanges();
+                return;
             }
             
-
-            var newItemInfo = new DbShoppingListItemInfo
+            if (isAddRecipe)
             {
-                MeasurementType = request.MeasurementType,
-                MeasurementAmount = request.MeasurementAmount,
-                Reason = request.Reason,
-                ShoppingListItem = existingItem
-            };
-
-            if (request.RecipeId != null && request.RecipeId != Guid.Empty)
-            {
-                newItemInfo.RecipeItem = new DbRecipeShoppingListItem
+                if (request.RecipeOnlyAvailable)
                 {
-                    RecipeId = request.RecipeId,
-                    NrOfPersons = request.NrOfPersons,
-                    IsOnlyUnavailable = request.RecipeOnlyAvailable
-                };
+                    existingItem.DynamicCount += request.NrOfPersons;
+                }
+                else
+                {
+                    existingItem.StaticCount += request.NrOfPersons;
+                }
             }
 
-            if (addNew)
+            if (!isAddRecipe)
             {
-
-                context.ShoppingListItems.Add(existingItem);
+                existingItem.StaticCount += request.MeasurementAmount;
             }
-            context.ShoppingListItemInfos.Add(newItemInfo);
             context.SaveChanges();
-
-            //    var list = context.ShoppingLists.FirstOrDefault(s => s.Id == shoppingListId);
-            //    var productQuan = context.ProductQuantities.FirstOrDefault(s => s.Id == productQuantyId);
-            //    if (list == null)
-            //    {
-            //        throw new KeyNotFoundException($"{nameof(DbShoppingList)} with id {shoppingListId} not found");
-            //    }
-
-            //    if (productQuan == null)
-            //    {
-            //        throw new KeyNotFoundException($"{nameof(DbProductQuantity)} with id {productQuantyId} not found");
-            //    }
-
-            //    var item = context.ShoppingListItems.Include(i => i.ShoppingList).Include(i => i.ProductQuantities)
-            //        .FirstOrDefault(s => s.ShoppingList.Id == shoppingListId && s.ProductQuantities.Id == productQuantyId);
-
-            //    if (item != null)
-            //    {
-            //        item.Count += count;
-            //        context.SaveChanges();
-            //        return;
-            //    }
-
-            //    var newItem = new DbShoppingListItem
-            //    {
-            //        ShoppingList = list,
-            //        Count = count,
-            //        ProductQuantities = productQuan
-            //    };
-
-            //    context.ShoppingListItems.Add(newItem);
-            //    context.SaveChanges();
         }
 
         public void UpdateShoppingListCount(Guid shoppingListItemId, int delta)
@@ -184,7 +181,7 @@ namespace PunterHomeAdapters.DataAdapters
         {
             using var context = new HomeAppDbContext(myDbOptions);
 
-            DbShoppingListItem item = context.ShoppingListItems.Include(i => i.ShoppingListItemMeasurements).Include(s => s.ItemInfos).ThenInclude(i => i.RecipeItem).FirstOrDefault(s => s.Id == itemId);
+            DbShoppingListItem item = context.ShoppingListItems.Include(i => i.ProductQuantity).Include(i => i.Recipe).FirstOrDefault(s => s.Id == itemId);
             
             if (item == null)
             {
@@ -199,34 +196,18 @@ namespace PunterHomeAdapters.DataAdapters
         {
             using var context = new HomeAppDbContext(myDbOptions);
 
-            context.ShoppingListItems.FirstOrDefault(sl => sl.Id == itemId).IsChecked = isChecked;
+            context.ShoppingListProducts.FirstOrDefault(sl => sl.FkProductId == itemId).IsChecked = isChecked;
 
             if (!isChecked)
             {
-                var toRemove = context.MeasurementsForShoppingListItem.Where(i => i.ShoppingListItemId == itemId);
-                context.MeasurementsForShoppingListItem.RemoveRange(toRemove);
+                var toRemove = context.ShoppingListProducts.Include(sp => sp.ProductsMeasurements).First(i => i.FkProductId == itemId);
+                context.ShoppingListProductsMeasurements.RemoveRange(toRemove.ProductsMeasurements);
             }
 
             context.SaveChanges();
         }
 
-        public List<ShoppingListItemInfoModel> GetInfoItemsForShoppingListItem(Guid shoppingListItemId)
-        {
-            using var context = new HomeAppDbContext(myDbOptions);
-
-            IQueryable<DbShoppingListItemInfo> items = context.ShoppingListItemInfos.Include(i => i.RecipeItem).Where(ii => ii.ShoppingListItemId == shoppingListItemId);
-
-            var result = items.Select(i => new ShoppingListItemInfoModel
-            {
-                Id = i.Id,
-                MeasurementAmount = i.MeasurementAmount,
-                MeasurementType = i.MeasurementType,
-                Reason = i.Reason,
-                RecipeItem = GetRecipeShoppingListItem(i.RecipeItem)
-            });
-
-            return result.ToList();
-        }
+        
 
         private RecipeShoppingListItemModel GetRecipeShoppingListItem(DbRecipeShoppingListItem item)
         {
@@ -252,11 +233,14 @@ namespace PunterHomeAdapters.DataAdapters
         {
             using var context = new HomeAppDbContext(myDbOptions);
 
-            context.MeasurementsForShoppingListItem.Add(new DbShoppingListItemMeasurement
+            var pq = context.ProductQuantities.First(pq => pq.Id == measurementId);
+            var sp = context.ShoppingListProducts.First(sp => sp.FkProductId == pq.ProductId);
+
+            context.ShoppingListProductsMeasurements.Add(new DbShoppingListProductsMeasurement
             {
                 Count = count,
-                ShoppingListItemId = shoppingListItemId,
-                ProductQuantityId = measurementId
+                FkProductQuantityId = measurementId,
+                FkShoppingListProductId = sp.Id
             });
 
             context.SaveChanges();
@@ -266,22 +250,58 @@ namespace PunterHomeAdapters.DataAdapters
         {
             using var context = new HomeAppDbContext(myDbOptions);
 
-            var result =  context.MeasurementsForShoppingListItem.Include(m => m.ProductQuantity)
-                .Where(m => m.ShoppingListItemId == id).ToList();
-            return result.Select(m => GetBaseMeasurement(m))
+            var result = context.ShoppingListProducts.Include(spq => spq.ProductsMeasurements).ThenInclude(m => m.FkProductQuantity)
+                .FirstOrDefault(m => m.FkProductId == id && m.IsChecked);
+
+            if (result == null)
+            {
+                return new List<MeasurementForShopItemModel>();
+            }
+
+            return result.ProductsMeasurements.Select(m => GetBaseMeasurement(m))
                 .ToList();
         }
 
-        private MeasurementForShopItemModel GetBaseMeasurement(DbShoppingListItemMeasurement m)
+        private MeasurementForShopItemModel GetBaseMeasurement(DbShoppingListProductsMeasurement m)
         {
-            var n = BaseMeasurement.GetMeasurement(m.ProductQuantity.UnitQuantityType);
-            n.Barcode = m.ProductQuantity.Barcode;
-            n.ProductQuantityId = m.ProductQuantity.Id;
-            n.UnitQuantityTypeVolume = m.ProductQuantity.QuantityTypeVolume;
+            var n = BaseMeasurement.GetMeasurement(m.FkProductQuantity.UnitQuantityType);
+            n.Barcode = m.FkProductQuantity.Barcode;
+            n.ProductQuantityId = m.FkProductQuantity.Id;
+            n.UnitQuantityTypeVolume = m.FkProductQuantity.QuantityTypeVolume;
             return new MeasurementForShopItemModel(n)
             {
                 Count = m.Count
             };
         }
+
+        public List<ShoppingListProductModel> GetProductsForShoppingListId(Guid shoppingListId)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var products = context.ShoppingListProducts.Include(sp => sp.ProductsMeasurements).Where(ps => ps.FkShoppingListId == shoppingListId).ToList();
+            return products.Select(p => ConvertToShoppingListProductModel(p)).ToList();
+
+        }
+
+        private ShoppingListProductModel ConvertToShoppingListProductModel(DbShoppingListProduct p)
+        {
+            return new ShoppingListProductModel
+            {
+                ProductId = p.FkProductId,
+                IsChecked = p.IsChecked,
+                ProductsMeasurements = p.ProductsMeasurements.Select(s => ConvertToShoppingListProductMeasurement(s)).ToList()
+            };
+        }
+
+        private ShoppingListProductMeasurement ConvertToShoppingListProductMeasurement(DbShoppingListProductsMeasurement m)
+        {
+            return new ShoppingListProductMeasurement
+            {
+                Count = m.Count,
+                ProductQuantityId = m.FkProductQuantityId
+            };
+        }
+
+
     }
 }

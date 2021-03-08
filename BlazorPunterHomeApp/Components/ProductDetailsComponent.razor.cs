@@ -57,10 +57,8 @@ namespace BlazorPunterHomeApp.Components
         {
             await ShoppingListService.AddToShoppingList(Guid.Empty, new PunterHomeDomain.ApiModels.AddProductToShoppingListRequest
             {
-                MeasurementAmount = Convert.ToInt32(measurement.UnitQuantityTypeVolume),
-                MeasurementType = measurement.MeasurementType,
-                ProductId = ProductId,
-                Reason = Enums.EShoppingListReason.Manual
+                MeasurementAmount = 1,
+                ProductMeasurementId = measurement.ProductQuantityId
             });
         }
 

@@ -58,7 +58,7 @@ namespace PunterHomeApp.DataAdapters
 
             context.ProductQuantities.Add(new DbProductQuantity
             {
-                ProductId = prod,
+                Product = prod,
                 QuantityTypeVolume = value.UnitQuantityTypeVolume,
                 UnitQuantity = value.Quantity,
                 UnitQuantityType = value.MeasurementType,
@@ -90,7 +90,7 @@ namespace PunterHomeApp.DataAdapters
             using var context = new HomeAppDbContext(myDbOptions);
             var quantity = context.ProductQuantities.Include(x => x.ProductId).FirstOrDefault(p => p.Id == id);
 
-            if (quantity.ProductId.MeasurementValues == null)
+            if (quantity.Product.MeasurementValues == null)
             {
                 var values = new MeasurementClassObject
                 {
@@ -103,12 +103,12 @@ namespace PunterHomeApp.DataAdapters
                         }
                     }
                 };
-                quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(values);
+                quantity.Product.MeasurementValues = JsonConvert.SerializeObject(values);
                 await context.SaveChangesAsync();
                 return;
             }
 
-            var measurementClass = JsonConvert.DeserializeObject<MeasurementClassObject>(quantity.ProductId.MeasurementValues);
+            var measurementClass = JsonConvert.DeserializeObject<MeasurementClassObject>(quantity.Product.MeasurementValues);
             measurementClass.Add(new MeasurementAmount
             {
                 Amount = quantity.QuantityTypeVolume * -1,
@@ -126,7 +126,7 @@ namespace PunterHomeApp.DataAdapters
             //    Amount = quantity.QuantityTypeVolume,
             //    Type = quantity.UnitQuantityType
             //});
-            quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(measurementClass);
+            quantity.Product.MeasurementValues = JsonConvert.SerializeObject(measurementClass);
             await context.SaveChangesAsync();
             return;
         }
@@ -134,7 +134,7 @@ namespace PunterHomeApp.DataAdapters
         public ProductDetails GetProductById(Guid productId)
         {
             using var context = new HomeAppDbContext(myDbOptions);
-            DbProduct p = context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.ProductId).FirstOrDefault(p => p.Id == productId);
+            DbProduct p = context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.Product).FirstOrDefault(p => p.Id == productId);
 
             if (p == null)
             {
@@ -153,7 +153,7 @@ namespace PunterHomeApp.DataAdapters
         public async Task<IEnumerable<LightProduct>> GetProducts()
         {
             using var context = new HomeAppDbContext(myDbOptions);
-            List<DbProduct> products = await context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.ProductId).ToListAsync();
+            List<DbProduct> products = await context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.Product).ToListAsync();
 
             var retval = new List<LightProduct>();
             products.ForEach(p => 
@@ -172,7 +172,7 @@ namespace PunterHomeApp.DataAdapters
         public async Task<IEnumerable<ProductDetails>> GetAllProductDetails()
         {
             using var context = new HomeAppDbContext(myDbOptions);
-            List<DbProduct> products = await context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.ProductId).ToListAsync();
+            List<DbProduct> products = await context.Products.Include(p => p.ProductQuantities).ThenInclude(pq => pq.Product).ToListAsync();
 
             var retval = new List<ProductDetails>();
             products.ForEach(p =>
@@ -192,9 +192,9 @@ namespace PunterHomeApp.DataAdapters
         public async Task IncreaseProductQuantity(int id, int value)
         {
             using var context = new HomeAppDbContext(myDbOptions);
-            var quantity = context.ProductQuantities.Include(x => x.ProductId).FirstOrDefault(p => p.Id == id);
+            var quantity = context.ProductQuantities.Include(x => x.Product).FirstOrDefault(p => p.Id == id);
 
-            if (quantity.ProductId.MeasurementValues == null)
+            if (quantity.Product.MeasurementValues == null)
             {
                 var values = new MeasurementClassObject
                 {
@@ -207,12 +207,12 @@ namespace PunterHomeApp.DataAdapters
                         }
                     }
                 };
-                quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(values);
+                quantity.Product.MeasurementValues = JsonConvert.SerializeObject(values);
                 await context.SaveChangesAsync();
                 return;
             }
 
-            var measurementClass = JsonConvert.DeserializeObject<MeasurementClassObject>(quantity.ProductId.MeasurementValues);
+            var measurementClass = JsonConvert.DeserializeObject<MeasurementClassObject>(quantity.Product.MeasurementValues);
             measurementClass.Add(new MeasurementAmount
             {
                 Amount = quantity.QuantityTypeVolume * value,
@@ -230,7 +230,7 @@ namespace PunterHomeApp.DataAdapters
             //    Amount = quantity.QuantityTypeVolume,
             //    Type = quantity.UnitQuantityType
             //});
-            quantity.ProductId.MeasurementValues = JsonConvert.SerializeObject(measurementClass);
+            quantity.Product.MeasurementValues = JsonConvert.SerializeObject(measurementClass);
             await context.SaveChangesAsync();
             return;
         }
@@ -323,14 +323,14 @@ namespace PunterHomeApp.DataAdapters
         {
             using var context = new HomeAppDbContext(myDbOptions);
 
-            var prod = context.ProductQuantities.Include(pq => pq.ProductId).FirstOrDefault(p => p.Barcode == barcode);
+            var prod = context.ProductQuantities.Include(pq => pq.Product).FirstOrDefault(p => p.Barcode == barcode);
 
             if (prod == null)
             {
                 // prod id does not exists
                 return Guid.Empty;
             }
-            return prod.ProductId.Id;
+            return prod.Product.Id;
         }
     }
 }

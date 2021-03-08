@@ -29,7 +29,6 @@ namespace BlazorPunterHomeApp.Pages
         public List<SelectableMeasurement> MeasurementOptions = new List<SelectableMeasurement>();
         public double ModalRequiredAmount { get; set; }
         public EUnitMeasurementType ModalMeasurementType { get; set; }
-        public Guid SelectedItemId { get; set; }
         public async Task Refresh()
         {
             var items = await ShoppingListService.GetShoppingListToShopItems();
@@ -43,10 +42,10 @@ namespace BlazorPunterHomeApp.Pages
             SelectModal.Hide();
 
             // do some
-            ShoppingListService.AddMeasurementsToShoppingItem(SelectModal.MeasurementsOptions, SelectedItemId);
+            ShoppingListService.AddMeasurementsToShoppingItem(SelectModal.MeasurementsOptions, SelectedItem.Item.ProductId);
 
             SelectedItem.Item.IsChecked = !SelectedItem.Item.IsChecked;
-            await ShoppingListService.UpdateCheckedForItem(SelectedItem.Item.Id, SelectedItem.Item.IsChecked);
+            await ShoppingListService.UpdateCheckedForItem(SelectedItem.Item.ProductId, SelectedItem.Item.IsChecked);
             if (true)
             {
                 StateHasChanged();
@@ -63,16 +62,15 @@ namespace BlazorPunterHomeApp.Pages
             if (!item.Item.IsChecked)
             {
                 ModalMeasurementType = item.Item.Measurement.MeasurementType;
-                ModalRequiredAmount = item.Item.Measurement.UnitQuantityTypeVolume * item.Item.Amount;
+                ModalRequiredAmount = item.Item.Measurement.UnitQuantityTypeVolume;
                 var options = await ShoppingListService.GetMeasurementsForProduct(item.Item.ProductId);
                 MeasurementOptions = options.Select(m => new SelectableMeasurement(m)).ToList();
                 SelectModal.MeasurementsOptions = options.Select(m => new SelectableMeasurement(m)).ToList();
-                SelectedItemId = item.Item.Id;
                 SelectModal.Show();
                 return;
             }
             SelectedItem.Item.IsChecked = !SelectedItem.Item.IsChecked;
-            await ShoppingListService.UpdateCheckedForItem(SelectedItem.Item.Id, SelectedItem.Item.IsChecked);
+            await ShoppingListService.UpdateCheckedForItem(SelectedItem.Item.ProductId, SelectedItem.Item.IsChecked);
             if (true)
             {
                 StateHasChanged();

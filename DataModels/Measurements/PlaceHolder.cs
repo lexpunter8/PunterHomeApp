@@ -17,7 +17,7 @@ namespace DataModels.Measurements
         public BaseMeasurement Measurement { get; }
     }
 
-    public class BaseMeasurement  
+    public class BaseMeasurement
     {
         public BaseMeasurement(EUnitMeasurementType measurementType)
         {
@@ -28,6 +28,12 @@ namespace DataModels.Measurements
         public int ProductQuantityId { get; set; }
         public EUnitMeasurementType MeasurementType { get; }
         public double UnitQuantityTypeVolume { get; set; }
+
+        public BaseMeasurement AddMeasurementAmount(double amount) 
+        {
+            UnitQuantityTypeVolume += amount;
+            return this;
+        }
 
         public virtual double ConvertTo(EUnitMeasurementType measurementType)
         {

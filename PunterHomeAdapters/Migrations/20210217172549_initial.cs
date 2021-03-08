@@ -67,7 +67,7 @@ namespace PunterHomeAdapters.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ProductIdId = table.Column<Guid>(nullable: true),
+                    ProductId = table.Column<Guid>(nullable: false),
                     QuantityTypeVolume = table.Column<int>(nullable: false),
                     UnitQuantityType = table.Column<int>(nullable: false),
                     UnitQuantity = table.Column<int>(nullable: false),
@@ -77,11 +77,11 @@ namespace PunterHomeAdapters.Migrations
                 {
                     table.PrimaryKey("PK_ProductQuantities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductQuantities_Products_ProductIdId",
-                        column: x => x.ProductIdId,
+                        name: "FK_ProductQuantities_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -159,27 +159,26 @@ namespace PunterHomeAdapters.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    ShoppingListId = table.Column<Guid>(nullable: true),
-                    ProductId = table.Column<Guid>(nullable: true),
-                    MeasurementType = table.Column<int>(nullable: false),
-                    MeasurementAmount = table.Column<int>(nullable: false),
-                    IsChecked = table.Column<bool>(nullable: false),
-                    Reason = table.Column<int>(nullable: false),
-                    DbProductQuantityId = table.Column<int>(nullable: true)
+                    ShoppingListId = table.Column<Guid>(nullable: false),
+                    RecipeId = table.Column<Guid>(nullable: true),
+                    ProductQuantityId = table.Column<int>(nullable: true),
+                    StaticCount = table.Column<int>(nullable: false),
+                    DynamicCount = table.Column<int>(nullable: false),
+                    IsChecked = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ShoppingListItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ShoppingListItems_ProductQuantities_DbProductQuantityId",
-                        column: x => x.DbProductQuantityId,
+                        name: "FK_ShoppingListItems_ProductQuantities_ProductQuantityId",
+                        column: x => x.ProductQuantityId,
                         principalTable: "ProductQuantities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ShoppingListItems_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
+                        name: "FK_ShoppingListItems_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -187,7 +186,32 @@ namespace PunterHomeAdapters.Migrations
                         column: x => x.ShoppingListId,
                         principalTable: "ShoppingLists",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MeasurementsForShoppingListItem",
+                columns: table => new
+                {
+                    ShoppingListItemId = table.Column<Guid>(nullable: false),
+                    ProductQuantityId = table.Column<int>(nullable: false),
+                    Count = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MeasurementsForShoppingListItem", x => new { x.ShoppingListItemId, x.ProductQuantityId });
+                    table.ForeignKey(
+                        name: "FK_MeasurementsForShoppingListItem_ProductQuantities_ProductQu~",
+                        column: x => x.ProductQuantityId,
+                        principalTable: "ProductQuantities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MeasurementsForShoppingListItem_ShoppingListItems_ShoppingL~",
+                        column: x => x.ShoppingListItemId,
+                        principalTable: "ShoppingListItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -196,7 +220,8 @@ namespace PunterHomeAdapters.Migrations
                 {
                     RecipeId = table.Column<Guid>(nullable: false),
                     ShoppingListItemId = table.Column<Guid>(nullable: false),
-                    NrOfPersons = table.Column<int>(nullable: false)
+                    NrOfPersons = table.Column<int>(nullable: false),
+                    DynamicPersons = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -221,9 +246,14 @@ namespace PunterHomeAdapters.Migrations
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductQuantities_ProductIdId",
+                name: "IX_MeasurementsForShoppingListItem_ProductQuantityId",
+                table: "MeasurementsForShoppingListItem",
+                column: "ProductQuantityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductQuantities_ProductId",
                 table: "ProductQuantities",
-                column: "ProductIdId");
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductTags_TagId",
@@ -233,8 +263,7 @@ namespace PunterHomeAdapters.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_RecipeShoppingListItem_ShoppingListItemId",
                 table: "RecipeShoppingListItem",
-                column: "ShoppingListItemId",
-                unique: true);
+                column: "ShoppingListItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecipeSteps_RecipeId",
@@ -242,14 +271,14 @@ namespace PunterHomeAdapters.Migrations
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShoppingListItems_DbProductQuantityId",
+                name: "IX_ShoppingListItems_ProductQuantityId",
                 table: "ShoppingListItems",
-                column: "DbProductQuantityId");
+                column: "ProductQuantityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShoppingListItems_ProductId",
+                name: "IX_ShoppingListItems_RecipeId",
                 table: "ShoppingListItems",
-                column: "ProductId");
+                column: "RecipeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShoppingListItems_ShoppingListId",
@@ -261,6 +290,9 @@ namespace PunterHomeAdapters.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Ingredients");
+
+            migrationBuilder.DropTable(
+                name: "MeasurementsForShoppingListItem");
 
             migrationBuilder.DropTable(
                 name: "ProductTags");
@@ -278,10 +310,10 @@ namespace PunterHomeAdapters.Migrations
                 name: "ShoppingListItems");
 
             migrationBuilder.DropTable(
-                name: "Recipes");
+                name: "ProductQuantities");
 
             migrationBuilder.DropTable(
-                name: "ProductQuantities");
+                name: "Recipes");
 
             migrationBuilder.DropTable(
                 name: "ShoppingLists");

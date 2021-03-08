@@ -200,7 +200,7 @@ namespace BlazorPunterHomeApp
             }
         }
 
-        public async Task<List<ShoppingListItemDetailsModel>> GetShoppingListItems()
+        public async Task<List<ShoppingListItemModel>> GetShoppingListItems()
         {
             try
             {
@@ -212,12 +212,12 @@ namespace BlazorPunterHomeApp
 
                 if (result == null || result.Length == 0)
                 {
-                    return new List<ShoppingListItemDetailsModel>();
+                    return new List<ShoppingListItemModel>();
                 }
                 Uri uriGet = new Uri($"http://localhost:5005/api/shoppinglist/{result.First().Id}");
                 var response1 = await httpClient.GetAsync(uriGet, HttpCompletionOption.ResponseHeadersRead);
                 string responseString1 = await response1.Content.ReadAsStringAsync();
-                var result1 = JsonConvert.DeserializeObject<List<ShoppingListItemDetailsModel>>(responseString1);
+                var result1 = JsonConvert.DeserializeObject<List<ShoppingListItemModel>>(responseString1);
 
                 ShoppingListId = result.First().Id;
 

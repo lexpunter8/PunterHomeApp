@@ -7,11 +7,14 @@ namespace PunterHomeDomain.ApiModels
 {
     public class AddProductToShoppingListRequest
     {
-        public Guid ProductId { get; set; }
-        public EUnitMeasurementType MeasurementType { get; set; }
-        public int MeasurementAmount { get; set; }
-        public EShoppingListReason Reason { get; set; }
         public Guid ShoppingListId { get; set; }
+        public int ProductMeasurementId { get; set; }
+
+        /// <summary>
+        /// times to add the productMeasurement
+        /// </summary>
+        public int MeasurementAmount { get; set; }
+
         public bool RecipeOnlyAvailable { get; set; }
         public Guid RecipeId { get; set; }
         public int NrOfPersons { get; set; }

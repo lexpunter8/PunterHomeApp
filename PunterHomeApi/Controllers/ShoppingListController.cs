@@ -66,7 +66,7 @@ namespace PunterHomeApi.Controllers
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(Guid id)
         {
-            return DoRequestValidation<IEnumerable<ShoppingListItemDetailsModel>>(() => myShoppingListService.GetItemsForShoppingList(id));
+            return DoRequestValidation<IEnumerable<ShoppingListItemModel>>(() => myShoppingListService.GetItemsForShoppingList(id));
         }
 
         [HttpGet("{id}/shop")]
