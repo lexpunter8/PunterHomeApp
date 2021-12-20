@@ -1,0 +1,6 @@
+sudo ufw allow [portnumber]
+
+sudo ufw show added
+
+sudo chmod 775 WebApp/
+sudo chown -R pi:pi WebApp/

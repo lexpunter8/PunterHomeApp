@@ -135,27 +135,6 @@ namespace PunterHomeAdapters.Migrations
                     b.ToTable("Recipes");
                 });
 
-            modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeShoppingListItem", b =>
-                {
-                    b.Property<Guid>("RecipeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ShoppingListItemId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("DynamicPersons")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("NrOfPersons")
-                        .HasColumnType("integer");
-
-                    b.HasKey("RecipeId", "ShoppingListItemId");
-
-                    b.HasIndex("ShoppingListItemId");
-
-                    b.ToTable("RecipeShoppingListItem");
-                });
-
             modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStep", b =>
                 {
                     b.Property<Guid>("Id")
@@ -204,51 +183,20 @@ namespace PunterHomeAdapters.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("DynamicCount")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("FkShoppingListId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsChecked")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("ProductQuantityId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("RecipeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ShoppingListId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("StaticCount")
-                        .HasColumnType("integer");
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductQuantityId");
+                    b.HasIndex("FkShoppingListId");
 
-                    b.HasIndex("RecipeId");
-
-                    b.HasIndex("ShoppingListId");
-
-                    b.ToTable("ShoppingListItems");
-                });
-
-            modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListItemMeasurement", b =>
-                {
-                    b.Property<Guid>("ShoppingListItemId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("ProductQuantityId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ShoppingListItemId", "ProductQuantityId");
-
-                    b.HasIndex("ProductQuantityId");
-
-                    b.ToTable("MeasurementsForShoppingListItem");
+                    b.ToTable("ShoppingListTextItems");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListProduct", b =>
@@ -275,6 +223,24 @@ namespace PunterHomeAdapters.Migrations
                     b.ToTable("ShoppingListProducts");
                 });
 
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListProductMeasurementItem", b =>
+                {
+                    b.Property<Guid>("ShoppingListId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ProductQuantityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ShoppingListId", "ProductQuantityId");
+
+                    b.HasIndex("ProductQuantityId");
+
+                    b.ToTable("ShoppingListProductMeasurementItem");
+                });
+
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListProductsMeasurement", b =>
                 {
                     b.Property<Guid>("Id")
@@ -297,6 +263,27 @@ namespace PunterHomeAdapters.Migrations
                     b.HasIndex("FkShoppingListProductId");
 
                     b.ToTable("ShoppingListProductsMeasurements");
+                });
+
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListRecipeItem", b =>
+                {
+                    b.Property<Guid?>("RecipeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ShoppingListId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("DynamicCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StaticCount")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RecipeId", "ShoppingListId");
+
+                    b.HasIndex("ShoppingListId");
+
+                    b.ToTable("ShoppingListRecipeItem");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbIngredient", b =>
@@ -338,21 +325,6 @@ namespace PunterHomeAdapters.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeShoppingListItem", b =>
-                {
-                    b.HasOne("PunterHomeAdapters.Models.DbRecipe", "Recipe")
-                        .WithMany()
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PunterHomeAdapters.Models.DbShoppingListItem", "ShoppingListItem")
-                        .WithMany()
-                        .HasForeignKey("ShoppingListItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStep", b =>
                 {
                     b.HasOne("PunterHomeAdapters.Models.DbRecipe", "Recipe")
@@ -362,32 +334,9 @@ namespace PunterHomeAdapters.Migrations
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListItem", b =>
                 {
-                    b.HasOne("PunterHomeAdapters.Models.DbProductQuantity", "ProductQuantity")
-                        .WithMany("ShoppingListItems")
-                        .HasForeignKey("ProductQuantityId");
-
-                    b.HasOne("PunterHomeAdapters.Models.DbRecipe", "Recipe")
+                    b.HasOne("PunterHomeAdapters.Models.DbShoppingList", "FkShoppingList")
                         .WithMany()
-                        .HasForeignKey("RecipeId");
-
-                    b.HasOne("PunterHomeAdapters.Models.DbShoppingList", "ShoppingList")
-                        .WithMany()
-                        .HasForeignKey("ShoppingListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListItemMeasurement", b =>
-                {
-                    b.HasOne("PunterHomeAdapters.Models.DbProductQuantity", "ProductQuantity")
-                        .WithMany("ShoppingListItemMeasurements")
-                        .HasForeignKey("ProductQuantityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PunterHomeAdapters.Models.DbShoppingListItem", "ShoppingListItem")
-                        .WithMany()
-                        .HasForeignKey("ShoppingListItemId")
+                        .HasForeignKey("FkShoppingListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -407,6 +356,21 @@ namespace PunterHomeAdapters.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListProductMeasurementItem", b =>
+                {
+                    b.HasOne("PunterHomeAdapters.Models.DbProductQuantity", "ProductQuantity")
+                        .WithMany("DbShoppingListsItems")
+                        .HasForeignKey("ProductQuantityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PunterHomeAdapters.Models.DbShoppingList", "ShoppingList")
+                        .WithMany()
+                        .HasForeignKey("ShoppingListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListProductsMeasurement", b =>
                 {
                     b.HasOne("PunterHomeAdapters.Models.DbProductQuantity", "FkProductQuantity")
@@ -418,6 +382,21 @@ namespace PunterHomeAdapters.Migrations
                     b.HasOne("PunterHomeAdapters.Models.DbShoppingListProduct", "FkShoppingListProduct")
                         .WithMany("ProductsMeasurements")
                         .HasForeignKey("FkShoppingListProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListRecipeItem", b =>
+                {
+                    b.HasOne("PunterHomeAdapters.Models.DbRecipe", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PunterHomeAdapters.Models.DbShoppingList", "ShoppingList")
+                        .WithMany()
+                        .HasForeignKey("ShoppingListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

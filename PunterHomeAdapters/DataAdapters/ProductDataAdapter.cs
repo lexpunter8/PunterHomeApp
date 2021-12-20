@@ -88,7 +88,7 @@ namespace PunterHomeApp.DataAdapters
         public async Task DereaseProductQuantity(int id, int value)
         {
             using var context = new HomeAppDbContext(myDbOptions);
-            var quantity = context.ProductQuantities.Include(x => x.ProductId).FirstOrDefault(p => p.Id == id);
+            var quantity = context.ProductQuantities.Include(x => x.Product).FirstOrDefault(p => p.Id == id);
 
             if (quantity.Product.MeasurementValues == null)
             {

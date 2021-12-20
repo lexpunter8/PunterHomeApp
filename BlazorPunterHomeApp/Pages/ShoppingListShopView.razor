@@ -17,7 +17,7 @@
             {
                 <div class="row justify-content-end">
                     <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Item.ProductId" name="@item.Item.ProductId" @onclick="@(() => ItemClicked(item))">
+                        <input type="checkbox" id="@item.Item.ProductId" name="@item.Item.ProductId" @onclick="@(() => ItemClicked(item))" disabled>
                         <label for="@item.Item.ProductId"></label>
 
                     </div>
@@ -27,9 +27,13 @@
                         </div>
                         <div class="row">
 
-                            <div class="col-12">
-                                @($"{item.Item.Measurement.UnitQuantityTypeVolume} {item.Item.Measurement.MeasurementType}")
-                            </div>
+                            @if (item.Item.Measurement != null)
+                            {
+
+                                <div class="col-12">
+                                    @($"{item.Item.Measurement.UnitQuantityTypeVolume} {item.Item.Measurement.MeasurementType}")
+                                </div>
+                            }
 
                         </div>
 
@@ -45,7 +49,7 @@
             {
                 <div class="row">
                     <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Item.ProductId" name="@item.Item.ProductId" @onclick="@(() => ItemClicked(item, true))" checked>
+                        <input type="checkbox" id="@item.Item.ProductId" name="@item.Item.ProductId" @onclick="@(() => ItemClicked(item, true))" disabled checked>
                         <label for="@item.Item.ProductId"></label>
                     </div>
                     <div class="col-10 col-md-11" @onclick="@(() => ItemClicked(item))">
@@ -54,13 +58,17 @@
                         </div>
                         <div class="row">
 
-                            <div class="col-12">
-                                @for (int i = 0; i < item.Item.MeasurementsForChecked.Count; i++)
-                                {
-                                    string prepend = i == 0 ? "" : " | ";
-                                    @($"{prepend}{item.Item.MeasurementsForChecked[i].Count} x {item.Item.MeasurementsForChecked[i].Measurement.UnitQuantityTypeVolume} {item.Item.MeasurementsForChecked[i].Measurement.MeasurementType}")
-                                }
-                            </div>
+                            @if (item.Item.Measurement != null)
+                            {
+
+                                <div class="col-12">
+                                    @for (int i = 0; i < item.Item.MeasurementsForChecked.Count; i++)
+                                    {
+                                        string prepend = i == 0 ? "" : " | ";
+                                        @($"{prepend}{item.Item.MeasurementsForChecked[i].Count} x {item.Item.MeasurementsForChecked[i].Measurement.UnitQuantityTypeVolume} {item.Item.MeasurementsForChecked[i].Measurement.MeasurementType}")
+                                    }
+                                </div>
+                            }
 
                         </div>
 
@@ -70,11 +78,11 @@
 
                 <hr class="row bg-el-0 mx-2" />
             }
-            @if (CheckedListItems.Count > 0)
+            @if (CheckedListItems.Count > 0 && UnCheckedListItems.Count == 0)
             {
-                <button class="btn btn-outline-primary mb-2" @onclick="@(() => ShoppingListService.AddQuantityForCheckedItems(ShoppingListService.ShoppingListId))">Gekochte producten bijwerken</button>
+                <button class="btn btn-outline-primary mb-2" @onclick="@(() => UpdateCheckedItems())">Gekochte producten bijwerken</button>
             }
-            else
+            @if (CheckedListItems.Count == 0)
             {
                 <span>Nog geen producten afgevinkt</span>
             }

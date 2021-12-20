@@ -9,6 +9,12 @@
             <div class="modal-content">
                 <div class="modal-header"></div>
                 <div class="modal-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" @bind="BuyDifferent">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Buy different
+                        </label>
+                    </div>
                     <div class="row p-2">
                         Required: @RequiredAmount @MeasurementType
                         Current: @CurrentSelectedAmount @MeasurementType
@@ -20,7 +26,10 @@
                         }
                     </ul>
                 </div>
-                <div class="modal-footer"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="(() => Confrim())">OK</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Hide">Close</button>
+                </div>
             </div>
 
         </div>

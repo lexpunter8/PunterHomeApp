@@ -2,12 +2,12 @@
 
 namespace PunterHomeAdapters.Models
 {
-    public class DbShoppingListItemMeasurement
+    public class DbShoppingListProductMeasurementItem
     {
-        public Guid ShoppingListItemId { get; set; }
+        public Guid ShoppingListId { get; set; }
+        public DbShoppingList ShoppingList { get; set; }
         public int ProductQuantityId { get; set; }
         public DbProductQuantity ProductQuantity { get; set; }
-        public DbShoppingListItem ShoppingListItem{ get; set; }
 
         public int Count { get; set; }
     }

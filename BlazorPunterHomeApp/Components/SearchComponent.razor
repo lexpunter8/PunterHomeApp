@@ -5,7 +5,11 @@
 
             <div class="input-group-append">
 
-                <button class="btn btn-primary" type="button" @onclick="() => OnSearch.InvokeAsync(SearchModel)"><Icon Name="IconName.Search"></Icon></button>
+                <button class="btn btn-primary" type="button" @onclick="() => OnSearch.InvokeAsync(SearchModel)"><i class="fas fa-search"></i></button>
+                @if (ShowBarcodeButton)
+                {
+                    <button class="btn btn-primary" type="button" @onclick="() => OnBarcodePressed.InvokeAsync()"><i class="fas fa-barcode"></i></button>
+                }
             </div>
         </div>
 

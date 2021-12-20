@@ -42,6 +42,8 @@ namespace PunterHomeDomain.Services
         public bool IsChecked { get; set; }
         public string ProductName { get; set; }
         public List<MeasurementForShopItemModel> MeasurementsForChecked { get; set; } = new List<MeasurementForShopItemModel>();
+
+        public bool IsOneTimeItem { get; set; }
     }
 
     public class ShoppingListItemDetailsModel
@@ -85,12 +87,28 @@ namespace PunterHomeDomain.Services
             {
                 if (item.IsProduct)
                 {
-                    measurementsForProduct.Add(new ShopItemMeasurementAmount
+                    foreach (var m in item.Product.Measurements)
                     {
-                        ProductId = item.Product.ProductId,
-                        StaticMeasurementAmount = item.StaticCount * item.Product.Measurement.UnitQuantityTypeVolume,
-                        DynamicMeasurementAmount = item.DynamicCount,
-                        MeasurementType = item.Product.Measurement.MeasurementType
+
+                        measurementsForProduct.Add(new ShopItemMeasurementAmount
+                        {
+                            ProductId = item.Product.ProductId,
+                            StaticMeasurementAmount = m.Measurement.UnitQuantityTypeVolume * m.Count,
+                            DynamicMeasurementAmount = 0,
+                            MeasurementType = m.Measurement.MeasurementType
+                        });
+                    }
+                    continue;
+                }
+
+                if (!item.IsProduct && !item.IsRecipe)
+                {
+                    shopItems.Add(new ShoppingListShopItem
+                    {
+                        IsChecked = item.IsChecked,
+                        ProductName = item.ItemValue,
+                        ProductId = item.Id,
+                        IsOneTimeItem = true
                     });
                     continue;
                 }
@@ -327,7 +345,7 @@ namespace PunterHomeDomain.Services
 
         public void RemoveProductFromShoppingList(Guid itemId)
         {
-            myShoppingListDataAdapter.RemoveProductFromShoppingList(itemId);
+            //myShoppingListDataAdapter.RemoveProductFromShoppingList(itemId);
         }
 
         public void AddItemToShoppingList(Guid listId, ShoppingListItemModel item)
@@ -374,7 +392,7 @@ namespace PunterHomeDomain.Services
                 List<MeasurementForShopItemModel> checkedMeasurements = myShoppingListDataAdapter.GetMeasurementsForCheckedItem(item.ProductId);
                 checkedMeasurements.ForEach(m => myProductDataAdapter.IncreaseProductQuantity(m.Measurement.ProductQuantityId, m.Count));
                 
-                //myShoppingListDataAdapter.RemoveProductFromShoppingList(item.Id);
+                myShoppingListDataAdapter.RemoveProductFromShoppingList(item.ProductId, shoppingListId);
             }
         }
 
@@ -385,6 +403,21 @@ namespace PunterHomeDomain.Services
                 myShoppingListDataAdapter.AddMeasurementsToItem(item.ShoppingListItemId, item.MeasurementId, item.Count);
 
             }
+        }
+
+        public void UpdateProductQuantity(Guid shoppingListId, int quantityId, int delta)
+        {
+            myShoppingListDataAdapter.UpdateProductQuantity(shoppingListId, quantityId, delta);
+        }
+
+        public void UpdaterecipeQuantity(Guid shoppingListId, Guid recipeId, int delta)
+        {
+            myShoppingListDataAdapter.UpdaterecipeQuantity(shoppingListId, recipeId, delta);
+        }
+
+        public void AddItemToShoppingList(Guid shoppingListID, string text)
+        {
+            myShoppingListDataAdapter.SaveItemToShoppingList(shoppingListID, text);
         }
     }
 }

@@ -16,27 +16,13 @@ namespace PunterHomeAdapters.Models
     //    public DbRecipeShoppingListItem RecipeItem { get; set; }
     //}
 
-    public class DbShoppingListItem
+    public class DbShoppingListRecipeItem
     {
-        public Guid Id { get; set; }
         public Guid ShoppingListId { get; set; }
         public DbShoppingList ShoppingList { get; set; }
         public virtual DbRecipe? Recipe { get; set; }
         public Guid? RecipeId { get; set; }
-        public virtual DbProductQuantity ProductQuantity { get; set; }
-        public int? ProductQuantityId { get; set; }
         public int StaticCount { get; set; }
         public int DynamicCount { get; set; }
-        public bool IsChecked { get; set; }
-    }
-
-    public class DbRecipeShoppingListItem
-    {
-        public Guid RecipeId { get; set; }
-        public Guid ShoppingListItemId { get; set; }
-        public DbShoppingListItem ShoppingListItem { get; set; }
-        public DbRecipe Recipe { get; set; }
-        public int NrOfPersons { get; set; }
-        public int DynamicPersons { get; set; }
     }
 }

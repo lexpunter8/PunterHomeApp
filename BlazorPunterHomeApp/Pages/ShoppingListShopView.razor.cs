@@ -61,6 +61,12 @@ namespace BlazorPunterHomeApp.Pages
             SelectedItem = item;
             if (!item.Item.IsChecked)
             {
+                if (item.Item.IsOneTimeItem)
+                {
+                    await ShoppingListService.UpdateCheckedForItem(SelectedItem.Item.ProductId, !SelectedItem.Item.IsChecked);
+                    await Refresh();
+                    return;
+                }
                 ModalMeasurementType = item.Item.Measurement.MeasurementType;
                 ModalRequiredAmount = item.Item.Measurement.UnitQuantityTypeVolume;
                 var options = await ShoppingListService.GetMeasurementsForProduct(item.Item.ProductId);
@@ -78,6 +84,12 @@ namespace BlazorPunterHomeApp.Pages
 
             }
             await Refresh();
+        }
+
+        public void UpdateCheckedItems()
+        {
+            ShoppingListService.AddQuantityForCheckedItems(ShoppingListService.ShoppingListId);
+            Refresh();
         }
     }
 }

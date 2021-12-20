@@ -16,6 +16,8 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using PunterHomeDomain.Interfaces;
 using RazorShared;
+using PunterHomeApiConnector.Interfaces;
+using PunterHomeApiConnector.Clients;
 
 namespace BlazorPunterHomeApp
 {
@@ -49,6 +51,7 @@ namespace BlazorPunterHomeApp
             services.AddSingleton<BlazorShoppingListService>();
             services.AddSingleton<IBarcodeScannerService, BarcodeScannerService>();
             services.AddSingleton<IBlazorTagService, BlazorTagService>();
+            services.AddSingleton<IShoppingListApiConnector, ShoppingListApiConnector>();
             services.AddSingleton<AppState>();
         }
 

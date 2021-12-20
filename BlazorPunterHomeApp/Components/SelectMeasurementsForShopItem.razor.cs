@@ -28,6 +28,7 @@ namespace BlazorPunterHomeApp.Components
         [Parameter] public EventCallback OnCancel { get; set; }
         public bool ShowModal { get; set; }
         public double CurrentSelectedAmount { get; set; }
+        public bool BuyDifferent { get; set; }
 
         protected override void OnParametersSet()
         {
@@ -58,10 +59,15 @@ namespace BlazorPunterHomeApp.Components
             }
             CurrentSelectedAmount = currentAmount;
 
-            if (CurrentSelectedAmount >= RequiredAmount)
+            if (CurrentSelectedAmount >= RequiredAmount && !BuyDifferent)
             {
                 await OnConfirm.InvokeAsync(this);
             }
+        }
+
+        public async void Confrim()
+        {
+            await OnConfirm.InvokeAsync(this);
         }
     }
 

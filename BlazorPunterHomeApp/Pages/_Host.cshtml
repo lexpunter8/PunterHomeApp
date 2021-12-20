@@ -160,6 +160,10 @@
             this.dotNetReference.invokeMethodAsync("SetBarcode", barcode);
         }
 
+        function returnCamIdCodeToDotNet(camId) {
+            this.dotNetReference.invokeMethodAsync("SetCamId", camId);
+        }
+
         function setDotNetReference(ref) {
             this.dotNetReference = ref;
         }
@@ -188,6 +192,7 @@
                 }
             });
             var App = {
+
                 init: function () {
                     var self = this;
 
@@ -201,9 +206,14 @@
                         Quagga.start();
                     });
                 },
+
+
+
                 handleError: function (err) {
                     console.log(err);
                 },
+
+
                 checkCapabilities: function () {
                     var track = Quagga.CameraAccess.getActiveTrack();
                     var capabilities = {};
@@ -213,6 +223,8 @@
                     this.applySettingsVisibility('zoom', capabilities.zoom);
                     this.applySettingsVisibility('torch', capabilities.torch);
                 },
+
+
                 updateOptionsForMediaRange: function (node, range) {
                     console.log('updateOptionsForMediaRange', node, range);
                     var NUM_STEPS = 6;
@@ -230,6 +242,8 @@
                         node.appendChild(option);
                     }
                 },
+
+
                 applySettingsVisibility: function (setting, capability) {
                     // depending on type of capability
                     if (typeof capability === 'boolean') {
@@ -248,6 +262,8 @@
                         return;
                     }
                 },
+
+
                 initCameraSelection: function () {
                     var streamLabel = Quagga.CameraAccess.getActiveStreamLabel();
 
@@ -270,6 +286,8 @@
                             });
                         });
                 },
+
+
                 attachListeners: function () {
                     var self = this;
 
@@ -288,9 +306,13 @@
                             state = self._convertNameToState(name);
 
                         console.log("Value of " + state + " changed to " + value);
+
                         self.setState(state, value);
+                        returnCamIdCodeToDotNet(value);
                     });
                 },
+
+
                 _printCollectedResults: function () {
                     var results = resultCollector.getResults(),
                         $ul = $("#result_strip ul.collector");
@@ -303,6 +325,8 @@
                         $ul.prepend($li);
                     });
                 },
+
+
                 _accessByPath: function (obj, path, val) {
                     var parts = path.split('.'),
                         depth = parts.length,
@@ -319,15 +343,21 @@
                         return key in o ? o[key] : {};
                     }, obj);
                 },
+
+
                 _convertNameToState: function (name) {
                     return name.replace("_", ".").split("-").reduce(function (result, value) {
                         return result + value.charAt(0).toUpperCase() + value.substring(1);
                     });
                 },
+
+
                 detachListeners: function () {
                     $(".controls").off("click", "button.stop");
                     $(".controls .reader-config-group").off("change", "input, select");
                 },
+
+
                 applySetting: function (setting, value) {
                     var track = Quagga.CameraAccess.getActiveTrack();
                     if (track && typeof track.getCapabilities === 'function') {
@@ -339,6 +369,8 @@
                         }
                     }
                 },
+
+
                 setState: function (path, value) {
                     var self = this;
 
@@ -357,6 +389,8 @@
                     Quagga.stop();
                     App.init();
                 },
+
+
                 inputMapper: {
                     inputStream: {
                         constraints: function (value) {
@@ -372,9 +406,11 @@
                             };
                         }
                     },
+
                     numOfWorkers: function (value) {
                         return parseInt(value);
                     },
+
                     decoder: {
                         readers: function (value) {
                             if (value === 'ean_extended') {
@@ -394,6 +430,8 @@
                         }
                     }
                 },
+
+
                 state: {
                     inputStream: {
                         type: "LiveStream",
@@ -418,11 +456,13 @@
                     },
                     locate: true
                 },
+
                 lastResult: null
             };
 
 
             App.init();
+            App.setState("inputStream.constraints", "42a0652c4b8aa11ae63f45717288dd8c800b81dfcac33274ff12c0ee7f85c472");
 
             Quagga.onProcessed(function (result) {
                 var drawingCtx = Quagga.canvas.ctx.overlay,

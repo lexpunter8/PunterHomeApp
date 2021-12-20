@@ -29,6 +29,7 @@ namespace BlazorPunterHomeApp.Components
             await JSRuntime.InvokeVoidAsync("setDotNetReference", BarcodeFromJSsReference);
 
             BarcodeFromJSs.ValueChanged += BarcodeFromJsChanged;
+            BarcodeFromJSs.CamIdChanged += CamIdFromJsChanged;
             await JSRuntime.InvokeVoidAsync("startScanner");
         }
 
@@ -37,6 +38,11 @@ namespace BlazorPunterHomeApp.Components
             BarcodeValue = BarcodeFromJSs.Value;
             StateHasChanged();
             Finish();
+        }
+
+
+        private void CamIdFromJsChanged(object o, EventArgs a)
+        {
         }
 
         private async void Finish()

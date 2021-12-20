@@ -1,4 +1,51 @@
-﻿.validation-message{
+﻿
+/*// Small devices (landscape phones, 576px and up)*/
+:root {
+    --c-secondary: #fcdab7;
+    --c-danger: #CF6679;
+    --c-primary: #61B38E;
+    --c-bg-primary: #121212;
+    --c-bg-secondary: #292929;
+    --txt-c-bg: #DBDBDB;
+    --bg-el-2: #1d1d1d;
+    --bg-el-3: #212121;
+    --bg-el-4: #242424;
+    --bg-el-5: #272727;
+    --bg-el-6: #2c2c2c;
+    --bg-el-7: #2d2d2d;
+    --bg-el-8: #323232;
+    --bg-el-9: #343434;
+    --bg-el-10: #373737;
+}
+
+.fg-btn:hover {
+    filter: brightness(80%);
+}
+
+.fg-btn-danger:hover {
+    filter: brightness(80%);
+    color: var(--c-danger);
+}
+
+.oval-button {
+    background-color: var(--c-primary); /* Green */
+    border: none;
+    color: white;
+    padding: 1px 3px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    width: 32px;
+    border-radius: 15px;
+}
+
+    .oval-button:hover {
+        filter: brightness(80%);
+    }
+
+
+.validation-message {
     color: #CF6679;
 }
 
@@ -32,23 +79,6 @@
     }
 }
 
-/*// Small devices (landscape phones, 576px and up)*/
-:root {
-    --c-secondary: #fcdab7;
-    --c-primary: #61B38E;
-    --c-bg-primary: #121212;
-    --c-bg-secondary: #292929;
-    --txt-c-bg: #DBDBDB;
-    --bg-el-2: #1d1d1d;
-    --bg-el-3: #212121;
-    --bg-el-4: #242424;
-    --bg-el-5: #272727;
-    --bg-el-6: #2c2c2c;
-    --bg-el-7: #2d2d2d;
-    --bg-el-8: #323232;
-    --bg-el-9: #343434;
-    --bg-el-10: #373737;
-}
 
 .bg-el-0 {
     background-color: #121212;

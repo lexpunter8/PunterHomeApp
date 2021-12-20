@@ -25,14 +25,18 @@ namespace PunterHomeDomain.ApiModels
         public double DynamicMeasurementAmount { get; set; }
     }
 
+    public class ProductShoppingListMeasurementModel
+    {
+        public BaseMeasurement Measurement { get; set; }
+        public int Count { get; set; }
+    }
 
     public class ProductShoppingListItem
     {
         public Guid ProductId { get; set; }
         public string ProductName { get; set; }
 
-        public BaseMeasurement Measurement { get; set; }
-        public int Count { get; set; }
+        public List<ProductShoppingListMeasurementModel> Measurements { get; set; }
     }
     public class RecipeShoppingListItem
     {
@@ -50,9 +54,11 @@ namespace PunterHomeDomain.ApiModels
         public bool IsChecked { get; set; }
         public RecipeShoppingListItem Recipe { get; set; }
         public ProductShoppingListItem Product { get; set; }
+        public string ItemValue { get; set; }
         public int StaticCount { get; set; }
         public int DynamicCount { get; set; }
         public bool IsProduct => Product != null;
+        public bool IsRecipe=> Recipe != null;
 
         //public Guid Id { get; set; }
         //public EUnitMeasurementType MeasurementType { get; set; }

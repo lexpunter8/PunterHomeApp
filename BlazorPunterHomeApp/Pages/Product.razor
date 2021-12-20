@@ -47,6 +47,11 @@
                                     <ValidationMessage For="@(() => NewProductModel.Name)" />
                                     <InputText @bind-Value="NewProductModel.Name" class="form-control" id="inputAddress" placeholder="Product naam" />
                                 </div>
+                                <div class="form-group">
+                                    <label>Barcode</label>
+                                    <ValidationMessage For="@(() => NewProductModel.Barcode)" />
+                                    <InputText @bind-Value="NewProductModel.Barcode" class="form-control" id="inputAddress" placeholder="Barcode" />
+                                </div>
                                 <div class="form-group mb-3">
                                     <label>Product hoeveelheid</label>
                                     <ValidationMessage For="@(() => NewProductModel.UnitQuantity)" />
@@ -78,7 +83,7 @@
 
                 <div class="row mt-3">
                     <div class="col-12">
-                        <SearchComponent TextPlaceholder="Zoek product" OnSearch="Search" @ref="SearchComponent"></SearchComponent>
+                        <SearchComponent TextPlaceholder="Zoek product" OnSearch="Search" OnBarcodePressed="ShowNewScanBarcodeModal" ShowBarcodeButton="true" @ref="SearchComponent"></SearchComponent>
                         
                     </div>
                 </div>
@@ -155,7 +160,8 @@
         {
             Name = NewProductModel.Name,
             UnitQuantity = NewProductModel.UnitQuantity,
-            UnitQuantityType = NewProductModel.UnitQuantityType
+            UnitQuantityType = NewProductModel.UnitQuantityType,
+            Barcode = NewProductModel.Barcode
         });
         ToggleCreateProduct();
 
@@ -203,19 +209,9 @@
         var id = await ProductService.GetProductIdByBarcode(barcodeResult.Barcode);
         if (id == Guid.Empty)
         {
-
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(NewEditProductComponent.Barcode), barcodeResult.Barcode);
-
-
-            var moviesModal = Modal.Show<NewEditProductComponent>("New product", parameters);
-            var result = await moviesModal.Result;
-            if (result.Cancelled)
-            {
-                return;
-            }
-
-            id = await ProductService.GetProductIdByBarcode(barcodeResult.Barcode);
+            NewProductModel.Barcode = barcodeResult.Barcode;
+            ToggleCreateProduct();
+            return;
         }
         NavigationManager.NavigateTo($"product/{id}");
 

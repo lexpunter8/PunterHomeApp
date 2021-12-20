@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataModels\DataModels.csproj" />
+    <ProjectReference Include="..\PunterHomeApiConnector\PunterHomeApiConnector.csproj" />
     <ProjectReference Include="..\PunterHomeDomain\PunterHomeDomain.csproj" />
     <ProjectReference Include="..\RazorShared\RazorShared.csproj" />
   </ItemGroup>

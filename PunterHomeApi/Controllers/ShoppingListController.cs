@@ -117,6 +117,14 @@ namespace PunterHomeApi.Controllers
             myShoppingListService.AddMinimumAmountToShoppingList(shoppingListID, productAmount.ProductId, new MeasurementAmount { Amount = productAmount.VolumeAmount, Type = productAmount.Type });
         }
 
+
+        // POST: api/ShoppingList
+        [HttpPost("additem/{shoppingListID}")]
+        public void AddMinToList(Guid shoppingListID, [FromBody] TextApiModel text)
+        {
+            myShoppingListService.AddItemToShoppingList(shoppingListID, text.Text);
+        }
+
         // PUT: api/ShoppingList/5
         [HttpPut("plus/{id}")]
         public void Add(Guid id)
@@ -145,6 +153,31 @@ namespace PunterHomeApi.Controllers
         public void UpdateCheckedProducts(Guid id)
         {
             myShoppingListService.AddQuantityToProductForCheckedItems(id);
+        }
+
+
+        [HttpPut("add/product/{shoppinglistId}/{prodQuanId}")]
+        public void AddQuantityToProductShoppinglistItem(Guid shoppinglistId, int prodQuanId)
+        {
+            myShoppingListService.UpdateProductQuantity(shoppinglistId, prodQuanId, 1);
+        }
+
+        [HttpPut("decrease/product/{shoppinglistId}/{prodQuanId}")]
+        public void decreaseQuantityToProductShoppinglistItem(Guid shoppinglistId, int prodQuanId)
+        {
+            myShoppingListService.UpdateProductQuantity(shoppinglistId, prodQuanId, -1);
+        }
+
+        [HttpPut("add/recipe/{shoppinglistId}/{recipeId}")]
+        public void AddQuantityToRecipeShoppinglistItem(Guid shoppinglistId, Guid recipeId)
+        {
+            myShoppingListService.UpdaterecipeQuantity(shoppinglistId, recipeId, 1);
+        }
+
+        [HttpPut("decrease/recipe/{shoppinglistId}/{recipeId}")]
+        public void DecreaseQuantityToRecipeShoppinglistItem(Guid shoppinglistId, Guid recipeId)
+        {
+            myShoppingListService.UpdaterecipeQuantity(shoppinglistId, recipeId, -1);
         }
 
         // DELETE: api/ApiWithActions/5

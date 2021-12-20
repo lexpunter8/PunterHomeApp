@@ -31,12 +31,24 @@ namespace PunterHomeAdapters.Models
         public bool IsChecked { get; set; }
     }
 
+    public class DbShoppingListItem
+    {
+        public Guid Id { get; set; }
+
+        public DbShoppingList FkShoppingList { get; set; }
+        public Guid FkShoppingListId { get; set; }
+
+        public string Name { get; set; }
+        public bool IsChecked { get; set; }
+    }
+
     public class DbShoppingList
     {
         public Guid Id { get; set; }
 
         List<DbShoppingListProduct> ShoppingListProducts { get; set; }
-        List<DbShoppingListItem> ShoppingListItems { get; set; }
+        List<DbShoppingListProductMeasurementItem> ProductMeasurementItems { get; set; }
+        List<DbShoppingListRecipeItem> RecipeItems { get; set; }
 
         public string Name { get; set; }
         public bool IsActive { get; set; }

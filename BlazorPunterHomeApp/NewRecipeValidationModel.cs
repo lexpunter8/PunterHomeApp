@@ -30,6 +30,9 @@ namespace BlazorPunterHomeApp
         [StringLength(64, ErrorMessage = "Name to long")]
         public string Name { get; set; }
 
+        [StringLength(64, ErrorMessage = "Barcode to long")]
+        public string Barcode { get; set; }
+
         [Required]
         [Range(1, 100000, ErrorMessage = "Volume invalid (1-10000)")]
         public int UnitQuantity { get; set; } = 0;
@@ -37,7 +40,6 @@ namespace BlazorPunterHomeApp
         [Required]
         [UnitMeasurementTypeValidation]
         public EUnitMeasurementType UnitQuantityType { get; set; }
-        public string Barcode { get; set; }
 
         [JsonIgnore]
         public List<EUnitMeasurementType> SelectableUnitQuantityTypes => Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList();

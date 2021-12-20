@@ -18,5 +18,14 @@ namespace RazorShared
             Value = value;
             ValueChanged?.Invoke(this, EventArgs.Empty);
         }
+        public string CamId { get; set; }
+        public event EventHandler CamIdChanged;
+
+        [JSInvokable]
+        public void SetCamId(string value)
+        {
+            CamId = value;
+            CamIdChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

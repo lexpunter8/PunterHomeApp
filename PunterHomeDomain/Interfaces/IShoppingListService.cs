@@ -22,5 +22,10 @@ namespace PunterHomeDomain.Interfaces
 
         public void AddQuantityToProductForCheckedItems(Guid shoppingListId);
         void AddMeasurementsToShopItems(List<AddMeasurementsToShoppingListItem> request);
+
+
+        void UpdaterecipeQuantity(Guid shoppingListId, Guid recipeId, int delta);
+        void UpdateProductQuantity(Guid shoppingListId, int quantityId, int delta);
+        void AddItemToShoppingList(Guid shoppingListID, string text);
     }
 }

@@ -18,10 +18,39 @@ namespace BlazorPunterHomeApp
     {
         public Guid ShoppingListId;
 
+
+        public async Task AddOneTimeItemToShoppingList(Guid shoppingListId, string text)
+        {
+            try
+            {
+                var model = new TextApiModel
+                {
+                    Text = text
+                };
+                var json = JsonConvert.SerializeObject(model);
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var client = new HttpClient();
+
+                var response = await client.PostAsync(new Uri($"http://localhost:5005/api/shoppinglist/additem/{ShoppingListId}"), data);
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                client.Dispose();
+
+            }
+            catch (Exception)
+            {
+
+
+            }
+        }
+
         public async Task AddToShoppingList(Guid shoppingListId, AddProductToShoppingListRequest request)
         {
             try
             {
+                request.ShoppingListId = ShoppingListId;
                 var json = JsonConvert.SerializeObject(request);
                 var data = new StringContent(json, Encoding.UTF8, "application/json");
 

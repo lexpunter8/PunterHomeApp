@@ -6,41 +6,129 @@
 
         <h3>Boodschappenlijst</h3>
     </div>
-    <div class="row justify-content-center p-4">
-        <div class="col-12 bg-el-1 p-2">
-            @foreach (var item in ListItems)
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-4 p-3 bg-el-1">
+            <h4>Recepten</h4>
+            <hr style="background-color: #61B38E" class="mb-3" />
+            @foreach (var item in RecipeItems)
             {
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between">
                         <span>
                             <strong class="h5">@item.Name</strong><br />
-                            @if (item.Model.Recipe != null)
-                            {
-                        <span>
-                            @*<i class="fas fa-utensils"></i>*@
-                            @*<i class="fas fa-receipt"></i>*@
-                            @($"{item.Model.StaticCount + item.Model.DynamicCount} personen")
-                        </span>
-                            }
-                            else
-                            {
-                        <span>
-
-                            @($"{item.Model.Product.Measurement.UnitQuantityTypeVolume} {item.Model.Product.Measurement.MeasurementType}")
-                        </span>
-                            }
+                            <span>
+                                @*<i class="fas fa-utensils"></i>*@
+                                @*<i class="fas fa-receipt"></i>*@
+                                @($"{item.Model.StaticCount + item.Model.DynamicCount} personen")
+                            </span>
                         </span>
                         <div>
                             @*@if (item.ShowInfo)
-                                {
-                                    <i class="fas fa-times recipe-available-color h5" @onclick="() => ShowInfo(item)"></i>
-                                }
-                                else
-                                {
-                                    <i class="fas fa-info-circle h5" @onclick="() => ShowInfo(item)"></i>
+                            {
+                                <i class="fas fa-times recipe-available-color h5" @onclick="() => ShowInfo(item)"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-info-circle h5" @onclick="() => ShowInfo(item)"></i>
 
-                                }*@
+                            }*@
                         </div>
+
+                    </div>
+
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span>
+                                    @($"{item.Model.StaticCount + item.Model.DynamicCount} personen")
+                                </span>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-around">
+                                    <button @onclick="(() => DecreaseQuantityToItem(item, true))" class="btn oval-button"><i class="fas fa-minus"></i></button>
+                                    <span class="mx-2"><strong>@item.Model.StaticCount</strong></span>
+                                    <button @onclick="(() => AddQuantityToItem(item, true))" class="btn oval-button"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (item.ShowInfo)
+                {
+                    <div class="pl-2">
+                        <ul class="list-unstyled">
+                            @*@{
+                                var staticItems = item.Model.StaticItems.GroupBy(s => s.Reason).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
+                                @foreach (var s in staticItems)
+                                {
+                                    <li>
+                                        @s.Value @s.Key.First().MeasurementType @(s.Key.First().Reason == Enums.EShoppingListReason.Manual ? "Handmatig toegevoegd" : $"{s.Key.First().RecipeItem.RecipeName} ({s.Key.Sum(s => s.RecipeItem.NrOfPersons)}p)")
+                                    </li>
+                                }
+                            }*@
+                        </ul>
+                        @*<h6>A: @item.Model.DynamicAmountAvailable R:@item.Model.DynamicAmountRequested</h6>*@
+                        <ul class="list-unstyled">
+                            @*@{
+                                var dynamicItems = item.Model.DynamicItems.GroupBy(s => s.RecipeItem.RecipeName).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
+                                @foreach (var s in dynamicItems)
+                                {
+                            <li>
+                                @s.Value @s.Key.First().MeasurementType @(s.Key.Key) (@(s.Key.Sum(s => s.RecipeItem.NrOfPersons))p)
+                            </li>
+                                }
+                            }*@
+
+                        </ul>
+                    </div>
+
+                }
+
+
+                <hr class="row bg-el-0 mx-2" />
+            }
+        </div>
+        <div class="mt-3 mt-md-0 col-12 col-md-4 p-3 bg-el-1">
+            <h4>Producten</h4>
+            <hr style="background-color: #61B38E" class="mb-3" />
+            @foreach (var item in ProductItems)
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-between">
+                                <strong class="h5">@item.Name</strong>
+
+                                @{
+                                    var amount = item.GetProductAmount();
+                                    <span>
+                                        @($"{amount.amount} {amount.type}")
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        @foreach (var m in item.Model.Product.Measurements)
+                        {
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between px-2 py-1">
+                                        <div>
+                                            <span>
+                                                @($"{m.Measurement.UnitQuantityTypeVolume} {m.Measurement.MeasurementType}")
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div class="d-flex justify-content-around">
+                                                <button @onclick="(() => DecreaseQuantityToItem(item, false, m.Measurement.ProductQuantityId))" class="btn oval-button"><i class="fas fa-minus"></i></button>
+                                                <span class="mx-2"><strong>@m.Count</strong></span>
+                                                <button @onclick="(() => AddQuantityToItem(item, false, m.Measurement.ProductQuantityId))" class="btn oval-button"><i class="fas fa-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
 
                     </div>
                 </div>
@@ -49,35 +137,93 @@
                     <div class="pl-2">
                         <ul class="list-unstyled">
                             @*@{
-                                    var staticItems = item.Model.StaticItems.GroupBy(s => s.Reason).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
-                                    @foreach (var s in staticItems)
-                                    {
-                                        <li>
-                                            @s.Value @s.Key.First().MeasurementType @(s.Key.First().Reason == Enums.EShoppingListReason.Manual ? "Handmatig toegevoegd" : $"{s.Key.First().RecipeItem.RecipeName} ({s.Key.Sum(s => s.RecipeItem.NrOfPersons)}p)")
-                                        </li>
-                                    }
-                                }*@
+                                var staticItems = item.Model.StaticItems.GroupBy(s => s.Reason).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
+                                @foreach (var s in staticItems)
+                                {
+                                    <li>
+                                        @s.Value @s.Key.First().MeasurementType @(s.Key.First().Reason == Enums.EShoppingListReason.Manual ? "Handmatig toegevoegd" : $"{s.Key.First().RecipeItem.RecipeName} ({s.Key.Sum(s => s.RecipeItem.NrOfPersons)}p)")
+                                    </li>
+                                }
+                            }*@
                         </ul>
                         @*<h6>A: @item.Model.DynamicAmountAvailable R:@item.Model.DynamicAmountRequested</h6>*@
                         <ul class="list-unstyled">
                             @*@{
-                                    var dynamicItems = item.Model.DynamicItems.GroupBy(s => s.RecipeItem.RecipeName).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
-                                    @foreach (var s in dynamicItems)
-                                    {
-                                <li>
-                                    @s.Value @s.Key.First().MeasurementType @(s.Key.Key) (@(s.Key.Sum(s => s.RecipeItem.NrOfPersons))p)
-                                </li>
-                                    }
-                                }*@
+                                var dynamicItems = item.Model.DynamicItems.GroupBy(s => s.RecipeItem.RecipeName).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
+                                @foreach (var s in dynamicItems)
+                                {
+                            <li>
+                                @s.Value @s.Key.First().MeasurementType @(s.Key.Key) (@(s.Key.Sum(s => s.RecipeItem.NrOfPersons))p)
+                            </li>
+                                }
+                            }*@
 
                         </ul>
                     </div>
 
                 }
 
-                <div class="row">
-                    <div class="col-12"><hr class="bg-el-0" /></div>
+
+                <hr class="row bg-el-0 mx-2" />
+            }
+        </div>
+
+        <div class="mt-3 mt-md-0 col-12 col-md-4 p-3 bg-el-1">
+            <h4>Items</h4>
+            <hr style="background-color: #61B38E" class="mb-3" />
+
+            <EditForm OnValidSubmit="AddItem" Model="newItemModel">
+                <div class="input-group mb-2">
+                    <InputText rows="4" type="text" class="form-control" id="Instruction text" @bind-Value="newItemModel.Text" />
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-outline-primary">Add instruction step</button>
+                    </div>
                 </div>
+            </EditForm>
+            @foreach (var item in Items)
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-between">
+                                <strong class="h5">@item.Model.ItemValue</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (item.ShowInfo)
+                {
+                    <div class="pl-2">
+                        <ul class="list-unstyled">
+                            @*@{
+                            var staticItems = item.Model.StaticItems.GroupBy(s => s.Reason).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
+                            @foreach (var s in staticItems)
+                            {
+                                <li>
+                                    @s.Value @s.Key.First().MeasurementType @(s.Key.First().Reason == Enums.EShoppingListReason.Manual ? "Handmatig toegevoegd" : $"{s.Key.First().RecipeItem.RecipeName} ({s.Key.Sum(s => s.RecipeItem.NrOfPersons)}p)")
+                                </li>
+                            }
+                        }*@
+                        </ul>
+                        @*<h6>A: @item.Model.DynamicAmountAvailable R:@item.Model.DynamicAmountRequested</h6>*@
+                        <ul class="list-unstyled">
+                            @*@{
+                            var dynamicItems = item.Model.DynamicItems.GroupBy(s => s.RecipeItem.RecipeName).ToDictionary(a => a, a => a.Sum(s => s.MeasurementAmount));
+                            @foreach (var s in dynamicItems)
+                            {
+                        <li>
+                            @s.Value @s.Key.First().MeasurementType @(s.Key.Key) (@(s.Key.Sum(s => s.RecipeItem.NrOfPersons))p)
+                        </li>
+                            }
+                        }*@
+
+                        </ul>
+                    </div>
+
+                }
+
+
+                <hr class="row bg-el-0 mx-2" />
             }
         </div>
 
@@ -86,7 +232,7 @@
 
 </div>
 
-@if (ListItems.Count > 0)
+@if (ProductItems.Count + RecipeItems.Count > 0)
 {
 
     <div class="row justify-content-md-center fixed-bottom">

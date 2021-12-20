@@ -11,7 +11,6 @@
         <button class="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse bg-light px-2" id="navbarSupportedContent">
             <ul class="navbar-nav justify-content-center">
                 <li class="nav-item">
@@ -59,6 +58,7 @@
 @code
 {
     public bool OnLandingPage = true;
+    public bool ShowNavBar;
 
     protected override Task OnInitializedAsync()
     {
@@ -67,7 +67,6 @@
         OnLandingPage = State.CurrentPage == EPage.HomePage;
         return base.OnInitializedAsync();
     }
-
 
     private void PageChanged(object s, EventArgs a)
     {
