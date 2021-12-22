@@ -13,13 +13,13 @@ namespace PunterHomeAdapters
         public HomeAppDbContext(DbContextOptions<HomeAppDbContext> options) : base(options)
         { }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder options)
-        //    => options.UseNpgsql("Host=localhost;Database=punterhomeapp;Username=postgres;Password=2964Lppos");
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+            => options.UseNpgsql("Host=localhost;Database=punterhomeapp;Username=postgres;Password=2964Lppos");
 
         //protected override void OnConfiguring(DbContextOptionsBuilder options)
         //    => options.UseNpgsql("Host=127.0.0.1;Database=punterhomeapp;Username=pi;Password=2964Lppos");
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseNpgsql("Host=192.168.68.105;Database=punterhomeapp;Username=pi;Password=2964Lppos");
+        //protected override void OnConfiguring(DbContextOptionsBuilder options)
+        //    => options.UseNpgsql("Host=192.168.68.105;Database=punterhomeapp;Username=pi;Password=2964Lppos");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +29,8 @@ namespace PunterHomeAdapters
             modelBuilder.Entity<DbIngredient>()
                 .HasKey(c => new { c.ProductId, c.RecipeId });
 
+            modelBuilder.Entity<DbRecipeStepIngredient>()
+                .HasKey(c => new { c.ProductId, c.RecipeStepId });
 
             modelBuilder.Entity<DbProductTags>()
                 .HasKey(c => new { c.ProductId, c.TagId });
@@ -55,5 +57,6 @@ namespace PunterHomeAdapters
         public DbSet<DbShoppingListProduct> ShoppingListProducts { get; set; }
         public DbSet<DbShoppingListProductsMeasurement> ShoppingListProductsMeasurements { get; set; }
         public DbSet<DbShoppingListItem> ShoppingListTextItems { get; set; }
+        public DbSet<DbRecipeStepIngredient> RecipeStepIngredient { get; set; }
     }
 }

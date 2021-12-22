@@ -8,6 +8,15 @@ using static Enums;
 
 namespace PunterHomeDomain.Models
 {
+    public class RecipeStepIngredient
+    {
+        public Guid ProductId { get; set; }
+        public int UnitQuantity { get; set; }
+        public EUnitMeasurementType UnitQuantityType { get; set; }
+        public Guid RecipeStepId { get; set; }
+
+        public string ProductName { get; set; }
+    }
     public class Ingredient : IIngredient
     {
         public Guid ProductId { get; set; }

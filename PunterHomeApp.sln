@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeDomain", "PunterHomeDomain\PunterHomeDomain.csproj", "{C21C898E-8723-4702-AF94-9FFD9CB37058}"
 EndProject
@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeAppWA", "PunterHo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorShared", "RazorShared\RazorShared.csproj", "{699C7514-39D7-4A4F-9934-08995A07565E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeApiConnector", "PunterHomeApiConnector\PunterHomeApiConnector.csproj", "{7B9E9531-EAB7-4E4E-8A29-7FEF1A7725C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeApiConnector", "PunterHomeApiConnector\PunterHomeApiConnector.csproj", "{7B9E9531-EAB7-4E4E-8A29-7FEF1A7725C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeApi.Shared", "PunterHomeApi.Shared\PunterHomeApi.Shared.csproj", "{21388084-C780-4759-9E62-78FCD4DF7269}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,10 @@ Global
 		{7B9E9531-EAB7-4E4E-8A29-7FEF1A7725C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B9E9531-EAB7-4E4E-8A29-7FEF1A7725C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B9E9531-EAB7-4E4E-8A29-7FEF1A7725C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21388084-C780-4759-9E62-78FCD4DF7269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21388084-C780-4759-9E62-78FCD4DF7269}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21388084-C780-4759-9E62-78FCD4DF7269}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21388084-C780-4759-9E62-78FCD4DF7269}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

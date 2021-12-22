@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PunterHomeAdapters;
@@ -9,9 +10,10 @@ using PunterHomeAdapters;
 namespace PunterHomeAdapters.Migrations
 {
     [DbContext(typeof(HomeAppDbContext))]
-    partial class HomeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211222171643_add-recipestep-ingredient")]
+    partial class addrecipestepingredient
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -358,13 +360,13 @@ namespace PunterHomeAdapters.Migrations
             modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStepIngredient", b =>
                 {
                     b.HasOne("PunterHomeAdapters.Models.DbProduct", "Product")
-                        .WithMany("RecipeStepIngredients")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PunterHomeAdapters.Models.DbRecipeStep", "RecipeStep")
-                        .WithMany("Ingredients")
+                        .WithMany()
                         .HasForeignKey("RecipeStepId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PunterHomeAdapters;
@@ -9,14 +10,15 @@ using PunterHomeAdapters;
 namespace PunterHomeAdapters.Migrations
 {
     [DbContext(typeof(HomeAppDbContext))]
-    partial class HomeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211222110142_updaterecipestep")]
+    partial class updaterecipestep
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.18")
+                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbIngredient", b =>
@@ -155,27 +157,6 @@ namespace PunterHomeAdapters.Migrations
                     b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeSteps");
-                });
-
-            modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStepIngredient", b =>
-                {
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("RecipeStepId")
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("UnitQuantity")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("UnitQuantityType")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ProductId", "RecipeStepId");
-
-                    b.HasIndex("RecipeStepId");
-
-                    b.ToTable("RecipeStepIngredient");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingList", b =>
@@ -351,21 +332,6 @@ namespace PunterHomeAdapters.Migrations
                     b.HasOne("PunterHomeAdapters.Models.DbRecipe", "Recipe")
                         .WithMany("Steps")
                         .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStepIngredient", b =>
-                {
-                    b.HasOne("PunterHomeAdapters.Models.DbProduct", "Product")
-                        .WithMany("RecipeStepIngredients")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PunterHomeAdapters.Models.DbRecipeStep", "RecipeStep")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeStepId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

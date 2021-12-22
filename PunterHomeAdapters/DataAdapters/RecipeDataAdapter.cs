@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PunterHomeAdapters;
 using PunterHomeAdapters.Models;
@@ -15,10 +16,12 @@ namespace PunterHomeApp.DataAdapters
     public class RecipeDataAdapter : IRecipeDataAdapter
     {
         private DbContextOptions<HomeAppDbContext> myDbOptions;
+        private readonly IMapper mapper;
 
-        public RecipeDataAdapter(DbContextOptions<HomeAppDbContext> options)
+        public RecipeDataAdapter(DbContextOptions<HomeAppDbContext> options, IMapper mapper)
         {
             myDbOptions = options;
+            this.mapper = mapper;
         }
 
         public Task<bool> AddIngredient(Guid recipeId, IIngredient ingredient)
@@ -56,7 +59,7 @@ namespace PunterHomeApp.DataAdapters
 
             var result = context.Recipes
                                     .Include(r => r.Ingredients)
-                                    .ThenInclude(i => i.Recipe).Include(r => r.Steps)
+                                    .ThenInclude(i => i.Recipe).Include(r => r.Steps).ThenInclude(S => S.Ingredients)
                                     .FirstOrDefault(d => d.Id == recipeId);
 
             result.Ingredients.ForEach(i => i.Product = context.Products.FirstOrDefault(p => p.Id == i.ProductId));
@@ -115,7 +118,7 @@ namespace PunterHomeApp.DataAdapters
                 Id = recipe.Id,
                 Type = recipe.Type,
                 Steps = recipe.Steps.Select(s => Convert(s)),
-                Ingredients = recipe.Ingredients.Select(i => ConvertDbIngredient(i))
+                Ingredients = recipe.Ingredients?.Select(i => ConvertDbIngredient(i))
             };
         }
 
@@ -138,7 +141,8 @@ namespace PunterHomeApp.DataAdapters
                 Id = recipe.Id,
                 Order = recipe.Order,
                 Text = recipe.Text,
-                RecipeId = recipe.Recipe.Id
+                RecipeId = recipe.Recipe.Id,
+                Ingredients = recipe.Ingredients?.Select(s => mapper.Map<RecipeStepIngredient>(s)).ToList()
             };
         }
 
@@ -282,6 +286,20 @@ namespace PunterHomeApp.DataAdapters
                                 Text = s.Text
                             })
                 .ToList();
+        }
+
+        public RecipeStepAggregate GetRecipeStep(Guid id)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var result = context.RecipeSteps.FirstOrDefault(rs => rs.Id == id);
+
+            if (result == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            return new RecipeStepAggregate(result.Id, result.Recipe.Id, result.Text, result.Order, new List<RecipeStepIngredient>());
         }
     }
 

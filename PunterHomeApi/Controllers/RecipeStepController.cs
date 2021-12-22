@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PunterHomeApi.Shared;
+using PunterHomeDomain;
 using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
 
@@ -14,10 +16,12 @@ namespace PunterHomeApi.Controllers
     public class RecipeStepController : ControllerBase
     {
         private readonly IRecipeService myRecipeService;
+        private readonly IRecipeStepRepository recipeStepRepository;
 
-        public RecipeStepController(IRecipeService recipeService)
+        public RecipeStepController(IRecipeService recipeService, IRecipeStepRepository recipeStepRepository)
         {
             myRecipeService = recipeService;
+            this.recipeStepRepository = recipeStepRepository;
         }
         // GET: api/RecipeStep
         //[HttpGet]
@@ -35,11 +39,27 @@ namespace PunterHomeApi.Controllers
 
         // POST: api/RecipeStep
         [HttpPost("{id}")]
-        public IActionResult Post([FromBody] RecipeStep value, Guid id)
+        public async Task<IActionResult> Post([FromBody] RecipeStep value, Guid id)
         {
             try
             {
-                myRecipeService.AddStep(value, id);
+                await recipeStepRepository.SaveAsync(new RecipeStepAggregate(Guid.NewGuid(), id, value.Text, value.Order, new List<RecipeStepIngredient>()));
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
+        [HttpPost("ingredienttostep")]
+        public async Task<IActionResult> Post([FromBody] AddIngredientToRecipeStepRequest request)
+        {
+            try
+            {
+                var recipeStep = await recipeStepRepository.GetAsync(request.RecipeStepId);
+                recipeStep.AddIngredient(request.IngredientId, request.RecipeStepId);
+                await recipeStepRepository.SaveAsync(recipeStep);
             }
             catch (Exception)
             {

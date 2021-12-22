@@ -1,5 +1,6 @@
 ﻿using BlazorPunterHomeApp.Data;
 using Newtonsoft.Json;
+using PunterHomeApi.Shared;
 using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Models;
 using System;
@@ -56,6 +57,28 @@ namespace BlazorPunterHomeApp
             catch (Exception)
             {
                 return null;
+            }
+        }
+
+        public async void AddIngredientToStop(Guid ingredientId, Guid stepId)
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(new AddIngredientToRecipeStepRequest
+                {
+                    IngredientId = ingredientId,
+                    RecipeStepId = stepId
+                });
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var httpClient = new HttpClient();
+                Uri uri = new Uri($"http://localhost:5005/api/recipestep/ingredienttostep/");
+                var response = await httpClient.PostAsync(uri, data);
+                string responseString = await response.Content.ReadAsStringAsync();
+
+            }
+            catch (Exception)
+            {
             }
         }
 

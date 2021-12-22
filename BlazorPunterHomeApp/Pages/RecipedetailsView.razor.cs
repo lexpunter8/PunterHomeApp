@@ -55,6 +55,11 @@ namespace BlazorPunterHomeApp.Pages
 
         }
 
+        public void AddIngredientToStep(Guid stepId, Guid ingredientId)
+        {
+            RecipeService.AddIngredientToStop(ingredientId, stepId);
+        }
+
         public void Focus()
         {
             if (FocusElement.Context != null)

@@ -19,5 +19,9 @@ namespace PunterHomeDomain
         void RemoveStep(Guid stepId);
         void UpdateStep(Guid stepId, string text = null, int order = 0);
         IEnumerable<RecipeStep> GetStepForRecipe(Guid guid);
+
+
+        //ddd
+        RecipeStepAggregate GetRecipeStep(Guid id);
     }
 }

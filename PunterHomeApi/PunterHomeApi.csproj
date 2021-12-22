@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
@@ -16,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DataModels\DataModels.csproj" />
     <ProjectReference Include="..\PunterHomeAdapters\PunterHomeAdapters.csproj" />
+    <ProjectReference Include="..\PunterHomeApi.Shared\PunterHomeApi.Shared.csproj" />
     <ProjectReference Include="..\PunterHomeDomain\PunterHomeDomain.csproj" />
   </ItemGroup>
 

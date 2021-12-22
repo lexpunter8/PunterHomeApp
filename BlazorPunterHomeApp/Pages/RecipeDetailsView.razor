@@ -38,18 +38,18 @@
 
                             @foreach (var step in RecipeSteps)
                             {
-                            <li draggable="@(IsEditting && !step.IsEditting)" @key="step.Step.Id" @ondrop="@(() => Drop(step))" @ondrag="@(() => StartDrag(step))">
-                                <div class="row">
-                                    <div class="col-auto my-1">
-                                        <span class="circle @(step.IsOrderEditting ? "bg-c-primary": "bg-el-4")" @onclick="@(() => ToggleOrderEditting(step))">@step.Step.Order</span>
-                                    </div>
+                                <li draggable="@(IsEditting && !step.IsEditting)" @key="step.Step.Id" @ondrop="@(() => Drop(step))" @ondrag="@(() => StartDrag(step))">
+                                    <div class="row">
+                                        <div class="col-auto my-1">
+                                            <span class="circle @(step.IsOrderEditting ? "bg-c-primary": "bg-el-4")" @onclick="@(() => ToggleOrderEditting(step))">@step.Step.Order</span>
+                                        </div>
 
-                                    <div class="col mr-2" style="min-height: 50px">
-                                        @if (step.IsEditting && IsEditting)
-                                        {
-                                            <EditForm Model="step.Step" OnValidSubmit="(() => UpdateStep(step))" @onfocusout="(() => UpdateStep(step))">
+                                        <div class="col mr-2" style="min-height: 50px">
+                                            @if (step.IsEditting && IsEditting)
+                                            {
+                                                <EditForm Model="step.Step" OnValidSubmit="(() => UpdateStep(step))" @onfocusout="(() => UpdateStep(step))">
                                                     <div class="input-group mb-2 @(IsEditting ? "show" : "collapse")">
-                                                        <textarea @ref="FocusElement" class="form-control" rows="4" @bind="@step.Step.Text" autofocus></textarea>
+                                                        <texztarea @ref="FocusElement" class="form-control" rows="4" @bind="@step.Step.Text" autofocus></texztarea>
                                                         <div class="input-group-append" style="padding:0">
                                                             <span class="btn-group-vertical">
 
@@ -62,41 +62,78 @@
                                                             </span>
                                                         </div>
                                                     </div>
-                                            </EditForm>
+                                                </EditForm>
+                                            }
+                                            else
+                                            {
+                                                <span class="mr-2" @onclick="(() => ToggleTextEditting(step))">@step.Step.Text</span>
+                                            }
+                                        </div>
+
+                                        <div class="col-auto">
+
+
+                                            <h5>Required ingredients</h5>
+                                            <hr class="bg-el-0" />
+
+                                            <ul class="list-unstyled">
+                                                @foreach (var item in step.Step.Ingredients)
+                                                {
+                                                    <li>@item.ProductName</li>
+                                                }
+                                            </ul>
+
+
+                                            <div class="d-flex flex-row-reverse">
+
+                                                <div class="dropdown">
+
+                                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                                        Add
+                                                    </button>
+
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        @foreach (var i in Recipedetails.Ingredients.Where(i => !step.Step.Ingredients.Any(y => y.ProductId == i.ProductId)))
+                                                        {
+                                                            <a @onclick="() => AddIngredientToStep(step.Step.Id, i.ProductId)" class="dropdown-item">@i.ProductName</a>
+                                                        }
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+
+
+                                        </div>
+                                    </div>
+
+                                    <hr class="mx-2 bg-secondary" />
+                                    @*<div class="" style="margin:5px 0 0 0">
+                                        <div class="justify-content-center align-middle col-md-2" @ondr>
+
+                                        <span class="circle bg-el-4">@step.Step.Order</span>
+                                        </div>
+                                        <div class="col-md-10">
+                                        <div style="min-height: 50px">
+                                        @{
+                                        @if (step.IsEditting && IsEditting)
+                                        {
+                                        <EditForm Model="step.Step" OnValidSubmit="(() => UpdateStep(step))" @onfocusout="(() => UpdateStep(step))">
+                                        <InputText @bind-Value="step.Step.Text" autofocus></InputText>
+                                        </EditForm>
                                         }
                                         else
                                         {
-                                            <span class="mr-2" @onclick="(() => ToggleTextEditting(step))">@step.Step.Text</span>
+                                        <span @onclick="(() => step.IsEditting = true)">@step.Step.Text</span>
                                         }
-                                    </div>
-                                </div>
+                                        }
 
-                                <hr class="mx-2 bg-secondary" />
-                                @*<div class="" style="margin:5px 0 0 0">
-            <div class="justify-content-center align-middle col-md-2" @ondr>
+                                        </div>
+                                        </div>
+                                        </div>*@
+                                </li>
 
-                <span class="circle bg-el-4">@step.Step.Order</span>
-            </div>
-            <div class="col-md-10">
-                <div style="min-height: 50px">
-                    @{
-                        @if (step.IsEditting && IsEditting)
-                        {
-                            <EditForm Model="step.Step" OnValidSubmit="(() => UpdateStep(step))" @onfocusout="(() => UpdateStep(step))">
-                                <InputText @bind-Value="step.Step.Text" autofocus></InputText>
-                            </EditForm>
-                        }
-                        else
-                        {
-                            <span @onclick="(() => step.IsEditting = true)">@step.Step.Text</span>
-                        }
-                    }
-
-                </div>
-            </div>
-        </div>*@
-                            </li>
-                                
                             }
                         </ul>
 
@@ -158,6 +195,7 @@
                                             @details.UnitQuantityType
                                             @details.ProductName
                                             <i class="fas fa-times pointer @(IsEditting ? "show" : "collapse")" @onclick="@(() => RemoveIngredient(details.ProductId))"></i>
+
                                         </span>
                                     </div>
                                 </li>

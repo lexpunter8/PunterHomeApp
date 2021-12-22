@@ -5,6 +5,18 @@ using System.Threading.Tasks;
 
 namespace PunterHomeDomain.Interfaces
 {
+    public interface IGenericRepository<T>
+    {
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetAsync(Guid id);
+        Task DeleteAsync(Guid id);
+        Task SaveAsync(T entity);
+    }
+
+    public interface IRecipeStepRepository : IGenericRepository<RecipeStepAggregate>
+    {
+
+    }
     public interface IProductDataAdapter
     {
         Task<IEnumerable<LightProduct>> GetProducts();
