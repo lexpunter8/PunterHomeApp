@@ -16,6 +16,8 @@ using PunterHomeApi.Shared;
 using PunterHomeApp.DataAdapters;
 using PunterHomeApp.Services;
 using PunterHomeDomain;
+using PunterHomeDomain.Commands.RecipeStepCommand;
+using PunterHomeDomain.Commands.RecipeStepCommand.Requests;
 using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
 using PunterHomeDomain.Services;
@@ -58,6 +60,9 @@ namespace PunterHomeApi
                 cfg.CreateMap<RecipeStep, RecipeStepApiModel>().ReverseMap();
                 cfg.CreateMap<RecipeStepIngredient, RecipeStepIngredientApiModel>().ForMember(m => m.ProductName, opt => opt.Ignore());
                 cfg.CreateMap<RecipeStepIngredientApiModel, RecipeStepIngredient>();
+
+                cfg.CreateMap<AddIngredientToRecipeStepRequest, AddIngredientToRecipeStep>().ReverseMap();
+                cfg.CreateMap<RemoveIngredientFromRecipeStepRequest, RemoveIngredientFromRecipeStep>().ReverseMap();
             });
 
             config.AssertConfigurationIsValid();
@@ -77,6 +82,7 @@ namespace PunterHomeApi
             services.AddScoped<ITagDataAdapter, TagDataAdapter>();
             services.AddScoped<IProductTagService, ProductTagService>();
             services.AddScoped<IRecipeStepRepository, EfRecipeStepRepository>();
+            services.AddScoped<IRecipeStepCommanHandlers, RecipeStepCommanHandlers>();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

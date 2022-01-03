@@ -5,15 +5,25 @@ using System.Threading.Tasks;
 
 namespace PunterHomeDomain.Interfaces
 {
-    public interface IGenericRepository<T>
+    public interface ISpecification<T>
+    {
+        bool IsSatisfiedBy(T entity);
+    }
+    public interface IGenericRepository<T> where T : IAggregateRoot
     {
         Task<IEnumerable<T>> GetAllAsync();
+
+        Task<IEnumerable<T>> GetAllAsync(ISpecification<T> specification);
         Task<T> GetAsync(Guid id);
         Task DeleteAsync(Guid id);
         Task SaveAsync(T entity);
     }
 
     public interface IRecipeStepRepository : IGenericRepository<RecipeStepAggregate>
+    {
+    }
+
+    public interface IRecipeRepository : IGenericRepository<RecipeAggregate>
     {
 
     }

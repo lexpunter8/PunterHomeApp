@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PunterHomeDomain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace PunterHomeDomain.Models
     }
 
 
-    public class RecipeStepAggregate
+    public class RecipeStepAggregate : IAggregateRoot
     {
         private RecipeStepAggregate()
         {
@@ -38,7 +39,7 @@ namespace PunterHomeDomain.Models
             RecipeId = recipeId;
             Text = instruction;
             Order = order;
-            //Ingredients = ingredients;
+            Ingredients = ingredients;
         }
 
         public Guid Id { get; private set; }
@@ -62,6 +63,20 @@ namespace PunterHomeDomain.Models
                 UnitQuantityType = 0,
             });
         }
+
+
+        public void RemoveIngredient(Guid ingredientId, Guid recipeStepId)
+        {
+            var ingredient = Ingredients.FirstOrDefault(i => i.ProductId == ingredientId);
+
+            if (ingredient == null)
+            {
+                throw new InvalidOperationException("Ingredient doesn't exist for this recipestep");
+            }
+
+            Ingredients.Remove(ingredient);
+        }
+
     }
 
     public class RecipeStepValueObject

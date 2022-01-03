@@ -44,6 +44,7 @@ namespace PunterHomeApi.Controllers
 
         // GET: api/ShoppingList
         [HttpGet]
+        [Produces(typeof(ShoppingListModel))]
         public IActionResult Get()
         {
             return DoRequestValidation(() => myShoppingListService.GetShoppingLists().Select(r => r.Convert()));

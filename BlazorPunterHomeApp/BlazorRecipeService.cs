@@ -1,6 +1,7 @@
 ﻿using BlazorPunterHomeApp.Data;
 using Newtonsoft.Json;
 using PunterHomeApi.Shared;
+using PunterHomeApiConnector.Interfaces;
 using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Models;
 using System;
@@ -19,11 +20,19 @@ namespace BlazorPunterHomeApp
     public class BlazorRecipeService : IBlazorrecipeService
     {
         private readonly BlazorShoppingListService shoppingListService;
+        private readonly IRecipeStepApiConnector recipeStepApi;
 
-        public BlazorRecipeService(BlazorShoppingListService shoppingListService)
+        public BlazorRecipeService(BlazorShoppingListService shoppingListService, IRecipeStepApiConnector recipeStepApi)
         {
             this.shoppingListService = shoppingListService;
+            this.recipeStepApi = recipeStepApi;
         }
+
+        public async Task RemoveIngedientFromRecipeStep(Guid ingredientId, Guid recipeStepId)
+        {
+            await recipeStepApi.RemoveIngredient(recipeStepId, ingredientId);
+        }
+
         public async Task<RecipeDetailsApiModel> GetRecipeById(Guid id)
         {
             try

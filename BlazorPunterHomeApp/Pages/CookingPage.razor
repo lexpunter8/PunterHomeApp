@@ -1,0 +1,68 @@
+﻿@page "/cooking/{RecipeId:guid}"
+@page "/cooking/{RecipeId:guid}/{Step:int}"
+
+@if (Recipe != null)
+{
+
+    <Container Margin="Margin.Is3.FromTop" Padding="Padding.Is2.FromTop">
+        <Row>
+
+            <Column Flex="Flex.JustifyContent.Center">
+
+                <Heading Margin="Margin.Is2.FromTop" Size="HeadingSize.Is2" TextWeight="TextWeight.Bold">@Recipe.Name</Heading>
+            </Column>
+
+        </Row>
+        <Row Class="row-eq-height" Padding="Padding.Is3" Margin="Margin.Is2.FromBottom">
+            @*<Column ColumnSize="ColumnSize.Is12.OnMobile.Is3.OnDesktop" Padding="Padding.Is3">
+                <Column Padding=Padding.Is3>
+                    <h4>Ingredients</h4>
+                    <hr class="bg-el-0" />
+                    <Div Margin="Margin.Is3.FromBottom.OnMobile.Is3.FromRight.OnDesktop">
+                        <ul class="list-unstyled">
+                            @foreach (var details in Recipe.Ingredients)
+                            {
+                                <li>
+                                    <div class="flex-row">
+                                        <span>
+                                            @if (details.IsAvaliable)
+                                            {
+                                                <i class="mr-2 fas fa-check-circle recipe-available-color"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="mr-2 fas fa-times-circle recipe-unavailable-color"></i>
+                                            }
+                                            @(details.UnitQuantity)
+                                            @details.UnitQuantityType
+                                            @details.ProductName
+
+                                        </span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+
+                    </Div>
+                </Column>
+
+
+
+            </Column>*@
+
+            <Column ColumnSize="ColumnSize.Is12.OnMobile.Is12.OnDesktop" Padding="Padding.Is3.OnDesktop.Is0.OnMobile">
+                <Column Padding=Padding.Is3.OnDesktop.Is0.OnMobile>
+                   @* <h4>Instruction</h4>
+                    <hr class="bg-el-0" />*@
+                    <BlazorPunterHomeApp.Components.CookingStepsViewer CurrentStepIndex="2" Steps="@Recipe.Steps"></BlazorPunterHomeApp.Components.CookingStepsViewer>
+                </Column>
+
+            </Column>
+        </Row>
+    </Container>
+}
+else
+{
+
+    <Heading Size="HeadingSize.Is5">Cooking @RecipeId</Heading>
+}

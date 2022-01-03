@@ -1,12 +1,13 @@
 ﻿using PunterHomeApp.Services;
 using PunterHomeDomain.Enums;
+using PunterHomeDomain.Interfaces;
 using System;
 using System.Collections.Generic;
 
 namespace PunterHomeDomain.Models
 {
 
-    public class RecipeAggregate
+    public class RecipeAggregate : IAggregateRoot
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

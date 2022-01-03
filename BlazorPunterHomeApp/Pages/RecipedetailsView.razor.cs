@@ -1,5 +1,6 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
+using Blazorise;
 using BlazorPunterHomeApp.Components;
 using BlazorPunterHomeApp.Data;
 using Microsoft.AspNetCore.Components;
@@ -54,7 +55,10 @@ namespace BlazorPunterHomeApp.Pages
             Focus();
 
         }
-
+        public async void RemoveIngredientFromStep(Guid stepId, Guid ingredientId)
+        {
+            await RecipeService.RemoveIngedientFromRecipeStep(ingredientId, stepId);
+        }
         public void AddIngredientToStep(Guid stepId, Guid ingredientId)
         {
             RecipeService.AddIngredientToStop(ingredientId, stepId);
@@ -62,10 +66,10 @@ namespace BlazorPunterHomeApp.Pages
 
         public void Focus()
         {
-            if (FocusElement.Context != null)
-            {
-                FocusElement.FocusAsync();
-            }
+            //if (FocusElement.Context != null)
+            //{
+            //    FocusElement.FocusAsync();
+            //}
         }
         protected async override void OnParametersSet()
         {

@@ -36,7 +36,9 @@ namespace PunterHomeAdapters.DataAdapters
         public async Task<RecipeStepAggregate> GetAsync(Guid id)
         {
             using var context = new HomeAppDbContext(myDbOptions);
-            var result = await context.RecipeSteps.Include(i => i.Ingredients).FirstOrDefaultAsync(s => s.Id == id);
+            var result = await context.RecipeSteps.Include(i => i.Ingredients)
+                .ThenInclude(i => i.Product)
+                .FirstOrDefaultAsync(s => s.Id == id);
             return mapper.Map<RecipeStepAggregate>(result);
         }
 
@@ -60,6 +62,11 @@ namespace PunterHomeAdapters.DataAdapters
             }
 
             await context.SaveChangesAsync();
+        }
+
+        public Task<IEnumerable<RecipeStepAggregate>> GetAllAsync(ISpecification<RecipeStepAggregate> specification)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PunterHomeApi.Shared;
 using PunterHomeDomain;
+using PunterHomeDomain.Commands.RecipeStepCommand;
+using PunterHomeDomain.Commands.RecipeStepCommand.Requests;
 using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
 
@@ -16,12 +19,14 @@ namespace PunterHomeApi.Controllers
     public class RecipeStepController : ControllerBase
     {
         private readonly IRecipeService myRecipeService;
-        private readonly IRecipeStepRepository recipeStepRepository;
+        private readonly IRecipeStepCommanHandlers recipeStepCommanHandlers;
+        private readonly IMapper mapper;
 
-        public RecipeStepController(IRecipeService recipeService, IRecipeStepRepository recipeStepRepository)
+        public RecipeStepController(IRecipeService recipeService, IRecipeStepCommanHandlers recipeStepCommanHandlers, IMapper mapper)
         {
             myRecipeService = recipeService;
-            this.recipeStepRepository = recipeStepRepository;
+            this.recipeStepCommanHandlers = recipeStepCommanHandlers;
+            this.mapper = mapper;
         }
         // GET: api/RecipeStep
         //[HttpGet]
@@ -43,7 +48,12 @@ namespace PunterHomeApi.Controllers
         {
             try
             {
-                await recipeStepRepository.SaveAsync(new RecipeStepAggregate(Guid.NewGuid(), id, value.Text, value.Order, new List<RecipeStepIngredient>()));
+                await recipeStepCommanHandlers.Handle(new CreateRecipeStep
+                {
+                    Text = value.Text,
+                    Order = value.Order,
+                    RecipeId = id
+                });
             }
             catch (Exception)
             {
@@ -57,9 +67,22 @@ namespace PunterHomeApi.Controllers
         {
             try
             {
-                var recipeStep = await recipeStepRepository.GetAsync(request.RecipeStepId);
-                recipeStep.AddIngredient(request.IngredientId, request.RecipeStepId);
-                await recipeStepRepository.SaveAsync(recipeStep);
+                await recipeStepCommanHandlers.Handle(mapper.Map<AddIngredientToRecipeStep>(request));
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
+
+        [HttpPost("removeingredient")]
+        public async Task<IActionResult> RemoveIngredient([FromBody] RemoveIngredientFromRecipeStepRequest request)
+        {
+            try
+            {
+                await recipeStepCommanHandlers.Handle(mapper.Map<RemoveIngredientFromRecipeStep>(request));
             }
             catch (Exception)
             {

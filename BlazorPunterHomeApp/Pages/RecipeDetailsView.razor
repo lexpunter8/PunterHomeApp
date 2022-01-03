@@ -16,6 +16,9 @@
                 <span>15 minutes</span>
                 <span>+ 30 minutes</span>
             </div>
+            <Button Color="Color.Primary" Type="ButtonType.Link" To="@($"cooking/{Recipedetails.Id}")">
+                Start cooking
+            </Button>
         </div>
         <div class="row pt-3 mb-3">
             <div class="pt-3 col-12 col-xl-7 justify-content-center order-last order-md-first">
@@ -49,7 +52,7 @@
                                             {
                                                 <EditForm Model="step.Step" OnValidSubmit="(() => UpdateStep(step))" @onfocusout="(() => UpdateStep(step))">
                                                     <div class="input-group mb-2 @(IsEditting ? "show" : "collapse")">
-                                                        <texztarea @ref="FocusElement" class="form-control" rows="4" @bind="@step.Step.Text" autofocus></texztarea>
+                                                        <MemoEdit class="form-control" Rows="4" @bind-Text="@step.Step.Text" autofocus></MemoEdit>
                                                         <div class="input-group-append" style="padding:0">
                                                             <span class="btn-group-vertical">
 
@@ -70,42 +73,71 @@
                                             }
                                         </div>
 
-                                        <div class="col-auto">
+                                        @if (IsEditting)
+                                        {
+                                            
+                                            <Column ColumnSize="ColumnSize.Is12.OnMobile.IsAuto.OnDesktop" >
 
+                                            <Row>
+                                                <Column ColumnSize="ColumnSize.Is10.OnMobile.Is2.OnDesktop">
 
-                                            <h5>Required ingredients</h5>
+                                                    <h5>Required ingredients</h5>
+                                                </Column>
+                                                <Column ColumnSize="ColumnSize.Is2.OnMobile.Is10.OnDesktop">
+                                                    <CloseButton TextColor="TextColor.Danger"></CloseButton>
+                                                </Column>
+                                            </Row>
+
                                             <hr class="bg-el-0" />
 
                                             <ul class="list-unstyled">
                                                 @foreach (var item in step.Step.Ingredients)
                                                 {
-                                                    <li>@item.ProductName</li>
+                                                    <li>
+                                                        <div class="d-flex justify-content-between">
+                                                            <span>@item.ProductName</span>
+                                                            <div class="dropdown">
+
+                                                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                                                    <Icon Name="IconName.MoreHorizontal"></Icon>
+                                                                </button>
+
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                    <a @onclick="() => RemoveIngredientFromStep(step.Step.Id, item.ProductId)" class="dropdown-item">Remove</a>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </li>
                                                 }
                                             </ul>
 
 
                                             <div class="d-flex flex-row-reverse">
-
-                                                <div class="dropdown">
-
-                                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-                                                        Add
-                                                    </button>
-
-                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        @foreach (var i in Recipedetails.Ingredients.Where(i => !step.Step.Ingredients.Any(y => y.ProductId == i.ProductId)))
-                                                        {
-                                                            <a @onclick="() => AddIngredientToStep(step.Step.Id, i.ProductId)" class="dropdown-item">@i.ProductName</a>
-                                                        }
-                                                    </div>
-
-                                                </div>
+                                                <Dropdown>
+                                                    <DropdownToggle Color="Color.Secondary" Size="Size.Small">
+                                                        <Icon Name="IconName.MoreHorizontal"></Icon>
+                                                    </DropdownToggle>
+                                                    <DropdownMenu>
+                                                        <DropdownItem>Edit</DropdownItem>
+                                                        <Dropdown>
+                                                            <DropdownToggle>
+                                                                Add ingredient
+                                                            </DropdownToggle>
+                                                            <DropdownMenu>
+                                                                @foreach (var i in Recipedetails.Ingredients.Where(i => !step.Step.Ingredients.Any(y => y.ProductId == i.ProductId)))
+                                                                {
+                                                                    <DropdownItem @onclick="() => AddIngredientToStep(step.Step.Id, i.ProductId)">@i.ProductName</DropdownItem>
+                                                                    
+                                                                }
+                                                            </DropdownMenu>
+                                                        </Dropdown>
+                                                    </DropdownMenu>
+                                                </Dropdown>
                                             </div>
-
-
-
-
-                                        </div>
+                                        </Column>
+                                        }
+                                        
                                     </div>
 
                                     <hr class="mx-2 bg-secondary" />

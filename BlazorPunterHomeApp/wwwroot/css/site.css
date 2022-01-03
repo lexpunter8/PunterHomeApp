@@ -66,6 +66,19 @@ app {
 }
 
 .circle {
+    height: 70px;
+    width: 70px;
+    background-color: var(--bg-el-6);
+    text-align: center;
+    border-radius: 50%;
+    display: inline-block;
+    padding: 12px 3px 0 3px;
+    vertical-align: middle;
+    font-weight: bold;
+    color: var(--txt-c-bg);
+}
+
+.circle-md {
     height: 50px;
     width: 50px;
     background-color: var(--bg-el-6);

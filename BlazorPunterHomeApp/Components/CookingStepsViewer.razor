@@ -1,0 +1,79 @@
+﻿
+    @if(PreviousStep != null && false)
+    {
+        
+        
+        <Row>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Div Class="wrapper">
+
+                    <Div Class="centeredOverlay"></Div>
+                    <Span Class="circle">@PreviousStep.Order</Span>
+                    
+                </Div>
+            </Column>
+            <Column Class="p-2" Height="Height.Is50">
+                
+                <Div Class="wrapper">
+
+                    <Div Class="centeredOverlay"></Div>
+                    <Span>@PreviousStep.Text</Span>
+                    
+                </Div>
+            </Column>
+        </Row>
+
+    }
+    <Row>
+        <Column ColumnSize="ColumnSize.Is12">
+            <Heading Size="HeadingSize.Is4">Stap @CurrentStep.Order</Heading>
+        </Column>
+    </Row>
+
+    <Row>
+
+            <Column ColumnSize="ColumnSize.Is12.OnMobile.Is3.OnDesktop">
+                    <Heading Size="HeadingSize.Is5" TextWeight="TextWeight.Light">Ingredienten</Heading>
+                    <hr class="bg-el-0" />
+                    <Div Margin="Margin.Is3.FromBottom.OnMobile.Is3.FromRight.OnDesktop" Padding="Padding.Is2.OnDesktop.Is1.OnMobile">
+                        <ul class="list-unstyled">
+                            @foreach (var details in CurrentStep.Ingredients)
+                            {
+                                <li>
+                                    <div class="flex-row">
+                                        <span>
+                                            @*@(details.UnitQuantity)
+                                            @details.UnitQuantityType*@
+                                            @details.ProductName
+
+                                        </span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+
+                    </Div>
+                </Column>
+
+        <Column >
+            
+                    <Heading Size="HeadingSize.Is5" TextWeight="TextWeight.Light">Instructie</Heading>
+                    <hr class="bg-el-0" />
+          
+        <Row>
+        <Column>
+            <Span>@Text</Span>
+        </Column>
+
+        </Row>
+    <Row Margin="Margin.Is5.FromTop">
+        <Column Flex="Flex.JustifyContent.Between">
+            <Button Color="Color.Primary" Clicked="() => ChangeStep(-1)">Vorige</Button>
+            <Button Color="Color.Primary" Clicked="@(() => ChangeStep(1) )">Volgende</Button>
+        </Column>
+    </Row>
+
+        </Column>
+
+    </Row>
+

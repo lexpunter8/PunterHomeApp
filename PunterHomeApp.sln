@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorShared", "RazorShared\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeApiConnector", "PunterHomeApiConnector\PunterHomeApiConnector.csproj", "{7B9E9531-EAB7-4E4E-8A29-7FEF1A7725C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeApi.Shared", "PunterHomeApi.Shared\PunterHomeApi.Shared.csproj", "{21388084-C780-4759-9E62-78FCD4DF7269}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeApi.Shared", "PunterHomeApi.Shared\PunterHomeApi.Shared.csproj", "{21388084-C780-4759-9E62-78FCD4DF7269}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

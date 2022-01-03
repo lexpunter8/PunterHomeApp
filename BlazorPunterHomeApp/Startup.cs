@@ -52,6 +52,7 @@ namespace BlazorPunterHomeApp
             services.AddSingleton<IBarcodeScannerService, BarcodeScannerService>();
             services.AddSingleton<IBlazorTagService, BlazorTagService>();
             services.AddSingleton<IShoppingListApiConnector, ShoppingListApiConnector>();
+            services.AddSingleton<IRecipeStepApiConnector, RecipeStepApiConnector>();
             services.AddSingleton<AppState>();
         }
 
@@ -75,8 +76,6 @@ namespace BlazorPunterHomeApp
 
             app.UseRouting();
 
-            app.ApplicationServices.UseBootstrapProviders()
-                .UseFontAwesomeIcons();
 
             app.UseEndpoints(endpoints =>
             {
