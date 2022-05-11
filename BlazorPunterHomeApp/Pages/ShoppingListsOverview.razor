@@ -26,19 +26,33 @@
                 @foreach (var sList in ShoppingLists)
                 {
                     <ListGroupItem Margin="Margin.Is2" Border=Border.Rounded.Is0>
-                        <NavLink class="text-reset" href="@($"shoppinglist/{sList.Id}{GetLinkSuffix(sList.Status)}/{sList.Name}")">
-                            <Row>
-                                <Column ColumnSize="ColumnSize.Is9">
+                                
 
-                                    <Span>@sList.Name</Span>
-                                </Column>
+                            <div class="row">
+                                <div class="col-10 d-flex justify-content-between">
+                                    <NavLink class="text-reset d-flex" href="@($"shoppinglist/{sList.Id}{GetLinkSuffix(sList.Status)}/{sList.Name}")">
+                                        <Div Class="d-flex flex-column">
+                                            @*<Column ColumnSize="ColumnSize.Is9">*@
 
-                                <Column ColumnSize="ColumnSize.Is3" Class="d-flex justify-content-end">
+                                                <Span><Strong>@sList.Name</Strong></Span>
+                                            @*</Column>*@
 
-                                    <Span>@GetStatusString(@sList.Status)</Span>
-                                </Column>
-                            </Row>
-                        </NavLink>
+                                            @*<Column ColumnSize="ColumnSize.Is3" Class="d-flex justify-content-end">*@
+
+                                                <p Class="h6"><Small>@GetStatusString(@sList.Status)</Small></p>
+                                            @*</Column>*@
+                                        </Div>
+                                    </NavLink>
+                                </div>
+
+                                <div class="col-2 d-flex justify-content-end">
+                                    <Button Outline Clicked="@(() => RemoveItem(sList))">
+                                        <Icon Name="IconName.Delete"></Icon>
+                                    </Button>
+                                </div>
+                            </div>
+
+                       
                     </ListGroupItem>
                 }
 

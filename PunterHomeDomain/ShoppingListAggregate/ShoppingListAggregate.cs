@@ -78,7 +78,7 @@ namespace PunterHomeDomain.ShoppingList
         public void AddTextItem(string text)
         {
             var existing = myTextItems.FirstOrDefault(a => a.Value == text);
-            if (existing != null)
+            if (existing != null || string.IsNullOrEmpty(text))
             {
 
                 return;
@@ -113,6 +113,11 @@ namespace PunterHomeDomain.ShoppingList
             myRecipeItems.RemoveAll(r => r.RecipeId == recipeId);
         }
 
+        public void RemoveProduct(Guid productId)
+        {
+            myProductItems.RemoveAll(r => r.ProductId == productId);
+        }
+
         public void CheckItem(string item, bool isChecked)
         {
             var existing = myTextItems.FirstOrDefault(a => a.Value == item);
@@ -139,13 +144,9 @@ namespace PunterHomeDomain.ShoppingList
 
         public void FinishShoppingList()
         {
-            myProductItems.RemoveAll(r => r.IsChecked);
-            myTextItems.RemoveAll(r => r.IsChecked);
+            myProductItems.Clear();
+            myTextItems.Clear();
 
-            if (myProductItems.Count + myRecipeItems.Count + myTextItems.Count > 0)
-            {
-                return;
-            }
             Status = EShoppingListStatus.Closed;
         }
     }

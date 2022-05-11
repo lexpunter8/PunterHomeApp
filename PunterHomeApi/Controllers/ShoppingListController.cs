@@ -288,6 +288,26 @@ namespace PunterHomeApi.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// Move unchecked items to new shoppinglist and close old list
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="recipeId"></param>
+        /// <returns></returns>
+        [HttpPut("{shoppinglistId}/move")]
+        public async Task<IActionResult> MoveUncheckedToNewShoppingList(Guid shoppinglistId)
+        {
+            try
+            {
+                var command = new MoveUncheckedShoppinglistItems(shoppingListRepository, shoppinglistId);
+                await command.DoCommand();
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
 
         //// POST: api/ShoppingList
         //[HttpPost("addmeasurement")]
@@ -403,6 +423,24 @@ namespace PunterHomeApi.Controllers
         public void Delete(Guid itemId)
         {
             myShoppingListService.RemoveProductFromShoppingList(itemId);
+        }
+
+
+        // POST: api/ShoppingList
+        [HttpDelete("{id}/text")]
+        public async Task<IActionResult> DeleteShoppingList(Guid id, [FromBody] string value)
+        {
+            try
+            {
+                ShoppingListAggregate shoppingList = await shoppingListRepository.GetAsync(id);
+                shoppingList.RemoveTextItem(value);
+                await shoppingListRepository.SaveAsync(shoppingList);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 

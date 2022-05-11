@@ -4,10 +4,12 @@ using PunterHomeAdapters;
 using PunterHomeAdapters.Interfaces;
 using PunterHomeAdapters.Models;
 using PunterHomeDomain.Enums;
+using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.ShoppingList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using EShoppingListStatus = PunterHomeDomain.ShoppingList.EShoppingListStatus;
 
 namespace PunterHomeApi.Queries
@@ -48,6 +50,56 @@ namespace PunterHomeApi.Queries
         IEnumerable<DbIngredient> GetIngredientForRecipe(Guid recipeId);
     }
 
+    public interface ICqrsCommand<T>
+    {
+        T DoCommand();
+    }
+
+    public class MoveUncheckedShoppinglistItems : ICqrsCommand<Task<bool>>
+    {
+        private readonly IShoppingListRepository shoppingListRepository;
+        private readonly Guid recipeId;
+
+        public MoveUncheckedShoppinglistItems(IShoppingListRepository shoppingListRepository, Guid recipeId)
+        {
+            this.shoppingListRepository = shoppingListRepository;
+            this.recipeId = recipeId;
+        }
+        public async Task<bool> DoCommand()
+        {
+            try
+            {
+                ShoppingListAggregate shoppingList = await shoppingListRepository.GetAsync(recipeId);
+
+                IEnumerable<ShoppingListProductItem> uncheckedProductItems = shoppingList.ProductItems.Where(w => !w.IsChecked).ToArray();
+                var uncheckedTextItems = shoppingList.TextItems.Where(w => !w.IsChecked).ToArray();
+
+                ShoppingListAggregate newShoppingList = ShoppingListAggregate.CreateNew(shoppingList.Name);
+
+                foreach (var item in uncheckedProductItems)
+                {
+                    newShoppingList.AddProductItem(item.ProductId, item.Amount, (EUnitMeasurementType)item.MeasurementType);
+                    shoppingList.RemoveProduct(item.ProductId);
+                }
+
+                foreach (var item in uncheckedTextItems)
+                {
+                    newShoppingList.AddTextItem(item.Value);
+                    shoppingList.RemoveTextItem(item.Value);
+                }
+                shoppingList.FinishShoppingList();
+
+                await shoppingListRepository.SaveAsync(newShoppingList);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return true;
+        }
+    }
+
     public class ShoppingListItemDto
     {
         public string Value { get; set; }
@@ -66,7 +118,7 @@ namespace PunterHomeApi.Queries
 
         public IEnumerable<ShoppingListDto> GetShoppingLists()
         {
-            return dbContext.ShoppingLists.Select(s => new ShoppingListDto
+            return dbContext.ShoppingLists.Where(w => w.Status != EShoppingListStatus.Closed).Select(s => new ShoppingListDto
             {
                 CreateTime = s.CreateTime,
                 Id = s.Id,

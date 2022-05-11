@@ -191,6 +191,14 @@ namespace BlazorPunterHomeApp.Pages
             NavigationManager.NavigateTo("shoppinglistoverview");
         }
 
+        public async void MoveUncheckedItems()
+        {
+            await ShoppingListApiConnector.MoveUncheckedItemsToNewShoppingList(Id);
+            await Refresh();
+
+            NavigationManager.NavigateTo("shoppinglistoverview");
+        }
+
         public async void ItemChecked(BaseShopViewModel item)
         {
             await item.Check();

@@ -27,5 +27,7 @@ namespace PunterHomeApiConnector.Interfaces
         Task SetItemChecked(Guid shoppingListId, string text, bool v);
         Task SetShoppingListShopping(Guid shoppingListId);
         Task CloseShoppingList(Guid shoppingListId);
+        Task MoveUncheckedItemsToNewShoppingList(Guid shoppingListId);
+        Task RemoveShoppingList(Guid id);
     }
 }

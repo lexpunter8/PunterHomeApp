@@ -147,5 +147,16 @@ namespace PunterHomeApiConnector.Clients
         {
             await myApiConnector.ShoppingList_CloseShoppingListAsync(shoppingListId);
         }
+
+
+        public async Task MoveUncheckedItemsToNewShoppingList(Guid shoppingListId)
+        {
+            await myApiConnector.ShoppingList_MoveUncheckedToNewShoppingListAsync(shoppingListId);
+        }
+
+        public async Task RemoveShoppingList(Guid id)
+        {
+            await myApiConnector.ShoppingList_CloseShoppingListAsync(id);
+        }
     }
 }

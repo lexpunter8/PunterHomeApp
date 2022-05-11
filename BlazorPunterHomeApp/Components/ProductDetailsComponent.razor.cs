@@ -29,7 +29,8 @@ namespace BlazorPunterHomeApp.Components
         public IEnumerable<ShoppingListDto> AllShoppingLists { get; private set; }
         public async Task ShowModal()
         {
-            AllShoppingLists = await ShoppingListApiConnector.GetItems();
+            var allLists = await ShoppingListApiConnector.GetItems();
+            AllShoppingLists = allLists.Where(x => x.Status == EShoppingListStatus.Active);
             await modalRef.Show();
         }
 

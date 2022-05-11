@@ -42,6 +42,14 @@ namespace BlazorPunterHomeApp.Pages
             return string.Empty;
         }
 
+        public async void RemoveItem(ShoppingListDto s)
+        {
+            await ShoppingListApiConnector.RemoveShoppingList(s.Id);
+
+            ShoppingLists = await ShoppingListApiConnector.GetItems();
+            StateHasChanged();
+        }
+
         public string GetStatusString(EShoppingListStatus status)
         {
             switch (status)

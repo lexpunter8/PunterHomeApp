@@ -86,10 +86,14 @@
             {
                 <button class="btn btn-outline-primary mb-2" @onclick="@(() => UpdateCheckedItems())">Boodschappenlijst verwijderen</button>
             }
+            @if (CheckedListItems.Count != 0 && UnCheckedListItems.Count > 0)
+            {
+                <button class="btn btn-outline-primary mb-2" @onclick="@(() => MoveUncheckedItems())">Niet gekochte items naar niewe lijst verplaatsen</button>
+            }
             @if (CheckedListItems.Count == 0)
             {
                 <span>Nog geen producten afgevinkt</span>
             }
-        </div>
+        </Div>
         </div>
 </div>
