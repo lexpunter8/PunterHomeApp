@@ -4,12 +4,16 @@ using Blazorise;
 using BlazorPunterHomeApp.Components;
 using BlazorPunterHomeApp.Data;
 using Microsoft.AspNetCore.Components;
+using PunterHomeApiConnector;
+using PunterHomeApiConnector.Interfaces;
 using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiIngredientModel = PunterHomeDomain.ApiModels.ApiIngredientModel;
+using RecipeStep = PunterHomeDomain.Models.RecipeStep;
 
 namespace BlazorPunterHomeApp.Pages
 {
@@ -39,10 +43,13 @@ namespace BlazorPunterHomeApp.Pages
         [Inject]
         public IModalService Modal { get; set; }
 
+        [Inject]
+        IShoppingListApiConnector ShoppingListApiConnector { get; set; }
+
         public bool IsEditting { get; set; }
 
         public int IngredientMultiplier { get; set; } = 1;
-        public RecipeDetailsApiModel Recipedetails { get; set; }
+        public PunterHomeDomain.ApiModels.RecipeDetailsApiModel Recipedetails { get; set; }
         public List<EditableRecipeStep> RecipeSteps { get; set; } = new List<EditableRecipeStep>();
         public SearchSelectProductComponent SearchProductControl { get; set; }
 
@@ -99,7 +106,7 @@ namespace BlazorPunterHomeApp.Pages
         }
 
         public TextInputModel newStepText { get; set; } = new TextInputModel();
-
+        public IEnumerable<ShoppingListDto> AllShoppingLists { get; private set; } 
 
         public async Task RemoveIngredient(Guid id)
         {
@@ -160,7 +167,10 @@ namespace BlazorPunterHomeApp.Pages
 
         public async void AddIngredientsToShoppingList(bool onlyUnavailable = false)
         {
-            await RecipeService.AddToShoppingList(Recipedetails.Id, IngredientMultiplier, Guid.Empty, onlyUnavailable);
+            //ShoppingListApiConnector.AddRecipeItem()
+            //await RecipeService.AddToShoppingList(Recipedetails.Id, IngredientMultiplier, Guid.Empty, onlyUnavailable);
+
+            ShowModal();
         }
 
         public async void ShowAddProductModal()
@@ -224,6 +234,60 @@ namespace BlazorPunterHomeApp.Pages
 
             step.IsEditting = !currentVal;
             Focus();
+        }
+        // reference to the modal component
+        public Modal modalRef;
+        public string SelectedShoppingList { get; set; }
+
+        public async Task ShowModal()
+        {
+            AllShoppingLists = await ShoppingListApiConnector.GetItems();
+            await modalRef.Show();
+        }
+
+        public Task HideAndSaveModal()
+        {
+            ShoppingListApiConnector.AddRecipeItem(Guid.Parse(SelectedShoppingList), Recipedetails.Id, IngredientMultiplier);
+            return modalRef.Hide();
+        }
+
+        public Task HideModal()
+        {
+            return modalRef.Hide();
+        }
+
+        public ChangeStepModelViewModel ChangeStepModelViewModel { get; set; } = new ChangeStepModelViewModel();
+        //public Task ShowChangeText()
+        //{
+
+        //}
+    }
+
+    public class ChangeStepModelViewModel
+    {
+        public Modal Modal;
+
+        public string Text { get; set; }
+        public List<IngredientModel> Ingredients { get; set; }
+        public void Initialize(string text, List<IngredientModel> ingredients)
+        {
+            Text = text;
+            Ingredients = ingredients;
+        }
+
+        public async Task Show()
+        {
+            await Modal.Show();
+        }
+
+        public Task HideAndSave()
+        {
+            return Modal.Hide();
+        }
+
+        public Task HideModal()
+        {
+            return Modal.Hide();
         }
     }
 }

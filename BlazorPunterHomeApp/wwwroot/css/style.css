@@ -7,14 +7,16 @@
     --c-bg-primary: #121212;
     --c-bg-secondary: #292929;
     --txt-c-bg: #DBDBDB;
-    --bg-el-2: #1d1d1d;
-    --bg-el-3: #212121;
-    --bg-el-4: #242424;
-    --bg-el-5: #272727;
-    --bg-el-6: #2c2c2c;
-    --bg-el-7: #2d2d2d;
-    --bg-el-8: #323232;
-    --bg-el-9: #343434;
+    --bg-el-0: #171717;
+    --bg-el-1: #1d1d1d;
+    --bg-el-2: #212121;
+    --bg-el-3: #242424;
+    --bg-el-4: #272727;
+    --bg-el-5: #2c2c2c;
+    --bg-el-6: #2d2d2d;
+    --bg-el-7: #323232;
+    --bg-el-8: #353535;
+    --bg-el-9: #373737;
     --bg-el-10: #373737;
 }
 
@@ -106,12 +108,12 @@
 
 
 .bg-el-0 {
-    background-color: #121212;
+    background-color: var(--bg-el-0);
     color: var(--txt-c-bg)
 }
 
 .bg-el-1 {
-    background-color: #292929;
+    background-color: var(--bg-el-1);
     color: var(--txt-c-surface)
 }
 

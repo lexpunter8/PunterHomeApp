@@ -8,6 +8,7 @@ namespace DataModels
         public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime CreateTime { get; set; }
+        public bool IsShoppingActive { get; set; }
     }
 
     public class ShoppingListProductModel

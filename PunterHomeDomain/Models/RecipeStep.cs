@@ -79,10 +79,4 @@ namespace PunterHomeDomain.Models
 
     }
 
-    public class RecipeStepValueObject
-    {
-        public Guid RecipeStepId { get; set; }
-        public Guid  RecipeId { get; set; }
-        public int Order { get; set; }
-    }
 }

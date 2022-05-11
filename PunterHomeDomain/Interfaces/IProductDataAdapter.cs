@@ -1,4 +1,5 @@
 ﻿using PunterHomeDomain.Models;
+using PunterHomeDomain.ShoppingList;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,21 +10,33 @@ namespace PunterHomeDomain.Interfaces
     {
         bool IsSatisfiedBy(T entity);
     }
-    public interface IGenericRepository<T> where T : IAggregateRoot
+    public interface IQueryRepository
     {
-        Task<IEnumerable<T>> GetAllAsync();
 
-        Task<IEnumerable<T>> GetAllAsync(ISpecification<T> specification);
-        Task<T> GetAsync(Guid id);
+    }
+
+    public interface IRecipeStepRepository 
+    {
         Task DeleteAsync(Guid id);
-        Task SaveAsync(T entity);
+        Task<IEnumerable<RecipeStepAggregate>> GetAllAsync();
+
+        Task<RecipeStepAggregate> GetAsync(Guid id);
+
+        Task SaveAsync(RecipeStepAggregate entity);
+
+        Task<IEnumerable<RecipeStepAggregate>> GetAllAsync(ISpecification<RecipeStepAggregate> specification);
     }
 
-    public interface IRecipeStepRepository : IGenericRepository<RecipeStepAggregate>
+    public interface IShoppingListRepository
     {
+        Task DeleteAsync(Guid id);
+        Task<IEnumerable<ShoppingListAggregate>> GetAllAsync();
+        Task<IEnumerable<ShoppingListAggregate>> GetAllAsync(ISpecification<ShoppingListAggregate> specification);
+        Task<ShoppingListAggregate> GetAsync(Guid id);
+        Task SaveAsync(ShoppingListAggregate entity);
     }
 
-    public interface IRecipeRepository : IGenericRepository<RecipeAggregate>
+    public interface IRecipeRepository 
     {
 
     }

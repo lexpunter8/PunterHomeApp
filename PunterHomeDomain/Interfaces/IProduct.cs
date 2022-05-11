@@ -1,6 +1,6 @@
-﻿using System;
+﻿using PunterHomeDomain.Enums;
+using System;
 using System.Collections.Generic;
-using static Enums;
 
 namespace PunterHomeDomain.Interfaces
 {

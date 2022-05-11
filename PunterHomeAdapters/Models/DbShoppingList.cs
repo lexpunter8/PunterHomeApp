@@ -51,7 +51,15 @@ namespace PunterHomeAdapters.Models
         List<DbShoppingListRecipeItem> RecipeItems { get; set; }
 
         public string Name { get; set; }
-        public bool IsActive { get; set; }
+        public EShoppingListStatus Status { get; set; }
         public DateTime CreateTime { get; set; }
+    }
+
+    public enum EShoppingListStatus
+    {
+        Unkown,
+        Active,
+        Shopping,
+        Closed
     }
 }

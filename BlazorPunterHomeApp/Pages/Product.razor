@@ -15,18 +15,18 @@
 @inject IBarcodeScannerService barcodeScannerService;
 
 
-    <div class="container-fluid justify-content-center p-0">
+    <div class="container justify-content-center p-0">
 
         <div class="row p-0 m-0">
 
-            <div class="col-12 col-md-3 bg-el-1 pr-5 d-flex flex-column">
+            @*<div class="col-12 col-md-3 bg-el-0 pr-5 d-flex flex-column">
                 <div class="d-flex justify-content-center justify-content-md-end">
 
                     <div style="width:220px" class="p-2">
-                        @*<BlazorPunterHomeApp.Components.RecipeFilterComponent RecipeState="State" FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>*@
+                        <BlazorPunterHomeApp.Components.RecipeFilterComponent RecipeState="State" FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>
                     </div>
                 </div>
-            </div>
+            </div>*@
 
             @*
                 recipe card
@@ -113,7 +113,7 @@
                         <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-4">
                             <a href="@($"product/{cnt.Id}")" class="custom-card">
                                 <div class="card" style="margin-top:5px;">
-                                    <div class="card-body bg-el-1">
+                                    <div class="card-body bg-el-2">
                                         <h5 class="card-title">@cnt.Name</h5>
                                         <ul class="ul-np">
                                             @foreach (var label in cnt.Tags)

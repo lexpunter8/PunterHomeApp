@@ -70,8 +70,6 @@ namespace BlazorPunterHomeApp
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-
             app.UseStaticFiles();
 
             app.UseRouting();

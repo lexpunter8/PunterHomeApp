@@ -18,4 +18,17 @@ namespace PunterHomeDomain.Enums
         Pastry,
 
     }
+
+    public enum EUnitMeasurementType
+    {
+        None,
+        Kg,
+        Gr,
+        Mg,
+        Liter,
+        Dl,
+        Ml,
+        Cl,
+        Piece
+    }
 }

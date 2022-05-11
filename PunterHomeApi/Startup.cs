@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using PunterHomeAdapters;
 using PunterHomeAdapters.DataAdapters;
 using PunterHomeAdapters.Models;
+using PunterHomeApi.Queries;
 using PunterHomeApi.Shared;
 using PunterHomeApp.DataAdapters;
 using PunterHomeApp.Services;
@@ -41,6 +42,8 @@ namespace PunterHomeApi
             services.AddDbContext<HomeAppDbContext>(op =>
                 op.UseNpgsql("Host=localhost;Database=HomeAppDb;Username=postgres;Password=2964Lppos"));
 
+            //services.AddDbContextPool<HomeAppDbContext>(opt => opt.UseNpgsql("Host=localhost;Database=HomeAppDb;Username=postgres;Password=2964Lppos"));
+
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<RecipeStepAggregate, DbRecipeStep>().ForMember(m => m.Recipe, opt => opt.Ignore())
                                                                   .DisableCtorValidation();
@@ -63,6 +66,8 @@ namespace PunterHomeApi
 
                 cfg.CreateMap<AddIngredientToRecipeStepRequest, AddIngredientToRecipeStep>().ReverseMap();
                 cfg.CreateMap<RemoveIngredientFromRecipeStepRequest, RemoveIngredientFromRecipeStep>().ReverseMap();
+
+                //cfg.CreateMap<ShoppingListAggregate, DbShoppingList>();
             });
 
             config.AssertConfigurationIsValid();
@@ -83,6 +88,9 @@ namespace PunterHomeApi
             services.AddScoped<IProductTagService, ProductTagService>();
             services.AddScoped<IRecipeStepRepository, EfRecipeStepRepository>();
             services.AddScoped<IRecipeStepCommanHandlers, RecipeStepCommanHandlers>();
+            services.AddScoped<IShoppingListRepository, EfShoppingListRepository>();
+
+            services.AddScoped<IShoppingListQueries, ShoppingListQueries>();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

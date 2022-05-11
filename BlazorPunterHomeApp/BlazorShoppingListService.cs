@@ -70,39 +70,39 @@ namespace BlazorPunterHomeApp
             }
         }
 
-        public async Task<List<ShoppingListShopItem>> GetShoppingListToShopItems()
-        {
+        //public async Task<List<ShoppingListShopItem>> GetShoppingListToShopItems()
+        //{
 
-            try
-            {
-                    var httpClient = new HttpClient();
-                if (ShoppingListId == null)
-                {
-                    Uri uri = new Uri($"http://localhost:5005/api/shoppinglist");
-                    var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
-                    string responseString = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<ShoppingListApiModel[]>(responseString);
+        //    try
+        //    {
+        //            var httpClient = new HttpClient();
+        //        if (ShoppingListId == null)
+        //        {
+        //            Uri uri = new Uri($"http://localhost:5005/api/shoppinglist");
+        //            var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+        //            string responseString = await response.Content.ReadAsStringAsync();
+        //            var result = JsonConvert.DeserializeObject<ShoppingListApiModel[]>(responseString);
 
-                    if (result == null || result.Length == 0)
-                    {
-                        return new List<ShoppingListShopItem>();
-                    } 
-                    ShoppingListId = result.First().Id;
-                }
-                Uri uriGet = new Uri($"http://localhost:5005/api/shoppinglist/{ShoppingListId}/shop");
-                var response1 = await httpClient.GetAsync(uriGet, HttpCompletionOption.ResponseHeadersRead);
-                string responseString1 = await response1.Content.ReadAsStringAsync();
-                var result1 = JsonConvert.DeserializeObject<List<ShoppingListShopItem>>(responseString1);
+        //            if (result == null || result.Length == 0)
+        //            {
+        //                return new List<ShoppingListShopItem>();
+        //            } 
+        //            ShoppingListId = result.First().Id;
+        //        }
+        //        Uri uriGet = new Uri($"http://localhost:5005/api/shoppinglist/{ShoppingListId}/shop");
+        //        var response1 = await httpClient.GetAsync(uriGet, HttpCompletionOption.ResponseHeadersRead);
+        //        string responseString1 = await response1.Content.ReadAsStringAsync();
+        //        var result1 = JsonConvert.DeserializeObject<List<ShoppingListShopItem>>(responseString1);
 
 
 
-                return result1;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
+        //        return result1;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return null;
+        //    }
+        //}
 
         public async void AddMeasurementsToShoppingItem(List<SelectableMeasurement> measurementsOptions, Guid itemId)
         {
@@ -229,26 +229,18 @@ namespace BlazorPunterHomeApp
             }
         }
 
-        public async Task<List<ShoppingListItemModel>> GetShoppingListItems()
+        public async Task<List<ShoppingListItemModel>> GetShoppingListItems(Guid id)
         {
             try
             {
                 var httpClient = new HttpClient();
-                Uri uri = new Uri($"http://localhost:5005/api/shoppinglist");
-                var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
-                string responseString = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<ShoppingListApiModel[]>(responseString);
-
-                if (result == null || result.Length == 0)
-                {
-                    return new List<ShoppingListItemModel>();
-                }
-                Uri uriGet = new Uri($"http://localhost:5005/api/shoppinglist/{result.First().Id}");
+                
+                Uri uriGet = new Uri($"http://localhost:5005/api/shoppinglist/{id}");
                 var response1 = await httpClient.GetAsync(uriGet, HttpCompletionOption.ResponseHeadersRead);
                 string responseString1 = await response1.Content.ReadAsStringAsync();
                 var result1 = JsonConvert.DeserializeObject<List<ShoppingListItemModel>>(responseString1);
 
-                ShoppingListId = result.First().Id;
+                ShoppingListId = id;
 
 
                 return result1;

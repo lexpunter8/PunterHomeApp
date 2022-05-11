@@ -5,19 +5,19 @@
         <NavMenu />
     </div>*@
 
-<div class="container-fluid min-vh-100 " style="margin:0 !important; padding:0 !important">
+<div class="container-fluid min-vh-100 bg-el-0 " style="margin:0 !important; padding:0 !important">
     <nav class="navbar sticky-top navbar-expand-lg navbar-expand-md navbar-expand-sm navbar-light bg-light px-0" style="max-height:50px">
-        <a class="navbar-brand mx-2" href="#">Navbar</a>
+        <a class="navbar-brand mx-2" href="#"><Icon Name="IconName.ShoppingBag"></Icon> </a>
         <button class="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse bg-light px-2" id="navbarSupportedContent">
-            <ul class="navbar-nav justify-content-center">
-                <li class="nav-item">
+            <ul class="navbar-nav mr-auto">
+                @*<li class="nav-item">
                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                         Home
                     </NavLink>
-                </li>
+                </li>*@
                 @*<li class="nav-item">
                         <NavLink class="nav-link" href="counter">
                             Counter
@@ -30,19 +30,19 @@
                     </li>*@
                 <li class="nav-item">
                     <NavLink class="nav-link" href="products">
-                        Products
+                        Producten
                     </NavLink>
                 </li>
 
-                <li class="nav-item">
+                @*<li class="nav-item disabled">
                     <NavLink class="nav-link" href="recipes">
-                        Recipes
+                        Recepten
                     </NavLink>
-                </li>
+                </li>*@
 
                 <li class="nav-item">
-                    <NavLink class="nav-link" href="shoppinglist">
-                        Shopping list
+                    <NavLink class="nav-link" href="shoppinglistoverview">
+                        Boodschappenlijsten
                     </NavLink>
                 </li>
             </ul>

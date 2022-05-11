@@ -14,8 +14,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeManagmentWebApp",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorPunterHomeApp", "BlazorPunterHomeApp\BlazorPunterHomeApp.csproj", "{38B7E148-6692-47CC-BE66-875F04A730D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeAppWA", "PunterHomeAppWA\PunterHomeAppWA.csproj", "{3E7A1344-5302-40DE-B7B8-B56AD7B882A3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorShared", "RazorShared\RazorShared.csproj", "{699C7514-39D7-4A4F-9934-08995A07565E}"
@@ -23,6 +21,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeApiConnector", "PunterHomeApiConnector\PunterHomeApiConnector.csproj", "{7B9E9531-EAB7-4E4E-8A29-7FEF1A7725C9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeApi.Shared", "PunterHomeApi.Shared\PunterHomeApi.Shared.csproj", "{21388084-C780-4759-9E62-78FCD4DF7269}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F5E01DAE-2F0A-482F-8315-9C6C17AEF57C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PunterHomeDomainTests", "PunterHomeDomainTests", "{F2F87512-9C34-41DA-BAD1-EEDE437BB238}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeDomainTests", "Tests\PunterHomeDomainTests\PunterHomeDomainTests\PunterHomeDomainTests.csproj", "{7933A1D3-6FE2-4160-A822-AA644A550901}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,10 +58,6 @@ Global
 		{38B7E148-6692-47CC-BE66-875F04A730D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38B7E148-6692-47CC-BE66-875F04A730D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38B7E148-6692-47CC-BE66-875F04A730D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A7A9873-1D60-4E07-BA0E-3AC78CAF6E50}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3E7A1344-5302-40DE-B7B8-B56AD7B882A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3E7A1344-5302-40DE-B7B8-B56AD7B882A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E7A1344-5302-40DE-B7B8-B56AD7B882A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -74,9 +74,17 @@ Global
 		{21388084-C780-4759-9E62-78FCD4DF7269}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21388084-C780-4759-9E62-78FCD4DF7269}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21388084-C780-4759-9E62-78FCD4DF7269}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7933A1D3-6FE2-4160-A822-AA644A550901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7933A1D3-6FE2-4160-A822-AA644A550901}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7933A1D3-6FE2-4160-A822-AA644A550901}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7933A1D3-6FE2-4160-A822-AA644A550901}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F2F87512-9C34-41DA-BAD1-EEDE437BB238} = {F5E01DAE-2F0A-482F-8315-9C6C17AEF57C}
+		{7933A1D3-6FE2-4160-A822-AA644A550901} = {F2F87512-9C34-41DA-BAD1-EEDE437BB238}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9F91869B-8BDD-44E1-981E-7FEEF5C9017F}

@@ -8,16 +8,13 @@ namespace PunterHomeDomain.ApiModels
     public class AddProductToShoppingListRequest
     {
         public Guid ShoppingListId { get; set; }
-        public int ProductMeasurementId { get; set; }
+        public Guid ProductId { get; set; }
+        public double Amount { get; set; }
 
         /// <summary>
         /// times to add the productMeasurement
         /// </summary>
-        public int MeasurementAmount { get; set; }
-
-        public bool RecipeOnlyAvailable { get; set; }
-        public Guid RecipeId { get; set; }
-        public int NrOfPersons { get; set; }
+        public PunterHomeDomain.Enums.EUnitMeasurementType MeasurementType { get; set; }
     }
 
     public class AddMeasurementsToShoppingListItem

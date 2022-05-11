@@ -1,9 +1,6 @@
 ﻿using PunterHomeApp.Services;
 using PunterHomeDomain.Interfaces;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using static Enums;
 
 namespace PunterHomeDomain.Models

@@ -1,118 +1,85 @@
-﻿
-@if (Product != null)
+﻿@if (Product != null)
 {
     <div class="d-flex justify-content-center pt-2">
         <span class="h3"> @Product.ProductModel.Name</span>
         <button class="btn"><Icon Name="IconName.Delete" @onclick="() => HandleDeleteProduct(Product)"></Icon></button>
-    </div><div class="row p-2">
-    <ul class="tags ul-np">
-        @foreach (var label in Product.ProductModel.Tags)
-        {
-            <li style="margin-left:1px" class="prodruct-tag bg-green">
-
-                <span style="font-size: 12px;font-weight: bold; text-transform: uppercase; color:white">
-                    @label.Name
-                </span>
-            </li>
-
-        }
-        @if (!myIsAddingTag)
-        {
-            <li style="margin-left:1px" class="prodruct-tag bg-green add-tag" @onclick="HandleAddTagClicked">
-
-                <span style="font-size: 12px;font-weight: bold; text-transform: uppercase; color:white">
-                    <i class="fas fa-plus"></i> Add..
-                </span>
-            </li>
-
-        }
-        @if (myIsAddingTag)
-        {
-            <li class="prodruct-tag bg-green add-tag">
-                <div class="prodruct-tag">
-                    <select class="prodruct-tag" @onchange=@NewTagClicked>
-                        <option value="">select...</option>
-                        @foreach (var tag in AllTags)
-                        {
-                            <option>@tag.Name</option>
-                        }
-                    </select>
-                    @*<EditForm Model="NewTag">
-                            <InputSelect ValueExpression="() => NewTag.Name" Value="@NewTag.Name" ValueChanged="((string s) => MyValueChangeHandler(s))">
-                                <option value="">select...</option>
-                                @foreach (var tag in AllTags)
-                                {
-                                    <option>@tag.Name</option>
-                                }
-                            </InputSelect>
-                        </EditForm>*@
-                </div>
-
-                @*<div class="dropdown">
-                        <input list="tag-choices" />
-                        <datalist id="tag-choices">
-                            @foreach (var tag in AllTags)
-                            {
-                                <option value="@tag.Name" @onclick="() => NewTagClicked(tag.Id)" @onfocusout="() => NewTagClicked(tag.Id)"></option>
-                            }
-                        </datalist>
-                    </div>*@
-            </li>
-        }
-    </ul>
-
-</div>
-    <div class="container-xl justify-content-center m-md-2 m-0">
-
-        <div class="row p-2">
+    </div>
+    <div class="container-xl justify-content-center m-md-2 m-0 p-3 bg-el-1">
+        <div class="d-flex flex-column flex-md-row flex-sm-column justify-content-between">
             <span class="h4">Hoeveelheden</span>
-        </div>
-        
-        <div class="d-flex justify-content-between p-2 col-12 col-md-6">
-            <div>Huidige hoeveelheid:</div>
-            <h5><strong>@Product.GetQuantityString()</strong></h5>
+            <h6>Huidige hoeveelheid:  <strong>@Product.GetQuantityString()</strong></h6>
         </div>
 
         <ListGroup>
-            
-        @foreach (var prodQuan in Product.ProductModel.ProductQuantities)
+
+            @foreach (var prodQuan in Product.ProductModel.ProductQuantities)
             {
                 <ListGroupItem Margin="Margin.Is2" Border=Border.Rounded.Is0>
                     <Row>
-                    <div class="col-12">
-                        <strong>@prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType</strong>
+                        <div class="col-12">
+                            <strong>@prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType</strong>
 
-                    </div>
-                </Row>
-                <Row class="justify-content-between">
-
-                    <Column ColumnSize="ColumnSize.Is4">
-                        <i class="fas fa-barcode" @onclick="() => HandleAddBarcode(prodQuan.ProductQuantityId)"></i> @prodQuan.Barcode
-                    </Column>
-                    <div class="col-8 btn-toolbar d-flex flex-row-reverse">
-                        <div class="btn-group btn-group-sm">
-
-                            <button class="btn mr-3 btn-md fg-btn-danger"><Icon Name="IconName.Delete" @onclick="() => HandleDeleteProductQuantity(prodQuan.ProductQuantityId)"></Icon></button>
-                            <button class="btn fg-btn" @onclick="() => HandleAddToCart(prodQuan)"><i class="fas fa-cart-plus"></i></button>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <button @onclick="() => DecreaseQuantity(prodQuan.ProductQuantityId)" class="btn oval-button mr-3"><i class="fas fa-minus"></i></button>
-                            <button @onclick="() => IncreaseQuantity(prodQuan.ProductQuantityId)" class="btn oval-button"><i class="fas fa-plus"></i></button>
+                    </Row>
+                    <Row class="justify-content-between">
+
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <i class="fas fa-barcode" @onclick="() => HandleAddBarcode(prodQuan.ProductQuantityId)"></i> @prodQuan.Barcode
+                        </Column>
+                        <div class="col-8 btn-toolbar d-flex flex-row-reverse">
+                            <div class="btn-group btn-group-sm">
+
+                                <button class="btn mr-3 btn-md fg-btn-danger"><Icon Name="IconName.Delete" @onclick="() => HandleDeleteProductQuantity(prodQuan.ProductQuantityId)"></Icon></button>
+                                <button class="btn fg-btn" @onclick="() => HandleAddToCart(prodQuan)"><i class="fas fa-cart-plus"></i></button>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button @onclick="() => DecreaseQuantity(prodQuan.ProductQuantityId)" class="btn oval-button mr-3"><i class="fas fa-minus"></i></button>
+                                <button @onclick="() => IncreaseQuantity(prodQuan.ProductQuantityId)" class="btn oval-button"><i class="fas fa-plus"></i></button>
+                            </div>
+                            @*<div class="btn-group btn-group-sm mr-2" role="group">
+                                <button class="btn btn-primary" type="button" @onclick="() => DecreaseQuantity(prodQuan.ProductQuantityId)"><i class="fas fa-minus"></i></button>
+                                <button class="btn btn-primary" type="button" @onclick="() => IncreaseQuantity(prodQuan.ProductQuantityId)"><i class="fas fa-plus"></i></button>
+                                </div>*@
                         </div>
-                        @*<div class="btn-group btn-group-sm mr-2" role="group">
-                            <button class="btn btn-primary" type="button" @onclick="() => DecreaseQuantity(prodQuan.ProductQuantityId)"><i class="fas fa-minus"></i></button>
-                            <button class="btn btn-primary" type="button" @onclick="() => IncreaseQuantity(prodQuan.ProductQuantityId)"><i class="fas fa-plus"></i></button>
-                        </div>*@
-                    </div>
-                </Row>
+                    </Row>
                 </ListGroupItem>
 
             }
 
         </ListGroup>
-        <div class="row pb-2 justify-content-end col-12 col-md-6">
-            <button @onclick="ShowAddProductQuantityModal" class="btn btn-outline-secondary">Product hoeveelheid toevoegen</button>
+        <div class="d-flex mt-2">
+                <button @onclick="ShowAddProductQuantityModal" class="btn btn-primary">Product hoeveelheid toevoegen</button>
         </div>
     </div>
 
+
+
+
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+            <ModalHeader>
+                <ModalTitle>Kies lijst om product aan toe te voegen</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                @if (AllShoppingLists != null)
+                {
+
+                    <ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="SelectedShoppingList">
+                        @foreach (var x in AllShoppingLists)
+                        {
+
+                            <ListGroupItem Name="@x.Id.ToString()">@x.Name</ListGroupItem>
+
+                        }
+                    </ListGroup>
+
+                }
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@HideAndSaveModal">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
 }

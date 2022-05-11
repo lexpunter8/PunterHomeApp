@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PunterHomeDomain.ApiModels;
-using PunterHomeDomain.Enums;
 using PunterHomeDomain.Models;
 
 namespace PunterHomeDomain.Interfaces
 {
     public interface IRecipeService
     {
-        void CreateRecipe(string recipeName, ERecipeType type);
+        void CreateRecipe(string recipeName, Enums.ERecipeType type);
         IEnumerable<RecipeApiModel> GetAllRecipes();
         void DeleteRecipeById(Guid id);
         void UpdateRecipe(Guid id, string newName);

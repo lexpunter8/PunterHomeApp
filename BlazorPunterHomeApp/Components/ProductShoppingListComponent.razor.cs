@@ -43,7 +43,7 @@ namespace BlazorPunterHomeApp.Components
 
         public async Task Refresh()
         {
-            var items = await ShoppingListService.GetShoppingListItems();
+            var items = await ShoppingListService.GetShoppingListItems(ShoppingListService.ShoppingListId);
 
             //ListItems = items.Select(i => new ShoppingListDetailsViewModel(i)).ToList();
             StateHasChanged();

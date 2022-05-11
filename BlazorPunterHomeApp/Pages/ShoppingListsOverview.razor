@@ -2,7 +2,48 @@
 
 <Container>
     <Row>
-        <Heading Size="HeadingSize.Is1">Boodschappenlijsten</Heading>
+        <Column>
+            <Heading Size="HeadingSize.Is1">Boodschappenlijsten</Heading>
+        </Column>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is6.OnDesktop.Is12.OnTablet">
+            <EditForm OnValidSubmit="CreateShoppingList" Model="NewShoppingListValue">
+                <div class="input-group mb-2">
+                    <InputText rows="4" type="text" class="form-control" id="Instruction text" @bind-Value="NewShoppingListValue.Text" />
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-outline-primary">Toevoegen</button>
+                    </div>
+                </div>
+            </EditForm>
+        </Column>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is12">
+
+            <ListGroup>
+
+                @foreach (var sList in ShoppingLists)
+                {
+                    <ListGroupItem Margin="Margin.Is2" Border=Border.Rounded.Is0>
+                        <NavLink class="text-reset" href="@($"shoppinglist/{sList.Id}{GetLinkSuffix(sList.Status)}/{sList.Name}")">
+                            <Row>
+                                <Column ColumnSize="ColumnSize.Is9">
+
+                                    <Span>@sList.Name</Span>
+                                </Column>
+
+                                <Column ColumnSize="ColumnSize.Is3" Class="d-flex justify-content-end">
+
+                                    <Span>@GetStatusString(@sList.Status)</Span>
+                                </Column>
+                            </Row>
+                        </NavLink>
+                    </ListGroupItem>
+                }
+
+            </ListGroup>
+        </Column>
     </Row>
     <Row>
 

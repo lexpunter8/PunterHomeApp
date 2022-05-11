@@ -1,13 +1,17 @@
-﻿@page "/shoppinglist/{Id:guid}/shop"
+﻿@page "/shoppinglist/{Id:guid}/shop/{Name}"
 
 
-<div class="container">
+<div class="container mb-3">
     <BlazorPunterHomeApp.Components.SelectMeasurementsForShopItem @ref="SelectModal" RequiredAmount="ModalRequiredAmount"
                                                                   MeasurementType="ModalMeasurementType"
                                                                   MeasurementsOptions="MeasurementOptions" OnConfirm="ModalOnConfirm"></BlazorPunterHomeApp.Components.SelectMeasurementsForShopItem>
 
     <div class="row justify-content-center p-2">
-                <h3>Winkelen</h3>
+                <Div Class="d-flex flex-column justify-content-center">
+                <h3 class="text-sm-center">Winkelen</h3>
+                    <h6 class="text-sm-center">@Name</h6>
+                </Div>
+                
     </div>
     <div class="row justify-content-center">
         <div class="col-xl-10 col-md-10 p-3 bg-el-1">
@@ -17,23 +21,23 @@
             {
                 <div class="row justify-content-end">
                     <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Item.ProductId" name="@item.Item.ProductId" @onclick="@(() => ItemClicked(item))" disabled>
-                        <label for="@item.Item.ProductId"></label>
+                        <input type="checkbox" id="@item.Id" name="@item.Id" @onclick="@(() => ItemChecked(item))">
+                        <label for="@item.Id"></label>
 
                     </div>
-                    <div class="col-10 col-md-11" @onclick="@(() => ItemClicked(item))">
+                    <div class="col-10 col-md-11" @onclick="@(() => ItemChecked(item))">
                         <div class="row">
-                            <strong>@item.Item.ProductName</strong>
+                            <strong>@item.Name</strong>
                         </div>
                         <div class="row">
 
-                            @if (item.Item.Measurement != null)
+                            @*if (item.Item.Measurement != null)
                             {
 
                                 <div class="col-12">
                                     @($"{item.Item.Measurement.UnitQuantityTypeVolume} {item.Item.Measurement.MeasurementType}")
                                 </div>
-                            }
+                            }*@
 
                         </div>
 
@@ -49,14 +53,14 @@
             {
                 <div class="row">
                     <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Item.ProductId" name="@item.Item.ProductId" @onclick="@(() => ItemClicked(item, true))" disabled checked>
-                        <label for="@item.Item.ProductId"></label>
+                        <input type="checkbox" id="@item.Id" name="@item.Id" @onclick="@(() => ItemUnchecked(item))" disabled checked>
+                        <label for="@item.Id"></label>
                     </div>
-                    <div class="col-10 col-md-11" @onclick="@(() => ItemClicked(item))">
+                    <div class="col-10 col-md-11" @onclick="@(() => ItemUnchecked(item))">
                         <div class="row">
-                            <strike><strong>@item.Item.ProductName</strong></strike>
+                            <strike><strong>@item.Name</strong></strike>
                         </div>
-                        <div class="row">
+                        @*<div class="row">
 
                             @if (item.Item.Measurement != null)
                             {
@@ -70,7 +74,7 @@
                                 </div>
                             }
 
-                        </div>
+                        </div>*@
 
                     </div>
                 </div>
@@ -80,7 +84,7 @@
             }
             @if (CheckedListItems.Count > 0 && UnCheckedListItems.Count == 0)
             {
-                <button class="btn btn-outline-primary mb-2" @onclick="@(() => UpdateCheckedItems())">Gekochte producten bijwerken</button>
+                <button class="btn btn-outline-primary mb-2" @onclick="@(() => UpdateCheckedItems())">Boodschappenlijst verwijderen</button>
             }
             @if (CheckedListItems.Count == 0)
             {

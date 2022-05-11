@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using DataModels.Measurements;
 using PunterHomeDomain;
 using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Conversions;
 using PunterHomeDomain.Enums;
 using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
+using PunterHomeDomain.Shared;
 using static Enums;
+using EUnitMeasurementType = PunterHomeDomain.Enums.EUnitMeasurementType;
 
 namespace PunterHomeApp.Services
 {
@@ -90,16 +91,17 @@ namespace PunterHomeApp.Services
 
         public void AddRecipeIngredientsToShoppingList(Guid recipeId, int numberOfPersons, Guid shoppingListId, bool onlyUnavailable)
         {
-            var recipe = recipeAdapter.GetRecipeById(recipeId);
+            throw new NotImplementedException();
+            //var recipe = recipeAdapter.GetRecipeById(recipeId);
 
-            var request = new AddProductToShoppingListRequest
-            {
-                NrOfPersons = numberOfPersons,
-                RecipeId = recipeId,
-                RecipeOnlyAvailable = onlyUnavailable
-            };
+            //var request = new AddProductToShoppingListRequest
+            //{
+            //    NrOfPersons = numberOfPersons,
+            //    RecipeId = recipeId,
+            //    RecipeOnlyAvailable = onlyUnavailable
+            //};
 
-            myShoppingListService.AddProductToShoppingList(shoppingListId, request);
+            //myShoppingListService.AddProductToShoppingList(shoppingListId, request);
         }
 
         public bool IsIngedientAvailable(Ingredient i, ProductDetails p, int numberOfPersons = 1)
@@ -227,7 +229,7 @@ namespace PunterHomeApp.Services
         public Guid RecipeId { get; set; }
         public string ProductName { get; set; }
         public int UnitQuantity { get; set; }
-        public EUnitMeasurementType UnitQuantityType { get; set; }
+        public Enums.EUnitMeasurementType UnitQuantityType { get; set; }
 
     }
 

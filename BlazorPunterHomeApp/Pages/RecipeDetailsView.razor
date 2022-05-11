@@ -16,10 +16,12 @@
                 <span>15 minutes</span>
                 <span>+ 30 minutes</span>
             </div>
-            <Button Color="Color.Primary" Type="ButtonType.Link" To="@($"cooking/{Recipedetails.Id}")">
-                Start cooking
-            </Button>
         </div>
+        <Row>
+            <Button Color="Color.Primary" Type="ButtonType.Link" To="@($"cooking/{Recipedetails.Id}")">
+                Beginnen met koken
+            </Button>
+        </Row>
         <div class="row pt-3 mb-3">
             <div class="pt-3 col-12 col-xl-7 justify-content-center order-last order-md-first">
                 <div class="col-12 p-3 bg-el-1">
@@ -76,14 +78,14 @@
                                         @if (IsEditting)
                                         {
                                             
-                                            <Column ColumnSize="ColumnSize.Is12.OnMobile.IsAuto.OnDesktop" >
+                                            <Column ColumnSize="ColumnSize.Is12" >
 
                                             <Row>
-                                                <Column ColumnSize="ColumnSize.Is10.OnMobile.Is2.OnDesktop">
+                                                <Column ColumnSize="ColumnSize.Is10">
 
                                                     <h5>Required ingredients</h5>
                                                 </Column>
-                                                <Column ColumnSize="ColumnSize.Is2.OnMobile.Is10.OnDesktop">
+                                                <Column ColumnSize="ColumnSize.Is2">
                                                     <CloseButton TextColor="TextColor.Danger"></CloseButton>
                                                 </Column>
                                             </Row>
@@ -102,7 +104,7 @@
                                                                     <Icon Name="IconName.MoreHorizontal"></Icon>
                                                                 </button>
 
-                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                <div class="dropdown-item" aria-labelledby="dropdownMenuButton">
                                                                     <a @onclick="() => RemoveIngredientFromStep(step.Step.Id, item.ProductId)" class="dropdown-item">Remove</a>
                                                                 </div>
 
@@ -261,3 +263,60 @@
     </div>
 
 }
+
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Kies lijst om recept aan toe te voegen</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            @if(AllShoppingLists != null)
+            {
+              
+            <ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="SelectedShoppingList">
+                @foreach(var x in AllShoppingLists)
+                {
+                    
+                    <ListGroupItem Name="@x.Id.ToString()">@x.Name</ListGroupItem>
+
+                }
+            </ListGroup>  
+
+            }
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+            <Button Color="Color.Primary" Clicked="@HideAndSaveModal">Save Changes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+
+@*<Modal @ref="changStepModel">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Kies lijst om recept aan toe te voegen</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            @if(AllShoppingLists != null)
+            {
+              
+            <ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="SelectedShoppingList">
+                @foreach(var x in AllShoppingLists)
+                {
+                    
+                    <ListGroupItem Name="@x.Id.ToString()">@x.Name</ListGroupItem>
+
+                }
+            </ListGroup>  
+
+            }
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+            <Button Color="Color.Primary" Clicked="@HideAndSaveModal">Save Changes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>*@

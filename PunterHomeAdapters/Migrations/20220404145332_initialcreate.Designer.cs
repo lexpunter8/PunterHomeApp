@@ -10,15 +10,15 @@ using PunterHomeAdapters;
 namespace PunterHomeAdapters.Migrations
 {
     [DbContext(typeof(HomeAppDbContext))]
-    [Migration("20210310154734_refactor-shoppinglist")]
-    partial class refactorshoppinglist
+    [Migration("20220404145332_initialcreate")]
+    partial class initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.2")
+                .HasAnnotation("ProductVersion", "3.1.18")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbIngredient", b =>
@@ -146,7 +146,7 @@ namespace PunterHomeAdapters.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("RecipeId")
+                    b.Property<Guid>("RecipeId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Text")
@@ -159,6 +159,27 @@ namespace PunterHomeAdapters.Migrations
                     b.ToTable("RecipeSteps");
                 });
 
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStepIngredient", b =>
+                {
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RecipeStepId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("UnitQuantity")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("UnitQuantityType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ProductId", "RecipeStepId");
+
+                    b.HasIndex("RecipeStepId");
+
+                    b.ToTable("RecipeStepIngredient");
+                });
+
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingList", b =>
                 {
                     b.Property<Guid>("Id")
@@ -168,15 +189,15 @@ namespace PunterHomeAdapters.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.ToTable("ShoppingLists");
+                    b.ToTable("DbShoppingList");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListProduct", b =>
@@ -200,7 +221,7 @@ namespace PunterHomeAdapters.Migrations
 
                     b.HasIndex("FkShoppingListId");
 
-                    b.ToTable("ShoppingListProducts");
+                    b.ToTable("DbShoppingListProduct");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListProductMeasurementItem", b =>
@@ -218,7 +239,7 @@ namespace PunterHomeAdapters.Migrations
 
                     b.HasIndex("ProductQuantityId");
 
-                    b.ToTable("ShoppingListProductMeasurementItem");
+                    b.ToTable("DbShoppingListProductMeasurementItem");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListProductsMeasurement", b =>
@@ -242,7 +263,7 @@ namespace PunterHomeAdapters.Migrations
 
                     b.HasIndex("FkShoppingListProductId");
 
-                    b.ToTable("ShoppingListProductsMeasurements");
+                    b.ToTable("DbShoppingListProductsMeasurement");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListRecipeItem", b =>
@@ -263,7 +284,27 @@ namespace PunterHomeAdapters.Migrations
 
                     b.HasIndex("ShoppingListId");
 
-                    b.ToTable("ShoppingListRecipeItem");
+                    b.ToTable("DbShoppingListRecipeItem");
+                });
+
+            modelBuilder.Entity("PunterHomeDomain.ShoppingList.ShoppingListAggregate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShoppingLists");
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbIngredient", b =>
@@ -309,7 +350,24 @@ namespace PunterHomeAdapters.Migrations
                 {
                     b.HasOne("PunterHomeAdapters.Models.DbRecipe", "Recipe")
                         .WithMany("Steps")
-                        .HasForeignKey("RecipeId");
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PunterHomeAdapters.Models.DbRecipeStepIngredient", b =>
+                {
+                    b.HasOne("PunterHomeAdapters.Models.DbProduct", "Product")
+                        .WithMany("RecipeStepIngredients")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PunterHomeAdapters.Models.DbRecipeStep", "RecipeStep")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeStepId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PunterHomeAdapters.Models.DbShoppingListProduct", b =>
@@ -370,6 +428,54 @@ namespace PunterHomeAdapters.Migrations
                         .HasForeignKey("ShoppingListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PunterHomeDomain.ShoppingList.ShoppingListAggregate", b =>
+                {
+                    b.OwnsMany("PunterHomeDomain.ShoppingList.ShoppingListRecipeItem", "RecipeItems", b1 =>
+                        {
+                            b1.Property<Guid>("ShoppingListAggregateId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                            b1.Property<int>("Amount")
+                                .HasColumnType("integer");
+
+                            b1.Property<Guid>("RecipeId")
+                                .HasColumnType("uuid");
+
+                            b1.HasKey("ShoppingListAggregateId", "Id");
+
+                            b1.ToTable("ShoppingListRecipeItem");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ShoppingListAggregateId");
+                        });
+
+                    b.OwnsMany("PunterHomeDomain.ShoppingList.ShoppingListTextItem", "TextItems", b1 =>
+                        {
+                            b1.Property<Guid>("ShoppingListAggregateId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                            b1.Property<string>("Value")
+                                .HasColumnType("text");
+
+                            b1.HasKey("ShoppingListAggregateId", "Id");
+
+                            b1.ToTable("ShoppingListTextItem");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ShoppingListAggregateId");
+                        });
                 });
 #pragma warning restore 612, 618
         }

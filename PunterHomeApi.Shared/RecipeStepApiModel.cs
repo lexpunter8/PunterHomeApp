@@ -25,4 +25,26 @@ namespace PunterHomeApi.Shared
         public List<RecipeStepIngredientApiModel> Ingredients { get; set; } = new List<RecipeStepIngredientApiModel>();
 
     }
+
+    public class AddTextToShoppingList
+    {
+        public Guid ShoppingListId { get; set; }
+        public string Text { get; set; }
+    }
+
+
+    public class AddMeasurementsToShoppingList
+    {
+        public Guid ShoppingListId { get; set; }
+        public int MeasurementId { get; set; }
+        public int Count { get; set; }
+    }
+
+
+    public class AddRecipeToShoppingListItem
+    {
+        public Guid ShoppingListId { get; set; }
+        public Guid RecipeId { get; set; }
+        public int Amount { get; set; }
+    }
 }

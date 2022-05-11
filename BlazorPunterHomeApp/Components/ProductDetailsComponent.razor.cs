@@ -1,8 +1,11 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
+using Blazorise;
 using BlazorPunterHomeApp.Data;
 using DataModels.Measurements;
 using Microsoft.AspNetCore.Components;
+using PunterHomeApiConnector;
+using PunterHomeApiConnector.Interfaces;
 using PunterHomeDomain.Models;
 using RazorShared;
 using System;
@@ -14,6 +17,33 @@ namespace BlazorPunterHomeApp.Components
 {
     public partial class ProductDetailsComponent : ComponentBase
     {
+
+        [Inject]
+        IShoppingListApiConnector ShoppingListApiConnector { get; set; }
+
+
+        // reference to the modal component
+        public Modal modalRef;
+        public string SelectedShoppingList { get; set; }
+
+        public IEnumerable<ShoppingListDto> AllShoppingLists { get; private set; }
+        public async Task ShowModal()
+        {
+            AllShoppingLists = await ShoppingListApiConnector.GetItems();
+            await modalRef.Show();
+        }
+
+        public Task HideAndSaveModal()
+        {
+            ShoppingListApiConnector.AddProductItem(Guid.Parse(SelectedShoppingList), ProductId, SelectedMeasurement.UnitQuantityTypeVolume, (int)SelectedMeasurement.MeasurementType);
+            return modalRef.Hide();
+        }
+
+        public Task HideModal()
+        {
+            return modalRef.Hide();
+        }
+
         private bool myIsAddingTag;
 
         [Parameter]
@@ -38,7 +68,7 @@ namespace BlazorPunterHomeApp.Components
         public NavigationManager NavigationManager { get; set; }
 
         public ProductDetailsViewModel Product { get; set; }
-        public ProductQuantity NewProductQuantity { get; private set; } = new ProductQuantity();
+        public PunterHomeDomain.Models.ProductQuantity NewProductQuantity { get; private set; } = new PunterHomeDomain.Models.ProductQuantity();
         public List<TagModel> AllTags { get; set; } = new List<TagModel>();
 
         protected async override Task OnParametersSetAsync()
@@ -55,11 +85,13 @@ namespace BlazorPunterHomeApp.Components
 
         private async void HandleAddToCart(BaseMeasurement measurement)
         {
-            await ShoppingListService.AddToShoppingList(Guid.Empty, new PunterHomeDomain.ApiModels.AddProductToShoppingListRequest
-            {
-                MeasurementAmount = 1,
-                ProductMeasurementId = measurement.ProductQuantityId
-            });
+            SelectedMeasurement = measurement;
+            await ShowModal();
+            //await ShoppingListService.AddToShoppingList(Guid.Empty, new PunterHomeDomain.ApiModels.AddProductToShoppingListRequest
+            //{
+            //    MeasurementAmount = 1,
+            //    ProductMeasurementId = measurement.ProductQuantityId
+            //});
         }
 
         private async void HandleDeleteProduct(ProductDetailsViewModel vm)
@@ -184,5 +216,8 @@ namespace BlazorPunterHomeApp.Components
             StateHasChanged();
         }
         ProductTagModel NewTag = new ProductTagModel();
+        private BaseMeasurement SelectedMeasurement;
     }
+
+
 }

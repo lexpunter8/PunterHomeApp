@@ -1,6 +1,7 @@
 ﻿using BlazorPunterHomeApp.Data;
 using DataModels.Measurements;
 using Microsoft.AspNetCore.Components;
+using PunterHomeApiConnector;
 using PunterHomeApiConnector.Interfaces;
 using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Services;
@@ -23,30 +24,41 @@ namespace BlazorPunterHomeApp.Pages
         public ShoppingListItemDetailsModel Model { get; }
     }
 
+    public class ShoppingListProductViewModel
+    {
+        public ShoppingListProductViewModel(ShoppingListProductItemDto model)
+        {
+            Model = model;
+        }
+
+        public PunterHomeDomain.Enums.EUnitMeasurementType EUnitMeasurementType => (PunterHomeDomain.Enums.EUnitMeasurementType)Model.MeasurementType;
+        public ShoppingListProductItemDto Model { get; }
+    }
+
     public class ShoppingListItemViewModel
     {
-        public ShoppingListItemViewModel(ShoppingListItemModel model)
+        public ShoppingListItemViewModel(ShoppingListRecipeItemDto model)
         {
             Model = model;
         }
 
         public bool ShowInfo { get; set; }
 
-        public string Name => Model.Recipe?.RecipeName ?? Model.Product.ProductName;
+        public string Name => Model.RecipeName;
 
-        public (double amount, EUnitMeasurementType type) GetProductAmount()
-        {
-            var measurements = Model.Product.Measurements.ToDictionary(p => BaseMeasurement.GetMeasurement(p.Measurement), s => s.Count).ToList();
+        //public (double amount, EUnitMeasurementType type) GetProductAmount()
+        //{
+        //    var measurements = Model.Product.Measurements.ToDictionary(p => BaseMeasurement.GetMeasurement(p.Measurement), s => s.Count).ToList();
 
-            var startMeasurements = BaseMeasurement.GetMeasurement(measurements.First().Key.MeasurementType);
-            for (int i = 0; i < measurements.Count(); i++)
-            {
-                startMeasurements.AddMeasurementAmount(measurements[i].Value * measurements[i].Key.ConvertTo(startMeasurements.MeasurementType));
-            }
-            return (startMeasurements.UnitQuantityTypeVolume, startMeasurements.MeasurementType);
-        }
+        //    var startMeasurements = BaseMeasurement.GetMeasurement(measurements.First().Key.MeasurementType);
+        //    for (int i = 0; i < measurements.Count(); i++)
+        //    {
+        //        startMeasurements.AddMeasurementAmount(measurements[i].Value * measurements[i].Key.ConvertTo(startMeasurements.MeasurementType));
+        //    }
+        //    return (startMeasurements.UnitQuantityTypeVolume, startMeasurements.MeasurementType);
+        //}
 
-        public ShoppingListItemModel Model { get; }
+        public ShoppingListRecipeItemDto Model { get; }
     }
     public partial class ShoppingList : ComponentBase
     {
@@ -55,22 +67,34 @@ namespace BlazorPunterHomeApp.Pages
 
         [Inject]
         public IShoppingListApiConnector ShoppingListApiConnector { get; set; }
+
+        [Parameter]
+        public Guid Id { get; set; }
+
+        [Parameter]
+        public string Name { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             await Refresh();
         }
 
         public List<ShoppingListItemViewModel> RecipeItems { get; set; } = new List<ShoppingListItemViewModel>();
-        public List<ShoppingListItemViewModel> ProductItems { get; set; } = new List<ShoppingListItemViewModel>();
-        public List<ShoppingListItemViewModel> Items { get; set; } = new List<ShoppingListItemViewModel>();
+        public List<ShoppingListProductViewModel> ProductItems { get; set; } = new List<ShoppingListProductViewModel>();
+        public List<ShoppingListItemDto> Items { get; set; } = new List<ShoppingListItemDto>();
 
         public TextInputModel newItemModel { get; set; } = new TextInputModel();
+
+        public void SetShopping()
+        {
+            ShoppingListApiConnector.SetShoppingListShopping(Id);
+        }
 
         public async void AddQuantityToItem(ShoppingListItemViewModel item, bool isRecipe, int prodQuenId = -1)
         {
             if (isRecipe)
             {
-                await ShoppingListApiConnector.IncreaseShoppingListRecipe(ShoppingListService.ShoppingListId, item.Model.Recipe.RecipeId);
+                await ShoppingListApiConnector.IncreaseShoppingListRecipe(ShoppingListService.ShoppingListId, item.Model.RecipeId);
             }
             else 
             {
@@ -83,7 +107,7 @@ namespace BlazorPunterHomeApp.Pages
         {
             if (isRecipe)
             {
-                await ShoppingListApiConnector.DecreaseShoppingListRecipe(ShoppingListService.ShoppingListId, item.Model.Recipe.RecipeId);
+                await ShoppingListApiConnector.DecreaseShoppingListRecipe(ShoppingListService.ShoppingListId, item.Model.RecipeId);
             }
             else 
             { 
@@ -102,13 +126,18 @@ namespace BlazorPunterHomeApp.Pages
 
         public async Task Refresh()
         {
-            var items = await ShoppingListService.GetShoppingListItems();
+            //var items = await ShoppingListService.GetShoppingListItems(Id);
 
-            RecipeItems = items.Where(i => i.Recipe != null).Select(i => new ShoppingListItemViewModel(i)).OrderBy(p => p.Model.Recipe.RecipeName).ToList();
-            ProductItems = items.Where(i => i.Product != null).Select(i => new ShoppingListItemViewModel(i)).OrderBy(p => p.Model.Product.ProductName).ToList();
-            Items = items.Where(i => !string.IsNullOrEmpty(i.ItemValue)).Select(i => new ShoppingListItemViewModel(i)).ToList();
+            //RecipeItems = items.Where(i => i.Recipe != null).Select(i => new ShoppingListItemViewModel(i)).OrderBy(p => p.Model.Recipe.RecipeName).ToList();
+            //ProductItems = items.Where(i => i.Product != null).Select(i => new ShoppingListItemViewModel(i)).OrderBy(p => p.Model.Product.ProductName).ToList();
+            var textItems = await ShoppingListApiConnector.GetTextIems(Id);
+            var productItems = await ShoppingListApiConnector.GetProductIems(Id);
+            var recipeItems = await ShoppingListApiConnector.GetRecipeIems(Id);
+            Items = textItems.ToList();
+            RecipeItems = recipeItems.Select(s => new ShoppingListItemViewModel(s)).ToList();
+            ProductItems = productItems.Select(s => new ShoppingListProductViewModel(s)).ToList();
 
-            ProductItems.ForEach(p => p.Model.Product.Measurements = p.Model.Product.Measurements.OrderBy(m => m.Measurement.ProductQuantityId).ToList());
+            //ProductItems.ForEach(p => p.Model.Product.Measurements = p.Model.Product.Measurements.OrderBy(m => m.Measurement.ProductQuantityId).ToList());
             StateHasChanged();
         }
 
@@ -120,13 +149,20 @@ namespace BlazorPunterHomeApp.Pages
                 return;
             }
             RecipeItems.ForEach(i => i.ShowInfo = false);
-            ProductItems.ForEach(i => i.ShowInfo = false);
+            //ProductItems.ForEach(i => i.ShowInfo = false);
             item.ShowInfo = true;
         }
 
         public async void AddItem()
         {
-            await ShoppingListService.AddOneTimeItemToShoppingList(ShoppingListService.ShoppingListId, newItemModel.Text);
+            await ShoppingListApiConnector.AddTextItem(Id, newItemModel.Text);
+            newItemModel.Text = string.Empty;
+            await Refresh();
+        }
+
+        public async void RemoveItem(string value)
+        {
+            await ShoppingListApiConnector.RemoveTextItem(Id, value);
             await Refresh();
         }
 

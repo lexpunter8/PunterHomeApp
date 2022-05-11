@@ -1,5 +1,6 @@
 ﻿using DataModels.Measurements;
 using PunterHomeDomain.Models;
+using PunterHomeDomain.ShoppingList;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -84,12 +85,13 @@ namespace PunterHomeDomain.ApiModels
         public bool IsChecked { get; set; }
     }
 
-    public class ShoppingListApiModel
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+    //public class ShoppingListApiModel
+    //{
+    //    public Guid Id { get; set; }
+    //    public string Name { get; set; }
 
-        public DateTime CreateTime { get; set; }
-        public List<ShoppingListItemApiModel> Items { get; set; }
-    }
+    //    public DateTime CreateTime { get; set; }
+    //    public List<ShoppingListItemApiModel> Items { get; set; }
+    //    public EShoppingListStatus Status { get; set; }
+    //}
 }

@@ -1,6 +1,7 @@
 ﻿using PunterHomeApiConnector.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,28 +36,116 @@ namespace PunterHomeApiConnector.Clients
         }
         public async Task DecreaseShoppingListProduct(Guid shoppingListId, int prodQuantityId)
         {
-            await myApiConnector.ShoppingList_decreaseQuantityToProductShoppinglistItemAsync(shoppingListId, prodQuantityId);
+            //await myApiConnector.ShoppingList_AddMeasurementToShoppingListAsync(new AddMeasurementsToShoppingList
+            //{
+            //    MeasurementId = prodQuantityId,
+            //    ShoppingListId = shoppingListId,
+            //    Count = -1
+            //});
         }
 
         public async Task DecreaseShoppingListRecipe(Guid shoppingListId, Guid RecipeId)
         {
-            await myApiConnector.ShoppingList_DecreaseQuantityToRecipeShoppinglistItemAsync(shoppingListId, RecipeId);
+            await myApiConnector.ShoppingList_AddRecipeToShoppingListAsync(new AddRecipeToShoppingListItem
+            {
+                ShoppingListId = shoppingListId,
+                Amount = -1,
+                RecipeId = RecipeId
+            });
         }
 
         public async Task IncreaseShoppingListProduct(Guid shoppingListId, int prodQuantityId)
         {
-            await myApiConnector.ShoppingList_AddQuantityToProductShoppinglistItemAsync(shoppingListId, prodQuantityId);
+            //await myApiConnector.Shopp ShoppingList_AddMeasurementToShoppingListAsync(new AddMeasurementsToShoppingList
+            //{
+            //    MeasurementId = prodQuantityId,
+            //    ShoppingListId = shoppingListId,
+            //    Count = 1
+            //});
         }
 
         public async Task IncreaseShoppingListRecipe(Guid shoppingListId, Guid RecipeId)
         {
-            await myApiConnector.ShoppingList_AddQuantityToRecipeShoppinglistItemAsync(shoppingListId, RecipeId);
+            await myApiConnector.ShoppingList_AddRecipeToShoppingListAsync(new AddRecipeToShoppingListItem
+            {
+                ShoppingListId = shoppingListId,
+                Amount = 1,
+                RecipeId = RecipeId
+            });
         }
 
 
-        public async Task GetItems(Guid shoppingListId, Guid RecipeId)
+        public async Task<IEnumerable<ShoppingListDto>> GetItems()
         {
-            return await myApiConnector.ShoppingList_GetAsync();
+            var result = await myApiConnector.ShoppingList_GetAllAsync();
+            return result.Where(w => w.Status != EShoppingListStatus.Closed);
+        }
+
+        public async Task<IEnumerable<ShoppingListItemDto>> GetTextIems(Guid shoppinglistId)
+        {
+            return await myApiConnector.ShoppingList_GetTextItemsForShoppingListAsync(shoppinglistId);
+        }
+
+        public async Task<IEnumerable<ShoppingListProductItemDto>> GetProductIems(Guid shoppinglistId)
+        {
+            return await myApiConnector.ShoppingList_GetProductItemsForShoppingListAsync(shoppinglistId);
+        }
+
+        public async Task<IEnumerable<ShoppingListRecipeItemDto>> GetRecipeIems(Guid shoppinglistId)
+        {
+            return await myApiConnector.ShoppingList_GetRecipeItemsForShoppingListAsync(shoppinglistId);
+        }
+
+        public async Task<Guid> CreateShoppingList(string name)
+        {
+            return await myApiConnector.ShoppingList_CreateShoppingListAsync(name);
+        }
+
+        public async Task AddTextItem(Guid shoppingListId, string textValue)
+        {
+            await myApiConnector.ShoppingList_AddTextItemToShoppingListAsync(shoppingListId, textValue);
+        }
+
+        public async Task RemoveTextItem(Guid shoppingListId, string textValue)
+        {
+            await myApiConnector.ShoppingList_RemoveTextItemFromShoppingListAsync(shoppingListId, textValue);
+        }
+
+        public async Task AddProductItem(Guid shoppingListId, Guid productId, double amount, int measurementType)
+        {
+            await myApiConnector.ShoppingList_AddProductItemToShoppingListAsync(shoppingListId, new AddProductToShoppingListRequest
+            {
+                MeasurementType = (EUnitMeasurementType2)measurementType,
+                Amount = amount,
+                ProductId = productId
+            });
+
+        }
+
+        public async Task AddRecipeItem(Guid shoppingListId, Guid recipeId, int amount)
+        {
+            await myApiConnector.ShoppingList_AddRecipeItemToShoppingListAsync(shoppingListId, recipeId, amount);
+        }
+
+        public async Task SetProductChecked(Guid shoppingListId, Guid productId, bool v)
+        {
+            await myApiConnector.ShoppingList_SetProductCheckedAsync(shoppingListId, productId, v);
+        }
+
+        public async Task SetItemChecked(Guid shoppingListId, string text, bool v)
+        {
+            await myApiConnector.ShoppingList_SetItemCheckedAsync(shoppingListId, text, v);
+        }
+
+        public async Task SetShoppingListShopping(Guid shoppingListId)
+        {
+            await myApiConnector.ShoppingList_SetShoppingShoppingListAsync(shoppingListId);
+        }
+
+
+        public async Task CloseShoppingList(Guid shoppingListId)
+        {
+            await myApiConnector.ShoppingList_CloseShoppingListAsync(shoppingListId);
         }
     }
 }
