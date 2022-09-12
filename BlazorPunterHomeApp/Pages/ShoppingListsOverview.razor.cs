@@ -30,7 +30,7 @@ namespace BlazorPunterHomeApp.Pages
             NewShoppingListValue.Text = string.Empty;
 
             ShoppingLists = await ShoppingListApiConnector.GetItems();
-
+            StateHasChanged();
         }
 
         public string GetLinkSuffix(EShoppingListStatus status)

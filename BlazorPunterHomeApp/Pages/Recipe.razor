@@ -14,122 +14,109 @@
 @*<div class="container-fluid bg-el-0 full-wo-nav">
     <div class="bg-el-0" style="position:absolute; top: 0; right: 0; width: 50%; height:100%; min-height: 100px;">
     </div>*@
-<div class="container-fluid justify-content-center p-0">
-    @if (myIsCreatingNewRecipe)
-    {
-        <div class="row p-2 bg-el-7 animation d-flex justify-content-center" id="newRecipeCollapse">
-            <div class="col-12 col-md-4">
-                <label class="h4">Create recipe</label>
-                <EditForm Model="@NewRecipeModel" OnValidSubmit="HandleSubmit">
-                    <DataAnnotationsValidator />
-                    <div class="form-group">
-                        <label>Recipe name</label>
-                        <ValidationMessage For="@(() => NewRecipeModel.Name)" />
-                        <InputText @bind-Value="@NewRecipeModel.Name" class="form-control" id="inputAddress" placeholder="Recipe name" />
-                    </div>
-                    <div class="form-group mb-3">
-                        <label>Recipe type</label>
-                        <ValidationMessage For="@(() => NewRecipeModel.Type)" />
-                        <InputSelect class="custom-select" id="inputGroupSelect01" @bind-Value="NewRecipeModel.Type">
-                            <option value="">Select</option>
-                            @foreach (var cnt in NewRecipeModel.SelectableUnitQuantityTypes)
-                                {
-                                <option value="@cnt">@cnt.GetEnumDescription()</option>
-                                }
-                        </InputSelect>
-                    </div>
-                    <div class="form-group d-flex justify-content-end p-2">
-
-                        <div>
-                            <button class="btn btn-primary" type="submit">Add recipe</button>
-                        </div>
-                        <div>
-                            <button class="ml-2 btn btn-outline-primary" @onclick="ToggleCreateRecipe">Cancel</button>
-                        </div>
-                    </div>
-                </EditForm>
-            </div>
-        </div>
-    }
-
-
-    <div class="row p-0 m-0">
-
-        <div class="col-12 col-md-3 bg-el-1 pl-2 pr-5 d-flex flex-column">
+<div class="container">
+    
+        @*<div class="col-12 col-md-3 pl-2 pr-5 d-flex flex-column">
             <div class="d-flex justify-content-center justify-content-md-end">
 
                 <div style="width:220px" class="p-2">
                     <BlazorPunterHomeApp.Components.RecipeFilterComponent RecipeState="State" FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>
                 </div>
             </div>
-        </div>
-
+        </div>*@
         @*
             recipe card
         *@
-        <div class="col-12 col-md bg-el-0">
-            <div class="container-md">
-
-
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <SearchComponent OnSearch="Search" OnSortOrderChanged="Sort" @ref="SearchComponent"></SearchComponent>
-
-
-                    </div>
-
-                </div>
-
                 <div class="row mt-2">
                     <div class="col-12 col-md-6">
 
-                        <span class="h2">@State.Recipes.Count Recipes</span>
+                        <span class="h2">@State.Recipes.Count Recepten</span>
                     </div>
                     <div class="col-12 col-md-6">
                         @if (!myIsCreatingNewRecipe)
                         {
-                            <div class="d-flex flex-column align-self-stretch align-self-md- justify-content-md-end">
+                            <div class="d-flex flex-column justify-content-md-end">
 
                                 <button class="btn btn-primary" type="button" @onclick="ToggleCreateRecipe">
-                                    Create recipe
+                                    Nieuw recept
                                 </button>
                             </div>
 
                         }
                     </div>
                 </div>
+                
+        <ListGroup>
+                        @foreach (var cnt in State.Recipes)
+                        {
+                            <ListGroupItem>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <NavLink class="text-reset d-flex" href="@($"recipe/{cnt.Id}")">
+                                        <Div Class="d-flex flex-column">
+                                            @*<Column ColumnSize="ColumnSize.Is9">*@
 
-                <div class="row">
-                    @foreach (var cnt in State.Recipes)
-                    {
+                                                <Span><Strong>@cnt.Name</Strong></Span>
+                                            @*</Column>*@
 
-                        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 mt-4">
-                            <a href="@($"recipe/{cnt.Id}")" class="custom-card">
-                                <div class="card">
-                                    <img class="card-img-top" style="max-height: 120px" src="https://dummyimage.com/200x120/163136/ffffff.png&text=R" />
-                                    <div class="card-header bg-el-2">
-                                        <div class="d-flex justify-content-around">
-                                            <i class="fas fa-clock">info</i>
-                                            <i class="fas fa-utensils">@cnt.Type</i>
-                                        </div>
-                                    </div>
-                                    <div class="card-body bg-el-1">
-                                        <h6 class="card-title">@cnt.Name</h6>
+                                            @*<Column ColumnSize="ColumnSize.Is3" Class="d-flex justify-content-end">*@
+
+                                            @*</Column>*@
+                                        </Div>
+                                    </NavLink>
+                                    <div class="d-flex justify-content-end">
+                                        @*<button class="btn oval-button-outlined disabled" @onclick="@(() => MoveTo($"recipe/{cnt.Id}"))">
+                                            <i class="fa-solid fa-basket-shopping"></i>
+                                        </button>*@
+                                        <button class="btn oval-button-outlined mx-2" @onclick="@(() => MoveTo($"recipe/edit/{cnt.Id}"))">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button class="btn oval-button" @onclick="@(() => MoveTo($"cooking/{cnt.Id}"))">
+                                            <i class="fa-solid fa-bowl-food"></i>
+                                        </button>
                                     </div>
                                 </div>
-                            </a>
 
-                        </div>
 
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
+                       
+                    </ListGroupItem>
+                        }
+                    </ListGroup>
+                
 
 </div>
 @*</div>*@
 
+
+<Div Class="fixed-bottom fixed-bottom-bar">
+    <div class="container">
+        @if (myIsCreatingNewRecipe)
+    {
+        <div class="row p-2 animation d-flex justify-content-center" id="newRecipeCollapse">
+            <div class="col-12">
+                <label class="h4">Create recipe</label>
+                <EditForm Model="@NewRecipeModel" OnValidSubmit="HandleSubmit">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label>Recept naam</label>
+                        <ValidationMessage For="@(() => NewRecipeModel.Name)" />
+                        <InputText @bind-Value="@NewRecipeModel.Name" class="form-control" />
+                    </div>
+                    
+                    <div class="form-group d-flex justify-content-end">
+                        <button class="btn btn-outline-primary" @onclick="ToggleCreateRecipe">Cancel</button>
+                        <button class="ml-2 btn btn-primary" type="submit">Aanmaken</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    }
+        else
+        {
+            <SearchComponent OnSearch="Search" OnSortOrderChanged="Sort" @ref="SearchComponent"></SearchComponent>
+        }
+    </div>
+
+</Div>
 
 @code {
     private string RecipeAvailableColorString = "69B878";
@@ -221,5 +208,10 @@
     private void FilterChangedHandler()
     {
         Search(SearchComponent.SearchModel);
+    }
+
+    private void MoveTo(string page)
+    {
+        NavigationManager.NavigateTo(page);
     }
 }

@@ -61,9 +61,20 @@ namespace PunterHomeDomain.ShoppingList
         public void AddProductItem(Guid productId, double amount, EUnitMeasurementType measurementType)
         {
             var existing = myProductItems.FirstOrDefault(a => a.ProductId == productId);
-            if (existing != null)
+            if (existing != null && existing.MeasurementType == (int)measurementType)
             {
                 existing.Amount += amount;
+                return;
+            }
+
+            // exists but different measurement type
+            if (existing != null)
+            {
+                var newMeasurement = BaseMeasurement.GetMeasurement(measurementType);
+                newMeasurement.AddMeasurementAmount(amount);
+
+                double convertedNewAmount = newMeasurement.ConvertTo((EUnitMeasurementType)existing.MeasurementType);
+                existing.Amount += convertedNewAmount;
                 return;
             }
 

@@ -216,7 +216,7 @@ namespace PunterHomeApi.Controllers
             try
             {
                 ShoppingListAggregate shoppingList = await shoppingListRepository.GetAsync(shoppinglistId);
-                shoppingList.AddRecipeItem(recipeId);
+                shoppingList.AddRecipeItem(recipeId, amount);
                 await shoppingListRepository.SaveAsync(shoppingList);
                 return Ok();
             }
@@ -247,7 +247,7 @@ namespace PunterHomeApi.Controllers
 
                     foreach (var ingredient in ingredients)
                     {
-                        shoppingList.AddProductItem(ingredient.ProductId, ingredient.UnitQuantity, (PunterHomeDomain.Enums.EUnitMeasurementType)ingredient.UnitQuantityType);
+                        shoppingList.AddProductItem(ingredient.ProductId, ingredient.UnitQuantity * recipe.Amount, (PunterHomeDomain.Enums.EUnitMeasurementType)ingredient.UnitQuantityType);
                     }
                     shoppingList.RemoveRecipe(recipe.RecipeId);
                 }
@@ -423,24 +423,6 @@ namespace PunterHomeApi.Controllers
         public void Delete(Guid itemId)
         {
             myShoppingListService.RemoveProductFromShoppingList(itemId);
-        }
-
-
-        // POST: api/ShoppingList
-        [HttpDelete("{id}/text")]
-        public async Task<IActionResult> DeleteShoppingList(Guid id, [FromBody] string value)
-        {
-            try
-            {
-                ShoppingListAggregate shoppingList = await shoppingListRepository.GetAsync(id);
-                shoppingList.RemoveTextItem(value);
-                await shoppingListRepository.SaveAsync(shoppingList);
-                return Ok();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
         }
     }
 

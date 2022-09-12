@@ -6,9 +6,69 @@ html, body {
     margin: 0;
 }
 
+.bg-highlight {
+    background-color: #EEEAE4;
+}
+
+.element-shadow-5 {
+    box-shadow: 0px 0px 5px grey;
+}
+
+.element-shadow-20 {
+    box-shadow: 0px 0px 20px grey;
+}
+
+.checkbox-rectangle {
+    border: 2px solid rgb(89, 89, 89);
+    border-radius: 2px;
+    content: "\00a0";
+    font: 16px/1em sans-serif;
+    height: 16px;
+    margin: 0px;
+    padding: 0px;
+    vertical-align: middle;
+    width: 16px;
+}
+
+.checkbox-rectangle-checked {
+    background: rgb(89, 89, 89);
+    color: white;
+    border-radius: 2px;
+    content: "\2713";
+    font: 16px/1em sans-serif;
+    height: 16px;
+    margin: 0px;
+    padding: 0px;
+    vertical-align: middle;
+    width: 16px;
+}
+
+
 .fill {
     min-height: 100%;
     height: 100%;
+}
+
+.item-row{
+    background: #F0F0F0;
+}
+
+.navbar-white{
+    background: white;
+}
+
+.list-group-item{
+    margin: 0.1rem 0px 0.1rem 0px
+}
+
+.fixed-bottom-bar {
+    box-shadow: 0px 0px 5px grey;
+    padding: 15px 0px 15px 0px ;
+    background: white;
+}
+
+.fixed-bottom-bar button {
+    width: 100%;
 }
 
 #map {
@@ -81,14 +141,14 @@ app {
 .circle-md {
     height: 50px;
     width: 50px;
-    background-color: var(--bg-el-6);
+    background-color: #D9D9D9;
     text-align: center;
     border-radius: 50%;
     display: inline-block;
     padding: 12px 3px 0 3px;
     vertical-align: middle;
     font-weight: bold;
-    color: var(--txt-c-bg);
+    color: black;
 }
 
 .btn-square {
@@ -96,6 +156,8 @@ app {
 }
 .btn-circle {
     border-radius: 50% !important;
+    height: 50px;
+    width: 50px;
 }
 
 .recipe-available-color {

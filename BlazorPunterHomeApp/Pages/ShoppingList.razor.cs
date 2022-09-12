@@ -1,6 +1,7 @@
 ﻿using BlazorPunterHomeApp.Data;
 using DataModels.Measurements;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using PunterHomeApiConnector;
 using PunterHomeApiConnector.Interfaces;
 using PunterHomeDomain.ApiModels;
@@ -68,15 +69,29 @@ namespace BlazorPunterHomeApp.Pages
         [Inject]
         public IShoppingListApiConnector ShoppingListApiConnector { get; set; }
 
+        [Inject]
+        public IJSRuntime JsRuntime { get; set; }
+
         [Parameter]
         public Guid Id { get; set; }
 
         [Parameter]
         public string Name { get; set; }
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
+        public ElementReference BottomDiv;
         protected override async Task OnInitializedAsync()
         {
             await Refresh();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            BottomDivHeight = await JsRuntime.InvokeAsync<double>("getElementHeight", "myBottomDiv");
+            StateHasChanged();
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         public List<ShoppingListItemViewModel> RecipeItems { get; set; } = new List<ShoppingListItemViewModel>();
@@ -84,10 +99,13 @@ namespace BlazorPunterHomeApp.Pages
         public List<ShoppingListItemDto> Items { get; set; } = new List<ShoppingListItemDto>();
 
         public TextInputModel newItemModel { get; set; } = new TextInputModel();
+        public double BottomDivHeight { get; private set; }
 
-        public void SetShopping()
+        public async void SetShopping()
         {
-            ShoppingListApiConnector.SetShoppingListShopping(Id);
+            await ShoppingListApiConnector.SetShoppingListShopping(Id);
+
+            NavigationManager.NavigateTo($"shoppinglist/{Id}/shop/{Name}");
         }
 
         public async void AddQuantityToItem(ShoppingListItemViewModel item, bool isRecipe, int prodQuenId = -1)
@@ -162,10 +180,23 @@ namespace BlazorPunterHomeApp.Pages
 
         public async void RemoveItem(string value)
         {
-            await ShoppingListApiConnector.RemoveTextItem(Id, value);
-            await Refresh();
+            await ShoppingListApiConnector.RemoveTextItem(Id, value); 
+             await Refresh();
         }
 
+
+        public async void RemoveProduct(string value)
+        {
+        }
+
+        public string SelectedTab { get; set; } = "LosseItems";
+
+        private Task OnSelectedTabChanged(string name)
+        {
+            SelectedTab = name;
+
+            return Task.CompletedTask;
+        }
     }
 
 }

@@ -2,9 +2,9 @@
 {
     <div class="d-flex justify-content-center pt-2">
         <span class="h3"> @Product.ProductModel.Name</span>
-        <button class="btn"><Icon Name="IconName.Delete" @onclick="() => HandleDeleteProduct(Product)"></Icon></button>
+        <button class="btn btn-md fg-btn-danger"><Icon Name="IconName.Delete" @onclick="() => HandleDeleteProduct(Product)"></Icon></button>
     </div>
-    <div class="container-xl justify-content-center m-md-2 m-0 p-3 bg-el-1">
+    <div class="justify-content-center m-md-2 m-0">
         <div class="d-flex flex-column flex-md-row flex-sm-column justify-content-between">
             <span class="h4">Hoeveelheden</span>
             <h6>Huidige hoeveelheid:  <strong>@Product.GetQuantityString()</strong></h6>
@@ -14,28 +14,24 @@
 
             @foreach (var prodQuan in Product.ProductModel.ProductQuantities)
             {
-                <ListGroupItem Margin="Margin.Is2" Border=Border.Rounded.Is0>
+                <ListGroupItem Border=Border.Rounded.Is0>
                     <Row>
                         <div class="col-12">
-                            <strong>@prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType</strong>
+                            <h6><strong>@prodQuan.UnitQuantityTypeVolume @prodQuan.MeasurementType</strong></h6>
 
                         </div>
                     </Row>
                     <Row class="justify-content-between">
 
-                        <Column ColumnSize="ColumnSize.Is4">
-                            <i class="fas fa-barcode" @onclick="() => HandleAddBarcode(prodQuan.ProductQuantityId)"></i> @prodQuan.Barcode
+                        <Column ColumnSize="ColumnSize.Is6">
+                            <div class="d-flex justify-content-start">
+                                <button @onclick="() => DecreaseQuantity(prodQuan.ProductQuantityId)" class="btn oval-button-tertiary mr-3"><i class="fas fa-minus"></i></button>
+                                <button @onclick="() => IncreaseQuantity(prodQuan.ProductQuantityId)" class="btn oval-button-tertiary"><i class="fas fa-plus"></i></button>
+                            </div>
                         </Column>
-                        <div class="col-8 btn-toolbar d-flex flex-row-reverse">
-                            <div class="btn-group btn-group-sm">
-
-                                <button class="btn mr-3 btn-md fg-btn-danger"><Icon Name="IconName.Delete" @onclick="() => HandleDeleteProductQuantity(prodQuan.ProductQuantityId)"></Icon></button>
-                                <button class="btn fg-btn" @onclick="() => HandleAddToCart(prodQuan)"><i class="fas fa-cart-plus"></i></button>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <button @onclick="() => DecreaseQuantity(prodQuan.ProductQuantityId)" class="btn oval-button mr-3"><i class="fas fa-minus"></i></button>
-                                <button @onclick="() => IncreaseQuantity(prodQuan.ProductQuantityId)" class="btn oval-button"><i class="fas fa-plus"></i></button>
-                            </div>
+                        <div class="col-6 d-flex flex-row justify-content-end">
+                                <button class="btn mr-0 btn-md fg-btn-danger"><Icon Name="IconName.Delete" @onclick="() => HandleDeleteProductQuantity(prodQuan.ProductQuantityId)"></Icon></button>
+                                <button class="btn oval-button" @onclick="() => HandleAddToCart(prodQuan)"><i class="fas fa-cart-plus"></i></button>
                             @*<div class="btn-group btn-group-sm mr-2" role="group">
                                 <button class="btn btn-primary" type="button" @onclick="() => DecreaseQuantity(prodQuan.ProductQuantityId)"><i class="fas fa-minus"></i></button>
                                 <button class="btn btn-primary" type="button" @onclick="() => IncreaseQuantity(prodQuan.ProductQuantityId)"><i class="fas fa-plus"></i></button>
@@ -77,8 +73,8 @@
                 }
             </ModalBody>
             <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@HideAndSaveModal">Save Changes</Button>
+                <Button Class="btn btn-outline-primary" Clicked="@HideModal">Cancel</Button>
+                <Button Color="Color.Primary" Clicked="@HideAndSaveModal">Toevoegen</Button>
             </ModalFooter>
         </ModalContent>
     </Modal>

@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PunterHomeDomain.Enums;
 using PunterHomeDomain.Shared;
 using PunterHomeDomain.ShoppingList;
 using System;
@@ -10,19 +11,36 @@ namespace PunterHomeDomainTests
     [TestClass]
     public class UnitTest1
     {
+        private ShoppingListAggregate myShoppingList;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+
+            myShoppingList = ShoppingListAggregate.CreateNew("Test");
+
+        }
+
         [TestMethod]
         public void TestMethod1()
         {
-            //var a = ShoppingListAggregate.CreateNew("Test");
+            Guid productId = Guid.NewGuid();
+            myShoppingList.AddProductItem(productId, 200, EUnitMeasurementType.Gr);
+            myShoppingList.AddProductItem(productId, 200, EUnitMeasurementType.Gr);
 
-            //var pGuid = Guid.NewGuid();
-            //a.AddProductItem(pGuid, new Liter().AddMeasurementAmount(1));
-            //a.AddProductItem(pGuid, new MiliLiter().AddMeasurementAmount(200));
+            myShoppingList.ProductItems.First(f => f.ProductId == productId).Amount.Should().Be(400);
+            myShoppingList.ProductItems.First(f => f.ProductId == productId).MeasurementType.Should().Be((int)EUnitMeasurementType.Gr);
+        }
 
-            //a.ProductItems.Count.Should().Be(1);
+        [TestMethod]
+        public void Add_Existing_ProductWithDifferentMeasurementType()
+        {
+            Guid productId = Guid.NewGuid();
+            myShoppingList.AddProductItem(productId, 200, EUnitMeasurementType.Gr);
+            myShoppingList.AddProductItem(productId, 1, EUnitMeasurementType.Kg);
 
-            //a.ProductItems.First().MeasurementType.Should().Be(PunterHomeDomain.Enums.EUnitMeasurementType.Liter);
-            //a.ProductItems.First().Amount.Should().Be(1.2);
+            myShoppingList.ProductItems.First(f => f.ProductId == productId).Amount.Should().Be(1200);
+            myShoppingList.ProductItems.First(f => f.ProductId == productId).MeasurementType.Should().Be((int)EUnitMeasurementType.Gr);
         }
     }
 }

@@ -114,7 +114,7 @@ namespace BlazorPunterHomeApp.Components
             var parameters = new ModalParameters();
             parameters.Add(nameof(NewEditProductQuantityComponent.Product), Product);
 
-            var adddQuantityModal = Modal.Show<NewEditProductQuantityComponent>("Add product quantity", parameters);
+            var adddQuantityModal = Modal.Show<NewEditProductQuantityComponent>("Product hoeveelheid toevoegen", parameters);
 
             var result = await adddQuantityModal.Result;
 

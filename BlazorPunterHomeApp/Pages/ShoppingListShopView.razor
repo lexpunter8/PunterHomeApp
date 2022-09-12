@@ -6,89 +6,67 @@
                                                                   MeasurementType="ModalMeasurementType"
                                                                   MeasurementsOptions="MeasurementOptions" OnConfirm="ModalOnConfirm"></BlazorPunterHomeApp.Components.SelectMeasurementsForShopItem>
 
-    <div class="row justify-content-center p-2">
-                <Div Class="d-flex flex-column justify-content-center">
-                <h3 class="text-sm-center">Winkelen</h3>
-                    <h6 class="text-sm-center">@Name</h6>
-                </Div>
-                
+    <div class="row justify-content-start p-2">
+        <div class="d-flex px-2">
+            <Div Class="d-flex flex-column justify-content-start">
+            <h3 class="m-0">@Name</h3>
+            <h6>Winkelen</h6>
+
+        </Div>
+        </div>
+        
     </div>
-    <div class="row justify-content-center">
-        <div class="col-xl-10 col-md-10 p-3 bg-el-1">
-            <h4>Nog te kopen producten</h4>
-            <hr style="background-color: #61B38E" class="mb-3"/>
-            @foreach (var item in UnCheckedListItems)
-            {
-                <div class="row justify-content-end">
-                    <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Id" name="@item.Id" @onclick="@(() => ItemChecked(item))">
-                        <label for="@item.Id"></label>
+    <div class="row justify-content-start">
+        <div class="col-xl-10 col-md-10 p-3">
+            <h5>Nog te kopen producten</h5>
+            <ListGroup>
 
-                    </div>
-                    <div class="col-10 col-md-11" @onclick="@(() => ItemChecked(item))">
-                        <div class="row">
-                            <strong>@item.Name</strong>
-                        </div>
-                        <div class="row">
+                @foreach (var item in UnCheckedListItems)
+                {
+                    <ListGroupItem @onclick="@(() => ItemChecked(item))">
+                                
 
-                            @*if (item.Item.Measurement != null)
-                            {
-
-                                <div class="col-12">
-                                    @($"{item.Item.Measurement.UnitQuantityTypeVolume} {item.Item.Measurement.MeasurementType}")
-                                </div>
-                            }*@
-
+                        <div class="d-flex flex-row align-items-center justify-content-start">
+                            <div class="checkbox-rectangle" ></div>
+                            
+                            <div>
+                                <span class="align-middle mx-2">@item.Name</span>
+                            </div>
                         </div>
 
-                    </div>
-                </div>
-                <hr class="row bg-el-0 mx-2" />
-            }
+                       
+                    </ListGroupItem>
+                }
+
+            </ListGroup>
+
+
             </div>
-        <div class="mt-3 col-xl-10 col-md-10 p-3 bg-el-1">
-            <h4>Afgevinkte producten</h4>
-            <hr style="background-color: #61B38E" />
+        <div class="mt-3 col-xl-10 col-md-10 p-3">
+            <h5>Afgevinkte producten</h5>
+            <ListGroup>
+
             @foreach (var item in CheckedListItems)
             {
-                <div class="row">
-                    <div class="col-2 col-md-1">
-                        <input type="checkbox" id="@item.Id" name="@item.Id" @onclick="@(() => ItemUnchecked(item))" disabled checked>
-                        <label for="@item.Id"></label>
-                    </div>
-                    <div class="col-10 col-md-11" @onclick="@(() => ItemUnchecked(item))">
-                        <div class="row">
-                            <strike><strong>@item.Name</strong></strike>
+                    <ListGroupItem @onclick="@(() => ItemUnchecked(item))"  >
+                
+                        <div class="d-flex flex-row align-items-center justify-content-start">
+                            <Icon Name="IconName.CheckSquare"></Icon>
+                            
+                            <div>
+                                <span class="align-middle mx-2">@item.Name</span>
+                            </div>
                         </div>
-                        @*<div class="row">
-
-                            @if (item.Item.Measurement != null)
-                            {
-
-                                <div class="col-12">
-                                    @for (int i = 0; i < item.Item.MeasurementsForChecked.Count; i++)
-                                    {
-                                        string prepend = i == 0 ? "" : " | ";
-                                        @($"{prepend}{item.Item.MeasurementsForChecked[i].Count} x {item.Item.MeasurementsForChecked[i].Measurement.UnitQuantityTypeVolume} {item.Item.MeasurementsForChecked[i].Measurement.MeasurementType}")
-                                    }
-                                </div>
-                            }
-
-                        </div>*@
-
-                    </div>
-                </div>
-
-
-                <hr class="row bg-el-0 mx-2" />
+                    </ListGroupItem>
             }
+            </ListGroup>
             @if (CheckedListItems.Count > 0 && UnCheckedListItems.Count == 0)
             {
-                <button class="btn btn-outline-primary mb-2" @onclick="@(() => UpdateCheckedItems())">Boodschappenlijst verwijderen</button>
+                <button class="btn btn-primary my-2" @onclick="@(() => UpdateCheckedItems())">Boodschappenlijst verwijderen</button>
             }
             @if (CheckedListItems.Count != 0 && UnCheckedListItems.Count > 0)
             {
-                <button class="btn btn-outline-primary mb-2" @onclick="@(() => MoveUncheckedItems())">Niet gekochte items naar niewe lijst verplaatsen</button>
+                <button class="btn btn-primary my-2" @onclick="@(() => MoveUncheckedItems())">Niet gekochte items naar niewe lijst verplaatsen</button>
             }
             @if (CheckedListItems.Count == 0)
             {
@@ -97,3 +75,4 @@
         </Div>
         </div>
 </div>
+

@@ -4,7 +4,7 @@
 @if (Recipe != null)
 {
 
-    <Container Margin="Margin.Is3.FromTop" Padding="Padding.Is2.FromTop">
+    <div class="container-xl" Margin="Margin.Is3.FromTop" Padding="Padding.Is2.FromTop">
         <Row>
 
             <Column Flex="Flex.JustifyContent.Center">
@@ -13,53 +13,54 @@
             </Column>
 
         </Row>
-        <Row Class="row-eq-height" Padding="Padding.Is3" Margin="Margin.Is2.FromBottom">
-            @*<Column ColumnSize="ColumnSize.Is12.OnMobile.Is3.OnDesktop" Padding="Padding.Is3">
-                <Column Padding=Padding.Is3>
-                    <h4>Ingredients</h4>
-                    <hr class="bg-el-0" />
+        <Row Margin="Margin.Is2.FromBottom">
+            <Column ColumnSize="ColumnSize.Is12.OnMobile.Is4.OnDesktop">
+                <Div Class="d-flex flex-column" Style="background: #EEEAE4; box-shadow: 0px 0px 5px grey;" Padding="Padding.Is3">
+                    <h4 class="mb-0">Ingredients</h4>
+                    <Div Class="d-flex px-3 my-3 justify-content-between" Style="background: #D9D9D9; border-radius: 30px">
+                        <h6 class="my-2">@IngredientMultiplier personen</h6>
+
+                        <Div Class="d-flex">
+
+                            <Button Class="btn oval-button-tertiary" @onclick="() => ChangePersons(IngredientMultiplier - 1)"><i class="fa-solid fa-minus"></i></Button>
+                            <Button Class="btn oval-button-tertiary" @onclick="() => ChangePersons(IngredientMultiplier + 1)"><i class="fa-solid fa-plus"></i></Button>
+                        
+                        </Div>
+                    </Div>
                     <Div Margin="Margin.Is3.FromBottom.OnMobile.Is3.FromRight.OnDesktop">
                         <ul class="list-unstyled">
                             @foreach (var details in Recipe.Ingredients)
                             {
                                 <li>
-                                    <div class="flex-row">
-                                        <span>
-                                            @if (details.IsAvaliable)
-                                            {
-                                                <i class="mr-2 fas fa-check-circle recipe-available-color"></i>
-                                            }
-                                            else
-                                            {
-                                                <i class="mr-2 fas fa-times-circle recipe-unavailable-color"></i>
-                                            }
-                                            @(details.UnitQuantity)
-                                            @details.UnitQuantityType
-                                            @details.ProductName
+                                    <div class="flex m-1">
+                                        <Div style="width: 100px">
+                                            <strong>@(details.UnitQuantity * IngredientMultiplier)
+                                            @details.UnitQuantityType</strong>
 
-                                        </span>
+                                        </Div>
+                                        <Span>
+                                            @details.ProductName</Span>
                                     </div>
                                 </li>
                             }
                         </ul>
 
                     </Div>
-                </Column>
+                </Div>
+                    
 
 
 
-            </Column>*@
+            </Column>
 
-            <Column ColumnSize="ColumnSize.Is12.OnMobile.Is12.OnDesktop" Padding="Padding.Is3.OnDesktop.Is0.OnMobile">
-                <Column Padding=Padding.Is3.OnDesktop.Is0.OnMobile>
+            <Column ColumnSize="ColumnSize.Is12.OnMobile.Is8.OnDesktop">
                    @* <h4>Instruction</h4>
                     <hr class="bg-el-0" />*@
-                    <BlazorPunterHomeApp.Components.CookingStepsViewer CurrentStepIndex="2" Steps="@Recipe.Steps"></BlazorPunterHomeApp.Components.CookingStepsViewer>
-                </Column>
+                    <BlazorPunterHomeApp.Components.CookingStepsViewer CurrentStepIndex="1" Steps="@Recipe.Steps"></BlazorPunterHomeApp.Components.CookingStepsViewer>
 
             </Column>
         </Row>
-    </Container>
+    </div>
 }
 else
 {

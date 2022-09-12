@@ -17,10 +17,6 @@ namespace BlazorPunterHomeApp
         [StringLength(64, ErrorMessage = "Name to long")]
         public string Name { get; set; }
 
-        [Required]
-        [RecipeTypeValidation]
-        public ERecipeType Type { get; set; }
-
         [JsonIgnore]
         public List<ERecipeType> SelectableUnitQuantityTypes => Enum.GetValues(typeof(ERecipeType)).Cast<ERecipeType>().ToList();
     }

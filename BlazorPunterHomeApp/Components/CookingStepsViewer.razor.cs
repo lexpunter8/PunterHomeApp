@@ -15,9 +15,11 @@ namespace BlazorPunterHomeApp.Components
         [Parameter]
         public int CurrentStepIndex { get; set; }
 
-        public RecipeStep CurrentStep => Steps.FirstOrDefault(f => f.Order == CurrentStepIndex);
-        public RecipeStep PreviousStep => Steps.FirstOrDefault(f => f.Order == CurrentStepIndex - 1);
+        public RecipeStep CurrentStep => Steps?.FirstOrDefault(f => f.Order == CurrentStepIndex) ?? null;
+        public RecipeStep PreviousStep => Steps?.FirstOrDefault(f => f.Order == CurrentStepIndex - 1) ?? null;
 
+        public RecipeStep NextStep => Steps?.FirstOrDefault(f => f.Order == CurrentStepIndex + 1) ?? null;
+        public bool IsLastStep => NextStep == null && CurrentStep != null;
         public string Text => CurrentText();
 
         public string CurrentText()
@@ -37,6 +39,7 @@ namespace BlazorPunterHomeApp.Components
             int newStep = CurrentStepIndex + delta;
 
             CurrentStepIndex = Math.Max(1, Math.Min(newStep, Steps.Count));
+            StateHasChanged();
         }
     }
 }

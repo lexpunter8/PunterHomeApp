@@ -37,7 +37,7 @@ namespace BlazorPunterHomeApp.ViewModels
                 var json = JsonConvert.SerializeObject(new NewRecipeApiModel
                 {
                     Name = newRecipe.Name,
-                    Type = newRecipe.Type
+                    Type = PunterHomeDomain.Enums.ERecipeType.None
                 });
 
                 var data = new StringContent(json, Encoding.UTF8, "application/json");

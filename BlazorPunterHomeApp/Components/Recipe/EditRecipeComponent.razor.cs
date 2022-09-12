@@ -1,38 +1,20 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using Blazorise;
-using BlazorPunterHomeApp.Components;
 using BlazorPunterHomeApp.Data;
+using BlazorPunterHomeApp.Pages;
 using Microsoft.AspNetCore.Components;
 using PunterHomeApiConnector;
 using PunterHomeApiConnector.Interfaces;
 using PunterHomeDomain.ApiModels;
-using PunterHomeDomain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ApiIngredientModel = PunterHomeDomain.ApiModels.ApiIngredientModel;
-using RecipeStep = PunterHomeDomain.Models.RecipeStep;
 
-namespace BlazorPunterHomeApp.Pages
+namespace BlazorPunterHomeApp.Components.Recipe
 {
-    public class TextInputModel
-    {
-        public string Text { get; set; } = string.Empty;
-    }
-    public class EditableRecipeStep
-    {
-        public EditableRecipeStep(RecipeStep step)
-        {
-            Step = step;
-        }
-
-        public RecipeStep Step { get; }
-        public bool IsEditting { get; set; }
-        public bool IsOrderEditting { get; set; }
-    }
-    public partial class RecipedetailsViewBase : ComponentBase
+    public partial class EditRecipeComponent : ComponentBase
     {
         [Parameter]
         public Guid Id { get; set; }
@@ -93,7 +75,7 @@ namespace BlazorPunterHomeApp.Pages
 
         public async void IngredientAddedHandler(IngredientModel ingredient)
         {
-            Recipedetails.Ingredients.Add(new ApiIngredientModel
+            Recipedetails.Ingredients.Add(new PunterHomeDomain.ApiModels.ApiIngredientModel
             {
                 ProductId = ingredient.ProductId,
                 ProductName = ingredient.ProductName,
@@ -104,9 +86,7 @@ namespace BlazorPunterHomeApp.Pages
             await Refresh();
             StateHasChanged();
         }
-
-        public TextInputModel newStepText { get; set; } = new TextInputModel();
-        public IEnumerable<ShoppingListDto> AllShoppingLists { get; private set; } 
+        public IEnumerable<ShoppingListDto> AllShoppingLists { get; private set; }
 
         public async Task RemoveIngredient(Guid id)
         {
@@ -152,25 +132,12 @@ namespace BlazorPunterHomeApp.Pages
             StateHasChanged();
         }
 
-        public async void AddStep()
-        {
-            await RecipeService.AddStep(new RecipeStep
-            {
-                Order = Recipedetails.Steps.Count + 1,
-                Text = newStepText.Text
-            }, Recipedetails.Id);
-            newStepText.Text = string.Empty;
-
-            await Refresh();
-            await AddInstructionTextContol.FocusAsync();
-        }
-
         public async void AddIngredientsToShoppingList(bool onlyUnavailable = false)
         {
             //ShoppingListApiConnector.AddRecipeItem()
             //await RecipeService.AddToShoppingList(Recipedetails.Id, IngredientMultiplier, Guid.Empty, onlyUnavailable);
 
-            ShowModal();
+            //ShowModal();
         }
 
         public async void ShowAddProductModal()
@@ -235,61 +202,86 @@ namespace BlazorPunterHomeApp.Pages
             step.IsEditting = !currentVal;
             Focus();
         }
+
         // reference to the modal component
         public Modal modalRef;
         public Modal addIngredientModalRef;
-        public string SelectedShoppingList { get; set; }
 
-        public async Task ShowModal()
+        public async Task ShowAddIngredient()
         {
-            AllShoppingLists = await ShoppingListApiConnector.GetItems();
+            await addIngredientModalRef.Show();
+        }
+
+        public async Task AddNewStep()
+        {
             await modalRef.Show();
+            await EditNewStepTextBoxRef.Focus();
         }
-
-        public Task HideAndSaveModal()
+        public string NewEditStepText { get; set; }
+        public async Task HideAndSaveModal()
         {
-            ShoppingListApiConnector.AddRecipeItem(Guid.Parse(SelectedShoppingList), Recipedetails.Id, IngredientMultiplier);
-            SelectedShoppingList = null;
-            return modalRef.Hide();
+            if (myRecipeStepToEdit != null)
+            {
+                myRecipeStepToEdit.Text = NewEditStepText;
+                await RecipeService.UpdateStep(myRecipeStepToEdit);
+                myRecipeStepToEdit = null;
+            }
+            else
+            {
+                await RecipeService.AddStep(new PunterHomeDomain.Models.RecipeStep
+                {
+                    Order = Recipedetails.Steps.Count + 1,
+                    Text = NewEditStepText
+                }, Recipedetails.Id);
+            }
+
+            NewEditStepText = string.Empty;
+            await Refresh();
+
+            await modalRef.Hide();
         }
 
+        public TextEdit EditNewStepTextBoxRef;
         public Task HideModal()
         {
+            NewEditStepText = string.Empty;
             return modalRef.Hide();
         }
-
-        public ChangeStepModelViewModel ChangeStepModelViewModel { get; set; } = new ChangeStepModelViewModel();
-        //public Task ShowChangeText()
-        //{
-
-        //}
-    }
-
-    public class ChangeStepModelViewModel
-    {
-        public Modal Modal;
-
-        public string Text { get; set; }
-        public List<IngredientModel> Ingredients { get; set; }
-        public void Initialize(string text, List<IngredientModel> ingredients)
+        public Task HideAddIngredientModal()
         {
-            Text = text;
-            Ingredients = ingredients;
+            NewEditStepText = string.Empty;
+            return addIngredientModalRef.Hide();
         }
 
-        public async Task Show()
+        private PunterHomeDomain.Models.RecipeStep myRecipeStepToEdit;
+        public async Task EditStep(PunterHomeDomain.Models.RecipeStep step)
         {
-            await Modal.Show();
+            myRecipeStepToEdit = step;
+            NewEditStepText = step.Text;
+            await modalRef.Show();
+            await EditNewStepTextBoxRef.Focus();
         }
 
-        public Task HideAndSave()
+        public async void MoveStepUp(PunterHomeDomain.Models.RecipeStep step)
         {
-            return Modal.Hide();
+            if (step.Order >= Recipedetails.Steps.Count)
+            {
+                return;
+            }
+            step.Order++;
+            await RecipeService.UpdateStep(step);
+            await Refresh();
         }
-
-        public Task HideModal()
+        public async void MoveStepDown(PunterHomeDomain.Models.RecipeStep step)
         {
-            return Modal.Hide();
+            if (step.Order == 1)
+            {
+                return;
+            }
+
+            step.Order--;
+            await RecipeService.UpdateStep(step);
+            await Refresh();
         }
     }
 }

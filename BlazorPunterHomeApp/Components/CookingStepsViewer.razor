@@ -1,79 +1,42 @@
-﻿
-    @if(PreviousStep != null && false)
-    {
-        
-        
-        <Row>
-            <Column ColumnSize="ColumnSize.IsAuto">
-                <Div Class="wrapper">
-
-                    <Div Class="centeredOverlay"></Div>
-                    <Span Class="circle">@PreviousStep.Order</Span>
-                    
-                </Div>
-            </Column>
-            <Column Class="p-2" Height="Height.Is50">
-                
-                <Div Class="wrapper">
-
-                    <Div Class="centeredOverlay"></Div>
-                    <Span>@PreviousStep.Text</Span>
-                    
-                </Div>
-            </Column>
-        </Row>
-
-    }
-    <Row>
-        <Column ColumnSize="ColumnSize.Is12">
-            <Heading Size="HeadingSize.Is4">Stap @CurrentStep.Order</Heading>
-        </Column>
-    </Row>
-
-    <Row>
-
-            <Column ColumnSize="ColumnSize.Is12.OnMobile.Is3.OnDesktop">
-                    <Heading Size="HeadingSize.Is5" TextWeight="TextWeight.Light">Ingredienten</Heading>
-                    <hr class="bg-el-0" />
-                    <Div Margin="Margin.Is3.FromBottom.OnMobile.Is3.FromRight.OnDesktop" Padding="Padding.Is2.OnDesktop.Is1.OnMobile">
-                        <ul class="list-unstyled">
-                            @foreach (var details in CurrentStep.Ingredients)
-                            {
-                                <li>
-                                    <div class="flex-row">
-                                        <span>
-                                            @*@(details.UnitQuantity)
-                                            @details.UnitQuantityType*@
-                                            @details.ProductName
-
-                                        </span>
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-
-                    </Div>
-                </Column>
-
-        <Column >
+﻿<Div Class="d-flex flex-column" Style="box-shadow: 0px 0px 5px grey;">
+    <Div class="p-3" style="height: 200px; opacity: 0.6" > 
+        @if (PreviousStep != null)
+        {
+            <RecipeStepComponent StepNumber="@PreviousStep.Order" Text="@PreviousStep.Text"></RecipeStepComponent>
+        }
+        else
+        {
+                <RecipeStepComponent StepNumber="0" Text="Have fun!"></RecipeStepComponent>
             
-                    <Heading Size="HeadingSize.Is5" TextWeight="TextWeight.Light">Instructie</Heading>
-                    <hr class="bg-el-0" />
-          
-        <Row>
-        <Column>
-            <Span>@Text</Span>
-        </Column>
+        }
 
-        </Row>
-    <Row Margin="Margin.Is5.FromTop">
-        <Column Flex="Flex.JustifyContent.Between">
-            <Button Color="Color.Primary" Clicked="() => ChangeStep(-1)">Vorige</Button>
-            <Button Color="Color.Primary" Clicked="@(() => ChangeStep(1) )">Volgende</Button>
-        </Column>
-    </Row>
-
-        </Column>
-
-    </Row>
-
+    </Div>
+    <Div class="p-3 m-2" style="position: relative; height: 300px; background: #EEEAE4; box-shadow: 0px 0px 20px grey;" >
+        
+        <RecipeStepComponent StepNumber="@CurrentStep.Order" Text="@CurrentStep.Text" ShowButtons="true"></RecipeStepComponent>
+        <Div Style="position: absolute; right:0px; bottom: 0px">
+                <Div Class="d-flex m-3">
+                    @if (PreviousStep != null)
+                    {
+                        <Button Class="btn btn-outline-primary" @onclick="() => ChangeStep(-1)">Vorige stap</Button>
+                    }
+                    
+                    @if (NextStep != null)
+                    {
+                        <Button Class="btn btn-primary ml-2" @onclick="() => ChangeStep(1)">Volgende stap</Button>
+                    }
+                </Div>
+            </Div>
+        
+    </Div>
+    <Div class="p-3" style="height: 200px; opacity: 0.6" >
+        @if (NextStep != null)
+        {
+            <RecipeStepComponent StepNumber="@NextStep.Order" Text="@NextStep.Text"></RecipeStepComponent>
+        }
+        else
+        {
+            <RecipeStepComponent StepNumber="@(CurrentStep.Order + 1)" Text="Lekker eten!"></RecipeStepComponent>
+        }
+    </Div>
+</Div>

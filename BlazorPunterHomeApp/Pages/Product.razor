@@ -15,78 +15,26 @@
 @inject IBarcodeScannerService barcodeScannerService;
 
 
-    <div class="container justify-content-center p-0">
+<div class="container justify-content-center p-0">
 
-        <div class="row p-0 m-0">
+    <div class="row p-0 m-0">
 
-            @*<div class="col-12 col-md-3 bg-el-0 pr-5 d-flex flex-column">
-                <div class="d-flex justify-content-center justify-content-md-end">
+        @*<div class="col-12 col-md-3 bg-el-0 pr-5 d-flex flex-column">
+            <div class="d-flex justify-content-center justify-content-md-end">
 
-                    <div style="width:220px" class="p-2">
-                        <BlazorPunterHomeApp.Components.RecipeFilterComponent RecipeState="State" FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>
-                    </div>
-                </div>
+            <div style="width:220px" class="p-2">
+            <BlazorPunterHomeApp.Components.RecipeFilterComponent RecipeState="State" FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>
+            </div>
+            </div>
             </div>*@
 
-            @*
-                recipe card
-            *@
-        <div class="col-12 col-md bg-el-0">
+        @*
+            recipe card
+        *@
+        <div class="col-12 col-md">
             <div class="container-md">
 
-                @if (myIsCreatingProduct)
-                {
 
-                    <div class="row p-2 bg-el-1 animation" id="newRecipeCollapse">
-                        <div class="col-12">
-                            <label class="h4">Product aanmaken</label>
-                            <EditForm Model="NewProductModel" OnValidSubmit="HandleNewProductSubmit">
-                                <DataAnnotationsValidator />
-                                <div class="form-group">
-                                    <label>Product naam</label>
-                                    <ValidationMessage For="@(() => NewProductModel.Name)" />
-                                    <InputText @bind-Value="NewProductModel.Name" class="form-control" id="inputAddress" placeholder="Product naam" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Barcode</label>
-                                    <ValidationMessage For="@(() => NewProductModel.Barcode)" />
-                                    <InputText @bind-Value="NewProductModel.Barcode" class="form-control" id="inputAddress" placeholder="Barcode" />
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label>Product hoeveelheid</label>
-                                    <ValidationMessage For="@(() => NewProductModel.UnitQuantity)" />
-                                    <ValidationMessage For="@(() => NewProductModel.UnitQuantityType)" />
-                                    <div class="input-group mb-3">
-                                        <InputNumber class="form-control" @bind-Value="NewProductModel.UnitQuantity" />
-
-                                        <InputSelect class="custom-select" id="inputGroupSelect01" @bind-Value="NewProductModel.UnitQuantityType">
-                                            @foreach (var cnt in Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList())
-                                                {
-                                                <option value="@cnt">@cnt.GetEnumDescription()</option>
-                                                }
-                                        </InputSelect>
-                                    </div>
-                                </div>
-                                <div class="form-group d-flex justify-content-end p-2">
-
-                                    <div>
-                                        <button class="btn btn-primary mx-2" type="submit">Product toevoegen</button>
-                                    </div>
-                                    <div>
-                                        <button class="btn btn-outline-primary" @onclick="ToggleCreateProduct">Cancel</button>
-                                    </div>
-                                </div>
-                            </EditForm>
-                        </div>
-                    </div>
-                }
-
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <SearchComponent TextPlaceholder="Zoek product" OnSearch="Search" OnBarcodePressed="ShowNewScanBarcodeModal" ShowBarcodeButton="true" @ref="SearchComponent"></SearchComponent>
-                        
-                    </div>
-                </div>
 
                 <div class="row mt-2">
                     <div class="col-12 col-md-6">
@@ -96,7 +44,7 @@
                     <div class="col-12 col-md-6">
                         @if (!myIsCreatingProduct)
                         {
-                            <div class="d-flex flex-column align-self-stretch align-self-md- justify-content-md-end">
+                            <div class="d-flex justify-content-end">
 
                                 <button class="btn btn-primary" type="button" @onclick="ToggleCreateProduct">
                                     Create product
@@ -112,8 +60,8 @@
                     {
                         <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-4">
                             <a href="@($"product/{cnt.Id}")" class="custom-card">
-                                <div class="card" style="margin-top:5px;">
-                                    <div class="card-body bg-el-2">
+                                <div class="card" style="margin-top:5px; background: #EEEAE4;">
+                                    <div class="card-body">
                                         <h5 class="card-title">@cnt.Name</h5>
                                         <ul class="ul-np">
                                             @foreach (var label in cnt.Tags)
@@ -139,9 +87,76 @@
                 </div>
             </div>
         </div>
-        </div>
-
     </div>
+
+</div>
+
+
+<Div Class="fixed-bottom fixed-bottom-bar">
+    <div class="container">
+        @if (myIsCreatingProduct)
+        {
+
+            <div class="row p-2 animation" id="newRecipeCollapse">
+                <div class="col-12">
+                    <label class="h4">Product aanmaken</label>
+                    <EditForm Model="NewProductModel" OnValidSubmit="HandleNewProductSubmit">
+                        <DataAnnotationsValidator />
+                        <div class="form-group">
+                            <label>Product naam</label>
+                            <ValidationMessage For="@(() => NewProductModel.Name)" />
+                            <InputText @bind-Value="NewProductModel.Name" class="form-control" id="inputAddress" placeholder="Product naam" />
+                        </div>
+                        @*<div class="form-group">
+                            <label>Barcode</label>
+                            <ValidationMessage For="@(() => NewProductModel.Barcode)" />
+                            <InputText @bind-Value="NewProductModel.Barcode" class="form-control" id="inputAddress" placeholder="Barcode" />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Product hoeveelheid</label>
+                            <ValidationMessage For="@(() => NewProductModel.UnitQuantity)" />
+                            <ValidationMessage For="@(() => NewProductModel.UnitQuantityType)" />
+                            <div class="input-group mb-3">
+                                <InputNumber class="form-control" @bind-Value="NewProductModel.UnitQuantity" />
+
+                                <InputSelect class="custom-select" id="inputGroupSelect01" @bind-Value="NewProductModel.UnitQuantityType">
+                                    @foreach (var cnt in Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList())
+                                    {
+                                    <option value="@cnt">@cnt.GetEnumDescription()</option>
+                                    }
+                            </InputSelect>
+                        </div>
+                    </div>*@
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Hoeveelheid</label>
+                        <InputNumber class="form-control" @bind-Value="NewProductModel.UnitQuantity" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Eenheid </label>
+                        <InputSelect class="form-control" id="exampleFormControlSelect1" @bind-Value="NewProductModel.UnitQuantityType">
+                            @foreach (var cnt in  Enum.GetValues(typeof(EUnitMeasurementType)).Cast<EUnitMeasurementType>().ToList())
+                                {
+                                    <option value="@cnt">@cnt.GetEnumDescription()</option>
+                                }
+                            </InputSelect>
+                        </div>
+
+                        <div class="form-group d-flex justify-content-end">
+                            <button class="btn btn-outline-primary" @onclick="ToggleCreateProduct">Cancel</button>
+                            <button class="btn btn-primary mr-2" type="submit">Product toevoegen</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        }
+        else
+        {
+            <SearchComponent TextPlaceholder="Zoek product" OnSearch="Search" OnBarcodePressed="ShowNewScanBarcodeModal" ShowBarcodeButton="true" @ref="SearchComponent"></SearchComponent>
+
+        }
+    </div>
+
+</Div>
 
 @code {
     public SearchComponent SearchComponent { get; set; }
@@ -157,12 +172,12 @@
             return;
         }
         await ProductService.AddProduct(new NewProductApiModel
-        {
-            Name = NewProductModel.Name,
-            UnitQuantity = NewProductModel.UnitQuantity,
-            UnitQuantityType = NewProductModel.UnitQuantityType,
-            Barcode = NewProductModel.Barcode
-        });
+            {
+                Name = NewProductModel.Name,
+                UnitQuantity = NewProductModel.UnitQuantity,
+                UnitQuantityType = NewProductModel.UnitQuantityType,
+                Barcode = NewProductModel.Barcode
+            });
         ToggleCreateProduct();
 
     }

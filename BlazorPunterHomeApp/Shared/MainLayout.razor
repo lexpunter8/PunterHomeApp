@@ -5,12 +5,15 @@
         <NavMenu />
     </div>*@
 
-<div class="container-fluid min-vh-100 bg-el-0 " style="margin:0 !important; padding:0 !important">
-    <nav class="navbar sticky-top navbar-expand-lg navbar-expand-md navbar-expand-sm navbar-light bg-light px-0" style="max-height:50px">
+<div class="container-fluid min-vh-100 " style="margin:0 !important; padding:0 !important">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-white navbar-expand-md navbar-expand-sm navbar-light bg-light px-0" style="background:white; box-shadow: 0px 0px 5px grey;">
+        
         <a class="navbar-brand mx-2" href="#"><Icon Name="IconName.ShoppingBag"></Icon> </a>
         <button class="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        
+        
         <div class="collapse navbar-collapse bg-light px-2" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 @*<li class="nav-item">
@@ -34,11 +37,11 @@
                     </NavLink>
                 </li>
 
-                @*<li class="nav-item disabled">
+                <li class="nav-item disabled">
                     <NavLink class="nav-link" href="recipes">
                         Recepten
                     </NavLink>
-                </li>*@
+                </li>
 
                 <li class="nav-item">
                     <NavLink class="nav-link" href="shoppinglistoverview">
@@ -47,9 +50,10 @@
                 </li>
             </ul>
         </div>
+        
     </nav>
 
-        <div class="d-flex flex-column align-items-stretch  full-wo-nav">
+        <div class="d-flex flex-column align-items-stretch full-wo-nav">
 
             @Body
         </div>

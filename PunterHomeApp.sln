@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F5E01DAE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PunterHomeDomainTests", "PunterHomeDomainTests", "{F2F87512-9C34-41DA-BAD1-EEDE437BB238}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunterHomeDomainTests", "Tests\PunterHomeDomainTests\PunterHomeDomainTests\PunterHomeDomainTests.csproj", "{7933A1D3-6FE2-4160-A822-AA644A550901}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PunterHomeDomainTests", "Tests\PunterHomeDomainTests\PunterHomeDomainTests\PunterHomeDomainTests.csproj", "{7933A1D3-6FE2-4160-A822-AA644A550901}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
