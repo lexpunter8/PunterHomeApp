@@ -1,0 +1,31 @@
+﻿h1 {
+    font-size: 16px;
+    margin: 0;
+}
+
+h2 {
+    margin: 0;
+    padding: 0;
+    color: grey;
+    font-size: 14px;
+}
+
+.wrapper {
+    border-bottom: 1px solid #EEEEEE;
+    margin: 1px 16px;
+    padding: 8px 0px;
+    display: flex;
+    flex-direction: row;
+}
+
+.check-wrapper{
+    width: 40px;
+}
+
+.info-wrapper{
+
+}
+
+.count-wrapper{
+
+}

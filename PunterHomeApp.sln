@@ -36,7 +36,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeParserTests", "Tests\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{1AEF0C3B-D6E3-4C2D-948C-69BC8297FF0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeApp.Frontend.View", "Applications\HomeApp.Frontend.View\HomeApp.Frontend.View.csproj", "{4BFF7AD4-2AB7-4F52-BB7B-143DDCBE8731}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeApp.Frontend.View", "Applications\HomeApp.Frontend.View\HomeApp.Frontend.View.csproj", "{4BFF7AD4-2AB7-4F52-BB7B-143DDCBE8731}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{56B454BB-9E29-4961-BBD2-471202CDCFB6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{5B6B8906-24EC-4589-8353-2F5084203E8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

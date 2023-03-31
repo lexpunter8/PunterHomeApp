@@ -3,12 +3,16 @@
 }
 
 .top-row {
+    background-color: white;
+    color: var(--accent-color);
     height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    box-shadow: 0px -4px 4px #EEEEEE;
+    border-top: 1px solid #EEEEEE;
 }
 
 .navbar-brand {
     font-size: 1.1rem;
+    color: black;
 }
 
 .oi {
@@ -32,7 +36,7 @@
     }
 
     .nav-item ::deep a {
-        color: #d7d7d7;
+        color: red;
         border-radius: 4px;
         height: 3rem;
         display: flex;
@@ -42,7 +46,7 @@
 
 .nav-item ::deep a.active {
     background-color: rgba(255,255,255,0.25);
-    color: white;
+    color: var(--accent-color);
 }
 
 .nav-item ::deep a:hover {
