@@ -6,6 +6,10 @@ using PunterHomeDomain.Models;
 
 namespace PunterHomeDomain.Interfaces
 {
+    public interface IRecipeParser
+    {
+        Task<RecipeAggregate> Parse(string url);
+    }
     public interface IRecipeService
     {
         void CreateRecipe(string recipeName, Enums.ERecipeType type);
@@ -19,6 +23,7 @@ namespace PunterHomeDomain.Interfaces
         void AddRecipeIngredientsToShoppingList(Guid recipeId, int numberOfPersons, Guid shoppingListId, bool onlyUnavailableItems);
         Task<IEnumerable<RecipeApiModel>> Search(SearchRecipeParameters parameters);
         void UpdateStep(RecipeStep step);
+        void ImportRecipe(string url, IRecipeParser recipeParser);
 
         /// ddd
 

@@ -23,13 +23,18 @@ namespace PunterHomeDomain.Models
         public string ProductName { get; set; }
     }
 
-    public class IngredientAggregate : IAggregateRoot
+    public class IngredientValueObject 
     {
-        public Guid ProductId { get; set; }
-        public int UnitQuantity { get; set; }
-        public EUnitMeasurementType UnitQuantityType { get; set; }
-        public Guid RecipeId { get; set; }
         public string ProductName { get; set; }
+        public double UnitQuantity { get; set; }
+        public EUnitMeasurementType UnitQuantityType { get; set; }
+    }
+
+
+    public class RecipeStepValueObject
+    {
+        public string Text { get; set; }
+        public int Order { get; set; }
     }
 
     public interface IMeaserumentClass

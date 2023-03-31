@@ -35,4 +35,11 @@ namespace PunterHomeDomain.ApiModels
 
     }
 
+
+    public class ImportRecipeApiModel
+    {
+        public string Url { get; set; }
+
+    }
+
 }

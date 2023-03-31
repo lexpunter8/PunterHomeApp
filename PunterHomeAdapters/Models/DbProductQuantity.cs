@@ -14,7 +14,7 @@ namespace PunterHomeAdapters.Models
         public IEnumerable<DbShoppingListProductMeasurementItem> DbShoppingListsItems { get; set; }
         public int QuantityTypeVolume { get; set; }
         public Enums.EUnitMeasurementType UnitQuantityType { get; set; }
-        public int UnitQuantity { get; set; }
+        public double UnitQuantity { get; set; }
         public string Barcode { get; set; }
     }
 }

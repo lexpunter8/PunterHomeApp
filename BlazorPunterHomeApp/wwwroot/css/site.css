@@ -6,6 +6,10 @@ html, body {
     margin: 0;
 }
 
+.btn {
+    border-radius: 8px;
+}
+
 .bg-highlight {
     background-color: #EEEAE4;
 }

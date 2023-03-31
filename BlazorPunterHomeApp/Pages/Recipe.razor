@@ -7,7 +7,7 @@
 @inject ProductService PropductService
 @inject NavigationManager NavigationManager
 @using DataModels.Helpers;
-@using PunterHomeDomain.ApiModels; 
+@using PunterHomeDomain.ApiModels;
 @using PunterHomeDomain.Enums;
 @using BlazorPunterHomeApp.Components;
 
@@ -15,73 +15,73 @@
     <div class="bg-el-0" style="position:absolute; top: 0; right: 0; width: 50%; height:100%; min-height: 100px;">
     </div>*@
 <div class="container">
-    
-        @*<div class="col-12 col-md-3 pl-2 pr-5 d-flex flex-column">
-            <div class="d-flex justify-content-center justify-content-md-end">
 
-                <div style="width:220px" class="p-2">
-                    <BlazorPunterHomeApp.Components.RecipeFilterComponent RecipeState="State" FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>
-                </div>
+    @*<div class="col-12 col-md-3 pl-2 pr-5 d-flex flex-column">
+    <div class="d-flex justify-content-center justify-content-md-end">
+
+    <div style="width:220px" class="p-2">
+    <BlazorPunterHomeApp.Components.RecipeFilterComponent RecipeState="State" FiltersChanged="FilterChangedHandler" FilterParameters="FilterParameters"></BlazorPunterHomeApp.Components.RecipeFilterComponent>
+    </div>
+    </div>
+    </div>*@
+    @*
+    recipe card
+    *@
+    <div class="row mt-3">
+        <div class="col-12 col-md-6">
+
+            <span class="h2">Recepten</span>
+        </div>
+        <div class="col-12 col-md-6 d-flex flex-row-reverse">
+            <div class="d-inline-flex flex-row justify-content-md-end">
+
+                <button class="btn btn-outline-primary" type="button" @onclick="ToggleImportRecipe">
+                    <i class="fa fa-cloud-arrow-up"></i>
+                </button>
+                <button class="ml-2 btn btn-primary" type="button" @onclick="ToggleCreateRecipe">
+                    Nieuw recept
+                </button>
+
             </div>
-        </div>*@
-        @*
-            recipe card
-        *@
-                <div class="row mt-2">
-                    <div class="col-12 col-md-6">
+        </div>
+    </div>
 
-                        <span class="h2">@State.Recipes.Count Recepten</span>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        @if (!myIsCreatingNewRecipe)
-                        {
-                            <div class="d-flex flex-column justify-content-md-end">
+    <ListGroup Class="mt-2">
+        @foreach (var cnt in State.Recipes)
+        {
+            <ListGroupItem>
+                <div class="d-flex align-items-center justify-content-between">
+                    <NavLink class="text-reset d-flex" href="@($"recipe/{cnt.Id}")">
+                        <Div Class="d-flex flex-column">
+                            @*<Column ColumnSize="ColumnSize.Is9">*@
 
-                                <button class="btn btn-primary" type="button" @onclick="ToggleCreateRecipe">
-                                    Nieuw recept
-                                </button>
-                            </div>
+                            <Span><Strong>@cnt.Name</Strong></Span>
+                            @*</Column>*@
 
-                        }
+                            @*<Column ColumnSize="ColumnSize.Is3" Class="d-flex justify-content-end">*@
+
+                            @*</Column>*@
+                        </Div>
+                    </NavLink>
+                    <div class="d-flex justify-content-end">
+                        @*<button class="btn oval-button-outlined disabled" @onclick="@(() => MoveTo($"recipe/{cnt.Id}"))">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    </button>*@
+                        <button class="btn oval-button-outlined mx-2" @onclick="@(() => MoveTo($"recipe/edit/{cnt.Id}"))">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn oval-button" @onclick="@(() => MoveTo($"cooking/{cnt.Id}"))">
+                            <i class="fa-solid fa-bowl-food"></i>
+                        </button>
                     </div>
                 </div>
-                
-        <ListGroup>
-                        @foreach (var cnt in State.Recipes)
-                        {
-                            <ListGroupItem>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <NavLink class="text-reset d-flex" href="@($"recipe/{cnt.Id}")">
-                                        <Div Class="d-flex flex-column">
-                                            @*<Column ColumnSize="ColumnSize.Is9">*@
-
-                                                <Span><Strong>@cnt.Name</Strong></Span>
-                                            @*</Column>*@
-
-                                            @*<Column ColumnSize="ColumnSize.Is3" Class="d-flex justify-content-end">*@
-
-                                            @*</Column>*@
-                                        </Div>
-                                    </NavLink>
-                                    <div class="d-flex justify-content-end">
-                                        @*<button class="btn oval-button-outlined disabled" @onclick="@(() => MoveTo($"recipe/{cnt.Id}"))">
-                                            <i class="fa-solid fa-basket-shopping"></i>
-                                        </button>*@
-                                        <button class="btn oval-button-outlined mx-2" @onclick="@(() => MoveTo($"recipe/edit/{cnt.Id}"))">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </button>
-                                        <button class="btn oval-button" @onclick="@(() => MoveTo($"cooking/{cnt.Id}"))">
-                                            <i class="fa-solid fa-bowl-food"></i>
-                                        </button>
-                                    </div>
-                                </div>
 
 
-                       
-                    </ListGroupItem>
-                        }
-                    </ListGroup>
-                
+
+            </ListGroupItem>
+        }
+    </ListGroup>
+
 
 </div>
 @*</div>*@
@@ -90,26 +90,54 @@
 <Div Class="fixed-bottom fixed-bottom-bar">
     <div class="container">
         @if (myIsCreatingNewRecipe)
-    {
-        <div class="row p-2 animation d-flex justify-content-center" id="newRecipeCollapse">
-            <div class="col-12">
-                <label class="h4">Create recipe</label>
-                <EditForm Model="@NewRecipeModel" OnValidSubmit="HandleSubmit">
-                    <DataAnnotationsValidator />
-                    <div class="form-group">
-                        <label>Recept naam</label>
-                        <ValidationMessage For="@(() => NewRecipeModel.Name)" />
-                        <InputText @bind-Value="@NewRecipeModel.Name" class="form-control" />
-                    </div>
-                    
+        {
+            <div class="row p-2 animation d-flex justify-content-center" id="newRecipeCollapse">
+                <div class="col-12">
+
                     <div class="form-group d-flex justify-content-end">
-                        <button class="btn btn-outline-primary" @onclick="ToggleCreateRecipe">Cancel</button>
-                        <button class="ml-2 btn btn-primary" type="submit">Aanmaken</button>
+                        <label class="h4">Create recipe</label>
                     </div>
-                </EditForm>
+                    <EditForm Model="@NewRecipeModel" OnValidSubmit="HandleSubmit">
+                        <DataAnnotationsValidator />
+                        <div class="form-group">
+                            <label>Recept naam</label>
+                            <ValidationMessage For="@(() => NewRecipeModel.Name)" />
+                            <InputText @bind-Value="@NewRecipeModel.Name" class="form-control" />
+                        </div>
+
+                        <div class="form-group d-flex justify-content-end">
+                            <button class="btn btn-outline-primary" @onclick="ToggleCreateRecipe">Cancel</button>
+                            <button class="ml-2 btn btn-primary" type="submit">Aanmaken</button>
+                        </div>
+                    </EditForm>
+                </div>
             </div>
-        </div>
-    }
+        }
+        else if (myIsImportingRecipe)
+        {
+
+            <div class="row p-2 animation d-flex justify-content-center" id="newRecipeCollapse">
+                <div class="col-12">
+
+                    <div class="form-group d-flex justify-content-start">
+                        <label class="h4">Import recept</label>
+                    </div>
+                    <EditForm Model="@NewRecipeModel" OnValidSubmit="HandleImportSubmit">
+                        <DataAnnotationsValidator />
+                        <div class="form-group">
+                            <label>Url</label>
+                            <ValidationMessage For="@(() => ImportRecipeUrl)" />
+                            <InputText @bind-Value="ImportRecipeUrl" class="form-control" />
+                        </div>
+
+                        <div class="form-group d-flex flex-row justify-content-end">
+                            <button class="btn btn-outline-primary" @onclick="ToggleImportRecipe">Cancel</button>
+                            <button class="ml-2 btn btn-primary" @onclick="HandleImportSubmit">Importeer</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        }
         else
         {
             <SearchComponent OnSearch="Search" OnSortOrderChanged="Sort" @ref="SearchComponent"></SearchComponent>
@@ -130,6 +158,8 @@
 
     private RecipeFilterStateObject State = new RecipeFilterStateObject();
     private SearchComponent SearchComponent { get; set; }
+
+    private string ImportRecipeUrl = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -195,13 +225,23 @@
     }
 
     private bool myIsCreatingNewRecipe;
+    private bool myIsImportingRecipe;
     private void ToggleCreateRecipe()
     {
         if (myIsCreatingNewRecipe)
         {
             NewRecipeModel = new NewRecipeValidationModel();
         }
+        myIsImportingRecipe = false;
         myIsCreatingNewRecipe = !myIsCreatingNewRecipe;
+        StateHasChanged();
+    }
+
+
+    private void ToggleImportRecipe()
+    {
+        myIsImportingRecipe = !myIsImportingRecipe;
+        myIsCreatingNewRecipe = false;
         StateHasChanged();
     }
 
@@ -213,5 +253,11 @@
     private void MoveTo(string page)
     {
         NavigationManager.NavigateTo(page);
+    }
+
+    private async void HandleImportSubmit()
+    {
+        await RecipeViewModel.ImportRecipe(ImportRecipeUrl);
+        FilterChangedHandler();
     }
 }

@@ -23,5 +23,6 @@ namespace PunterHomeDomain
 
         //ddd
         RecipeStepAggregate GetRecipeStep(Guid id);
+        void SaveRecipe(RecipeAggregate recipe);
     }
 }

@@ -3,11 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>4c3cc517-c520-4c99-b843-8552fde78c5c</UserSecretsId>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="wwwroot\Resources\homepage-photo.jpeg" />
     <None Include="wwwroot\Resources\homepage.jpeg" />
+	<ServiceWorker Include="wwwroot\service-worker.js"
+	    PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
   <ItemGroup>

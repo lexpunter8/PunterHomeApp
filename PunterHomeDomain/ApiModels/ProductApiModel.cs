@@ -6,7 +6,7 @@ namespace PunterHomeApp.ApiModels
     public class NewProductApiModel
     {
         public string Name { get; set; }
-        public int UnitQuantity { get; set; }
+        public double UnitQuantity { get; set; }
         public EUnitMeasurementType UnitQuantityType { get; set; }
         public string Barcode { get; set; }
     }

@@ -301,6 +301,60 @@ namespace PunterHomeApp.DataAdapters
 
             return new RecipeStepAggregate(result.Id, result.Recipe.Id, result.Text, result.Order, new List<RecipeStepIngredient>());
         }
+
+        public void SaveRecipe(RecipeAggregate recipe)
+        {
+            using var context = new HomeAppDbContext(myDbOptions);
+
+            var existingRecipe = context.Recipes.Include(i => i.Ingredients).Include(i => i.Steps).FirstOrDefault(f => f.Name.ToLower() == recipe.Name.ToLower());
+
+            if (existingRecipe == null)
+            {
+                existingRecipe = new DbRecipe
+                {
+                    Name = recipe.Name
+                };
+                context.Recipes.Add(existingRecipe);
+            }
+
+            existingRecipe.Steps.Clear();
+            foreach (var step in recipe.Steps)
+            {
+                existingRecipe.Steps.Add(new DbRecipeStep
+                {
+                    Recipe = existingRecipe,
+                    Text = step.Text,
+                    Order = step.Order
+                });
+            }
+
+
+            existingRecipe.Ingredients.Clear();
+            foreach (var ingredient in recipe.Ingredients)
+            {
+                var existingProduct = context.Products.FirstOrDefault(p => p.Name.ToLower() == ingredient.ProductName.ToLower());
+
+                if (existingProduct == null)
+                {
+                    existingProduct = new DbProduct
+                    {
+                        Name = ingredient.ProductName,
+                    };
+
+                    context.Products.Add(existingProduct);
+                }
+
+                existingRecipe.Ingredients.Add(new DbIngredient
+                {
+                    Recipe= existingRecipe,
+                    UnitQuantity = (int)ingredient.UnitQuantity,
+                    UnitQuantityType = ingredient.UnitQuantityType,
+                    Product = existingProduct
+                });
+            }
+
+            context.SaveChanges();
+        }
     }
 
 }

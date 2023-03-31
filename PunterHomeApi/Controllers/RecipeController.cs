@@ -8,6 +8,7 @@ using PunterHomeApp.Services;
 using PunterHomeDomain.ApiModels;
 using PunterHomeDomain.Interfaces;
 using PunterHomeDomain.Models;
+using RecipeParsers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -106,6 +107,23 @@ namespace PunterHomeApp.Controllers
             try
             {
                 recipeService.CreateRecipe(recipe.Name, recipe.Type);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok();
+        }
+
+
+        // POST api/values
+        [HttpPost("import")]
+        public IActionResult Post([FromBody] ImportRecipeApiModel importModel)
+        {
+            try
+            {
+                recipeService.ImportRecipe(importModel.Url, new ProjectGezondParser());
             }
             catch (Exception e)
             {

@@ -40,6 +40,11 @@ namespace PunterHomeApp.DataAdapters
             newID = newProduct.Id;
             using var context = new HomeAppDbContext(myDbOptions);
 
+            if (context.Products.Any(a => a.Name.ToLower() == newProduct.Name.ToLower()))
+            {
+                return;
+            }
+
             context.Products.Add(newProduct);
             context.SaveChanges();
         }
@@ -59,7 +64,7 @@ namespace PunterHomeApp.DataAdapters
             context.ProductQuantities.Add(new DbProductQuantity
             {
                 Product = prod,
-                QuantityTypeVolume = value.UnitQuantityTypeVolume,
+                QuantityTypeVolume = (int)value.UnitQuantityTypeVolume,
                 UnitQuantity = value.Quantity,
                 UnitQuantityType = value.MeasurementType,
                 Barcode = value.Barcode

@@ -27,7 +27,10 @@ public class Enums
         Ml,
         Cl,
         [Description("Stuk")]
-        Piece
+        Piece,
+        [Description("tl")]
+        theelepel,
+
     }
 
     public enum EMeasurementClass

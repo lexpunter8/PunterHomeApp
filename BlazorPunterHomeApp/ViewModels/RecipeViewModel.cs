@@ -58,6 +58,35 @@ namespace BlazorPunterHomeApp.ViewModels
             }
         }
 
+
+
+        public async Task<bool> ImportRecipe(string url)
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(new ImportRecipeApiModel
+                {
+                    Url = url,
+                });
+
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var client = new HttpClient();
+
+                var response = await client.PostAsync(new Uri("http://localhost:5005/api/recipe/import"), data);
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                client.Dispose();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+
+            }
+        }
+
         public async Task<List<RecipeModel>> Search(SearchRecipeParameters parameters)
         {
             try

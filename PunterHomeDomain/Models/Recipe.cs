@@ -9,12 +9,34 @@ namespace PunterHomeDomain.Models
 
     public class RecipeAggregate : IAggregateRoot
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public ERecipeType Type { get; set; }
-        public IEnumerable<Guid> StepsIds { get; set; }
-        public IEnumerable<Ingredient> Ingredients { get; set; }
+        private List<IngredientValueObject> myIngredients = new List<IngredientValueObject>();
+        private List<RecipeStepValueObject> mySteps = new List<RecipeStepValueObject>();
+        public RecipeAggregate(string name)
+        {
+            Name = name;
+        }
+
+        public Guid Id { get; }
+        public string Name { get; }
+        public ERecipeType Type { get; }
+        public IEnumerable<RecipeStepValueObject> Steps => mySteps;
+        public IEnumerable<IngredientValueObject> Ingredients => myIngredients;
         public bool IsAvailable { get; set; }
+
+        public void AddIngredient(IngredientValueObject ingredient)
+        {
+            myIngredients.Add(ingredient);
+        }
+
+
+        public void AddStep(string step)
+        {
+            mySteps.Add(new RecipeStepValueObject
+            {
+                Text = step,
+                Order = mySteps.Count + 1
+            });
+        }
     }
     public class RecipeApiModel : IName
     {

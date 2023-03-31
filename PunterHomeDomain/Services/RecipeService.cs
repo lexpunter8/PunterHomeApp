@@ -46,6 +46,13 @@ namespace PunterHomeApp.Services
             recipeAdapter.SaveRecipe(recipeName, type);
         }
 
+        public void ImportRecipe(string url, IRecipeParser recipeParser)
+        {
+            var result =  recipeParser.Parse(url).Result;
+
+            recipeAdapter.SaveRecipe(result);
+        }
+
         public void DeleteRecipeById(Guid id)
         {
             recipeAdapter.DeleteById(id);

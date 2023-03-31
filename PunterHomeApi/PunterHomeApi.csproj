@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataModels\DataModels.csproj" />
+    <ProjectReference Include="..\Infrastructure\RecipeParsers\RecipeParsers.csproj" />
     <ProjectReference Include="..\PunterHomeAdapters\PunterHomeAdapters.csproj" />
     <ProjectReference Include="..\PunterHomeApi.Shared\PunterHomeApi.Shared.csproj" />
     <ProjectReference Include="..\PunterHomeDomain\PunterHomeDomain.csproj" />
