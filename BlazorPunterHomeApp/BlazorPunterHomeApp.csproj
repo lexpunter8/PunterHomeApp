@@ -9,8 +9,7 @@
   <ItemGroup>
     <None Include="wwwroot\Resources\homepage-photo.jpeg" />
     <None Include="wwwroot\Resources\homepage.jpeg" />
-	<ServiceWorker Include="wwwroot\service-worker.js"
-	    PublishedContent="wwwroot\service-worker.published.js" />
+	<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
   <ItemGroup>

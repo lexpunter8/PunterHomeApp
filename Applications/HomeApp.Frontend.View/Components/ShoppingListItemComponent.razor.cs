@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using HomeApp.Frontend.View.Models;
+using Microsoft.AspNetCore.Components;
 
 namespace HomeApp.Frontend.View.Components
 {
@@ -8,7 +9,7 @@ namespace HomeApp.Frontend.View.Components
         public bool IsChecked { get; set; }
 
         [Parameter]
-        public int Count { get; set; }
+        public ShoppingListItemViewModel Item { get; set; }
 
         private void Edit()
         {
@@ -32,13 +33,13 @@ namespace HomeApp.Frontend.View.Components
 
         private void IncreaseCount()
         {
-            Count++;
+            Item.Count++;
             StateHasChanged();
         }
 
         private void DecreaseCount()
         {
-            Count--;
+            Item.Decrease();
             StateHasChanged();
         }
     }

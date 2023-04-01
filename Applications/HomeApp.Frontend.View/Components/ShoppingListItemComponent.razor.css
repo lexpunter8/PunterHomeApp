@@ -11,7 +11,7 @@ h2 {
 }
 
 .wrapper {
-    height: 56px;
+    height: 72px;
     border-bottom: 1px solid #EEEEEE;
     position: relative;
     display: flex;
@@ -21,12 +21,17 @@ h2 {
 
 .check-wrapper{
     align-self: center;
-    width: 40px;
+    display: flex;
+    justify-content: center;
+    width: 64px;
 }
 
-.info-wrapper{
+.info-wrapper {
     flex: 1;
+    display: flex;
     padding: 8px;
+    flex-direction: column;
+    justify-content: center;    
 }
 
 .count-wrapper{
@@ -45,9 +50,11 @@ h2 {
 }
 
 .item-count {
-    width: 36px;
-    margin: 0px 16px;
+    width: 48px;
+    height: 32px;
+    margin: 0px 24px;
     display: flex;
+    align-items: center;
     justify-content:center;
     border: 1px solid var(--accent-color);
     border-radius: 16px;
@@ -63,17 +70,21 @@ h2 {
 }
 
 .min {
-    height: 24px;
-    width: 24px;
+    height: 32px;
+    width: 32px;
     border: 1px solid var(--accent-color);
-    border-radius: 12px;
+    border-radius: 16px;
+}
+
+.remove {
+    border: 1px solid var(--red-color);
 }
 
 .add {
-    height: 24px;
-    width: 24px;
+    height: 32px;
+    width: 32px;
     background-color: var(--accent-color);
-    border-radius: 12px;
+    border-radius: 16px;
 }
 
 .edit {

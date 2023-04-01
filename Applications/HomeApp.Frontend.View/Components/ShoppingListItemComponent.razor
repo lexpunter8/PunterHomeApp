@@ -5,14 +5,14 @@
     </div>
 
     <div class="info-wrapper @(IsEditting ? "edit" : "")  @(IsChecked ? "checked" : "")">
-        <h1>Pasta</h1>
-        <h2>200 gram</h2>
+        <h1>@Item.ItemName</h1>
+        <h2>@Item.AmountValueString</h2>
 
     </div>
     <div class="count-wrapper @(IsEditting ? "edit" : "")  @(IsChecked ? "checked" : "")">
-        <div class="min @(IsEditting ? "" : "collapse") " @onclick="IncreaseCount"></div>
+        <div class="min @(IsEditting ? "" : "collapse") @(Item.Count <= 1 ? "remove" : "")" @onclick="DecreaseCount"></div>
         <div class="item-count" @onclick="Edit">
-            @Count
+            @Item.Count
         </div>
         <div class="add @(IsEditting ? "" : "collapse")" @onclick="IncreaseCount"></div>
     </div>

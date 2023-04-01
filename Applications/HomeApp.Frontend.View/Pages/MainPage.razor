@@ -2,7 +2,28 @@
 @using HomeApp.Frontend.View.Components
 
 <div class="d-flex flex-column">
-    <ShoppingListItemComponent></ShoppingListItemComponent>
-    <ShoppingListItemComponent></ShoppingListItemComponent>
-    <ShoppingListItemComponent></ShoppingListItemComponent>
+    <div class="input-wrapper">
+        <EditForm Model="@this" OnSubmit="HandleAddItem">
+
+            <InputText placeholder="Voew iets toe aan je lijst.." @bind-Value="myNewItemName">
+
+            </InputText>
+
+            <button class="btn-text" type="submit">Add</button>
+        </EditForm>
+    </div>
+    <div style="margin-top: 1px;">
+        <ShoppingListComponent ShoppingList="@ShoppingList"></ShoppingListComponent>
+
+    </div>
+
+
+    <EditForm OnSubmit="HandleAddItem">
+
+        <InputText placeholder="Voew iets toe aan je lijst.." @bind-Value="myNewItemName">
+
+        </InputText>
+
+        <button type="submit">Add</button>
+    </EditForm>
 </div>

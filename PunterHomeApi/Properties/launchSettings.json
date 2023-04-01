@@ -19,17 +19,17 @@
     },
     "PunterHomeApi": {
       "commandName": "Project",
-      "launchBrowser": false,
       "launchUrl": "weatherforecast",
+      "applicationUrl": "http://localhost:5005",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:5005"
+      }
     },
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
+      "environmentVariables": {},
       "publishAllPorts": true
     }
   }
