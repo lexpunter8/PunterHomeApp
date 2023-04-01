@@ -1,18 +1,7 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: Helvetica, Arial, sans-serif;
-}
-:root {
-    --base-color: #dcdde1;
-    --accent-color: #045256;
-    --secondary-color: #045256;
-    --accent-light-color: #ddf7f8;
-    --neutral-color: #f5f5f5;
-    --neutral-dark-color: #C7C7C7;
-    --red-color: #eb4d4b;
-    --green-color: #2ecc71;
-    --black-color: 0B1516;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 h1:focus {

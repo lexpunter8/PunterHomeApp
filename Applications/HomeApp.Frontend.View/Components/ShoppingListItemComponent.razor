@@ -1,14 +1,22 @@
 ﻿
 <div class="wrapper">
-    <div class="check-wrapper">
+    <div class="check-wrapper @(IsEditting ? "edit" : "") ">
+        <CheckBox CheckedChanged="@OnCheckedChanged"></CheckBox>
     </div>
 
-    <div class="info-wrapper">
-
-    </div>
-
-    <div class="count-wrapper">
+    <div class="info-wrapper @(IsEditting ? "edit" : "")  @(IsChecked ? "checked" : "")">
         <h1>Pasta</h1>
         <h2>200 gram</h2>
+
+    </div>
+    <div class="count-wrapper @(IsEditting ? "edit" : "")  @(IsChecked ? "checked" : "")">
+        <div class="min @(IsEditting ? "" : "collapse") " @onclick="IncreaseCount"></div>
+        <div class="item-count" @onclick="Edit">
+            @Count
+        </div>
+        <div class="add @(IsEditting ? "" : "collapse")" @onclick="IncreaseCount"></div>
+    </div>
+
+    <div class="edit-overlay @(IsEditting ? "" : "collapse")" @onclick="StopEdit">
     </div>
 </div>
