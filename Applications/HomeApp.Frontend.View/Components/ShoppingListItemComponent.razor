@@ -4,12 +4,12 @@
         <CheckBox CheckedChanged="@OnCheckedChanged"></CheckBox>
     </div>
 
-    <div class="info-wrapper @(IsEditting ? "edit" : "")  @(IsChecked ? "checked" : "")">
+    <div class="info-wrapper @(IsEditting ? "edit" : "")  @(Item.IsChecked ? "checked" : "")">
         <h1>@Item.ItemName</h1>
         <h2>@Item.AmountValueString</h2>
 
     </div>
-    <div class="count-wrapper @(IsEditting ? "edit" : "")  @(IsChecked ? "checked" : "")">
+    <div class="count-wrapper @(IsEditting ? "edit" : "")  @(Item.IsChecked ? "checked" : "")">
         <div class="min @(IsEditting ? "" : "collapse") @(Item.Count <= 1 ? "remove" : "")" @onclick="DecreaseCount"></div>
         <div class="item-count" @onclick="Edit">
             @Item.Count

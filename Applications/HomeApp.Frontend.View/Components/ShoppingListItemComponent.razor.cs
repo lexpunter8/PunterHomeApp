@@ -6,14 +6,13 @@ namespace HomeApp.Frontend.View.Components
     public partial class ShoppingListItemComponent : ComponentBase
     {
         public bool IsEditting { get; set; }
-        public bool IsChecked { get; set; }
 
         [Parameter]
         public ShoppingListItemViewModel Item { get; set; }
 
         private void Edit()
         {
-            if (IsChecked)
+            if (Item.IsChecked)
             {
                 return;
             }
@@ -27,7 +26,7 @@ namespace HomeApp.Frontend.View.Components
 
         private void OnCheckedChanged(bool isChecked)
         {
-            IsChecked = isChecked;
+            Item.IsChecked = isChecked;
             StopEdit();
         }
 

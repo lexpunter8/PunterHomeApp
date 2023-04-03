@@ -37,6 +37,7 @@ h2 {
 .count-wrapper{
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     flex-direction: row;
     padding: 0px 16px;
     background-color: white;
@@ -46,13 +47,13 @@ h2 {
 
 .count-wrapper.edit{
     opacity: 1;
+    gap: 16px;
     box-shadow: -2px 0px 4px rgba(0, 0, 0, 0.1);
 }
 
 .item-count {
     width: 48px;
     height: 32px;
-    margin: 0px 24px;
     display: flex;
     align-items: center;
     justify-content:center;

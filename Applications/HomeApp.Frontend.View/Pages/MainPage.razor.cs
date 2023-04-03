@@ -5,6 +5,7 @@ namespace HomeApp.Frontend.View.Pages
 {
     public partial class MainPage : ComponentBase
     {
+        private bool myShowPopup;
         private ShoppingListViewModel ShoppingList { get; set; } = new ShoppingListViewModel();
         private string myNewItemName { get; set; }
 
@@ -17,6 +18,21 @@ namespace HomeApp.Frontend.View.Pages
             });
 
             myNewItemName = string.Empty;
+        }
+
+        private void ShowPopup()
+        {
+            myShowPopup = true;
+        }
+
+        private void HidePopup()
+        {
+            myShowPopup = false;
+        }
+
+        private void RemoveAllItemsClicked()
+        {
+            ShoppingList.RemoveAllItems();
         }
     }
 }

@@ -2,28 +2,35 @@
 @using HomeApp.Frontend.View.Components
 
 <div class="d-flex flex-column">
+    <div class="list-header">
+        <div class="d-flex flex-row align-items-center">
+
+            <h4>Lijst naam</h4>
+            <span class="oi oi-chevron-bottom" style="color: var(--accent-color); font-size: 12px; margin: 8px;" aria-hidden="true"></span>
+        </div>
+
+        <button class="btn-text" @onclick="ShowPopup">...</button>
+    </div>
     <div class="input-wrapper">
         <EditForm Model="@this" OnSubmit="HandleAddItem">
 
-            <InputText placeholder="Voew iets toe aan je lijst.." @bind-Value="myNewItemName">
+            <InputText placeholder="Voeg iets toe aan je lijst.." @bind-Value="myNewItemName">
 
             </InputText>
 
             <button class="btn-text" type="submit">Add</button>
         </EditForm>
     </div>
-    <div style="margin-top: 1px;">
+    <div style="margin-top: 1px; height: 100%;">
         <ShoppingListComponent ShoppingList="@ShoppingList"></ShoppingListComponent>
 
     </div>
 
-
-    <EditForm OnSubmit="HandleAddItem">
-
-        <InputText placeholder="Voew iets toe aan je lijst.." @bind-Value="myNewItemName">
-
-        </InputText>
-
-        <button type="submit">Add</button>
-    </EditForm>
+    <div class="popup-overlay @(myShowPopup ? "" : "collapse")" @onclick="HidePopup">
+        <div class="context-menu">
+            <div @onclick="ShoppingList.RemoveAllCheckdItems" class="context-menu-item">Doorgestreepte producten verwijderen</div>
+            <div @onclick="ShoppingList.ResetItems" class="context-menu-item">Doorgestreepte producten terug zetten</div>
+            <div @onclick="ShoppingList.RemoveAllItems" class="context-menu-item">Lijst leeg maken</div>
+        </div>
+    </div>
 </div>

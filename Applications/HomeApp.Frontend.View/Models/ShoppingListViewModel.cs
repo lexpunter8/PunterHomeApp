@@ -6,6 +6,7 @@ namespace HomeApp.Frontend.View.Models
 		public string ItemName { get; set; }
 		public string AmountValueString { get; set; }
 		public int Count { get; set; } = 1;
+        public bool IsChecked { get; set; }
 
         public ShoppingListViewModel ShoppingList { get; set; }
 
@@ -29,7 +30,7 @@ namespace HomeApp.Frontend.View.Models
 			{
 
 				AmountValueString = "200 gram",
-				ItemName = "Volkren pasta",
+				ItemName = "Volkoren pasta",
 				Count = 1
 			});
 
@@ -59,6 +60,24 @@ namespace HomeApp.Frontend.View.Models
         {
 			Items.RemoveAll(a => a.ItemName == shoppingListItemViewModel.ItemName);
 			PropertyChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal void RemoveAllItems()
+        {
+			Items.Clear();
+            PropertyChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+		public void RemoveAllCheckdItems()
+		{
+			Items.RemoveAll(a => a.IsChecked);
+            PropertyChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+		public void ResetItems()
+		{
+			Items.ForEach(f => f.IsChecked = false);
+            PropertyChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

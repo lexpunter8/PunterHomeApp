@@ -45,7 +45,7 @@ a, .btn-link {
     border: 0px;
     background-color: transparent;
     color: var(--accent-color);
-    padding: 4px 8px;
+    padding: 8px 16px;
 }
 
 .btn-primary {

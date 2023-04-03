@@ -1,8 +1,41 @@
 ﻿.input-wrapper {
-    padding: 0px 8px;
+    padding: 0px 8px 0px 16px;
     position: sticky;
     top: 0px;
     width: 100%;
     height: 44px;
     border-bottom: 1px solid var(--neutral-dark-color);
 }
+
+.list-header{
+    padding: 16px 8px 0px 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.popup-overlay{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0,0,0,0.2);
+    z-index: 1200;
+}
+
+.context-menu {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    padding: 8px 0 16px 0;
+    background-color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.context-menu-item {
+    padding: 16px;
+    border-bottom: 1px solid var(--neutral-color);
+}
+
+    .context-menu-item:last-child {
+        border-bottom: none;
+    }
