@@ -1,20 +1,39 @@
 ﻿
 <div class="wrapper">
     <div class="check-wrapper @(IsEditting ? "edit" : "") ">
-        <CheckBox CheckedChanged="@OnCheckedChanged"></CheckBox>
+        <CheckBox IsChecked="@Item.IsChecked" CheckedChanged="@OnCheckedChanged"></CheckBox>
     </div>
 
-    <div class="info-wrapper @(IsEditting ? "edit" : "")  @(Item.IsChecked ? "checked" : "")">
+    <div class="info-wrapper @(IsEditting ? "edit" : "")  @(Item.IsChecked ? "checked" : "")" @onclick="() => Item.IsChecked = !Item.IsChecked">
         <h1>@Item.ItemName</h1>
         <h2>@Item.AmountValueString</h2>
 
     </div>
     <div class="count-wrapper @(IsEditting ? "edit" : "")  @(Item.IsChecked ? "checked" : "")">
-        <div class="min @(IsEditting ? "" : "collapse") @(Item.Count <= 1 ? "remove" : "")" @onclick="DecreaseCount"></div>
+        @if (IsEditting)
+        {
+           
+            <div class="min @(Item.Count <= 1 ? "remove" : "")" @onclick="DecreaseCount">
+
+                @if (Item.Count <= 1)
+                {
+                    <span class="oi oi-trash" aria-hidden="true"></span>
+                }
+                else
+                {
+                    <span class="oi oi-minus" aria-hidden="true"></span>
+                }
+            </div> 
+        }
         <div class="item-count" @onclick="Edit">
             @Item.Count
         </div>
-        <div class="add @(IsEditting ? "" : "collapse")" @onclick="IncreaseCount"></div>
+        @if (IsEditting)
+        {            
+            <div class="add" @onclick="IncreaseCount">
+                <span class="oi oi-plus" aria-hidden="true"></span>
+            </div>
+        }
     </div>
 
     <div class="edit-overlay @(IsEditting ? "" : "collapse")" @onclick="StopEdit">

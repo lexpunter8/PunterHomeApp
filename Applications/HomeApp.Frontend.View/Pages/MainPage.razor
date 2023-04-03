@@ -9,7 +9,9 @@
             <span class="oi oi-chevron-bottom" style="color: var(--accent-color); font-size: 12px; margin: 8px;" aria-hidden="true"></span>
         </div>
 
-        <button class="btn-text" @onclick="ShowPopup">...</button>
+        <button class="btn-text" @onclick="ShowPopup">
+            <span class="oi oi-ellipses" style="color: var(--accent-color); font-size: 24px; margin: 8px;" aria-hidden="true"></span>
+        </button>
     </div>
     <div class="input-wrapper">
         <EditForm Model="@this" OnSubmit="HandleAddItem">

@@ -1,3 +1,6 @@
 ﻿<div class="wrapper" @onclick="Cliked">
-    <div class="check-input @(IsChecked ? "checked" : "")"></div>
+    <div class="check-input @(IsChecked ? "checked" : "")">
+
+        <span class="oi oi-check @(IsChecked ? "" : "collapse")" aria-hidden="true"></span>
+    </div>
 </div>

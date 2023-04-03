@@ -4,6 +4,7 @@ namespace HomeApp.Frontend.View.Components
 {
     public partial class CheckBox : ComponentBase
     {
+        [Parameter]
         public bool IsChecked { get; set; }
 
         [Parameter]

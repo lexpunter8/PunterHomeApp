@@ -10,6 +10,17 @@ namespace HomeApp.Frontend.View.Components
         [Parameter]
         public ShoppingListItemViewModel Item { get; set; }
 
+        protected override void OnParametersSet()
+        {
+            Item.PropertyChanged += Item_PropertyChanged;
+            base.OnParametersSet();
+        }
+
+        private void Item_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            StateHasChanged();
+        }
+
         private void Edit()
         {
             if (Item.IsChecked)
@@ -33,13 +44,11 @@ namespace HomeApp.Frontend.View.Components
         private void IncreaseCount()
         {
             Item.Count++;
-            StateHasChanged();
         }
 
         private void DecreaseCount()
         {
             Item.Decrease();
-            StateHasChanged();
         }
     }
 }

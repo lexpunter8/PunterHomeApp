@@ -4,21 +4,26 @@ html, body {
     font-family: Helvetica, Arial, sans-serif;
 }
 :root {
-    --base-color: #dcdde1;
-    --accent-color: #045256;
-    --secondary-color: #045256;
-    --accent-light-color: #ddf7f8;
+    --base-color: #F2F7F7;
+    --accent-color: #045b5f;
+    --secondary-color: #078990;
+    --accent-light-color: #C0D6D7;
     --neutral-color: #f5f5f5;
     --neutral-dark-color: #C7C7C7;
-    --red-color: #eb4d4b;
-    --green-color: #2ecc71;
-    --black-color: 0B1516;
+    --red-color: #CE3D34;
+    --green-color: #34CE3D;
+    --black-color: #0B1516;
 }
 
 .input-wrapper > form > input {
     height: 100%;
     border: 0px;
     flex: 1;
+    background-color: transparent;
+}
+
+.input-wrapper:focus-within {
+    background-color: red;
 }
 
 input:focus {
@@ -108,7 +113,7 @@ a, .btn-link {
     }
 
         .loading-progress circle:last-child {
-            stroke: #1b6ec2;
+            stroke: var(--accent-color);
             stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
             transition: stroke-dasharray 0.05s ease-in-out;
         }

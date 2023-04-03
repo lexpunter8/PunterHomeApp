@@ -74,11 +74,16 @@ h2 {
     height: 32px;
     width: 32px;
     border: 1px solid var(--accent-color);
+    color: var(--accent-color);
     border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .remove {
-    border: 1px solid var(--red-color);
+    border: none;
+    color: var(--red-color);
 }
 
 .add {
@@ -86,6 +91,9 @@ h2 {
     width: 32px;
     background-color: var(--accent-color);
     border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .edit {
@@ -105,3 +113,11 @@ h2 {
     opacity: 0.6;
 }
 
+.oi-plus{
+    color: white;
+    font-size: 16px;
+}
+
+.oi {
+    top: 0;
+}

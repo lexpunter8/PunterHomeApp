@@ -1,8 +1,9 @@
-﻿using System;
+﻿using HomeApp.Frontend.ViewModels;
+using System;
 namespace HomeApp.Frontend.View.Models
 {
-    public class ShoppingListItemViewModel
-	{
+    public class ShoppingListItemViewModel : BaseViewModel
+    {
 		public string ItemName { get; set; }
 		public string AmountValueString { get; set; }
 		public int Count { get; set; } = 1;
