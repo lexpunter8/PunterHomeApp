@@ -50,6 +50,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp1.Shared", "Blazor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeApp.Frontend.ViewModels", "Frontend\HomeApp.Frontend.ViewModels\HomeApp.Frontend.ViewModels.csproj", "{E7A03686-F5EA-4109-90CC-704DBF72FB2A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{BBB0E9CC-F324-472D-AA4F-57CF81A91932}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeApp.Shared", "Shared\HomeApp.Shared\HomeApp.Shared.csproj", "{B118D8E7-C5CD-4022-9B59-4408146CA3CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAppDomain", "Domain\HomeAppDomain\HomeAppDomain.csproj", "{BAC111E8-FA58-430F-9E58-ACF6C54B6777}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +134,14 @@ Global
 		{E7A03686-F5EA-4109-90CC-704DBF72FB2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7A03686-F5EA-4109-90CC-704DBF72FB2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7A03686-F5EA-4109-90CC-704DBF72FB2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B118D8E7-C5CD-4022-9B59-4408146CA3CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B118D8E7-C5CD-4022-9B59-4408146CA3CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B118D8E7-C5CD-4022-9B59-4408146CA3CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B118D8E7-C5CD-4022-9B59-4408146CA3CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAC111E8-FA58-430F-9E58-ACF6C54B6777}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAC111E8-FA58-430F-9E58-ACF6C54B6777}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAC111E8-FA58-430F-9E58-ACF6C54B6777}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAC111E8-FA58-430F-9E58-ACF6C54B6777}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -139,6 +153,8 @@ Global
 		{EF013F26-9859-4645-A8D9-C6A4C7705840} = {F5E01DAE-2F0A-482F-8315-9C6C17AEF57C}
 		{4BFF7AD4-2AB7-4F52-BB7B-143DDCBE8731} = {1AEF0C3B-D6E3-4C2D-948C-69BC8297FF0D}
 		{E7A03686-F5EA-4109-90CC-704DBF72FB2A} = {5B6B8906-24EC-4589-8353-2F5084203E8A}
+		{B118D8E7-C5CD-4022-9B59-4408146CA3CE} = {BBB0E9CC-F324-472D-AA4F-57CF81A91932}
+		{BAC111E8-FA58-430F-9E58-ACF6C54B6777} = {56B454BB-9E29-4961-BBD2-471202CDCFB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9F91869B-8BDD-44E1-981E-7FEEF5C9017F}

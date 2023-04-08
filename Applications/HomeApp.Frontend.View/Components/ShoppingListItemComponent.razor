@@ -4,7 +4,7 @@
         <CheckBox IsChecked="@Item.IsChecked" CheckedChanged="@OnCheckedChanged"></CheckBox>
     </div>
 
-    <div class="info-wrapper @(IsEditting ? "edit" : "")  @(Item.IsChecked ? "checked" : "")" @onclick="() => Item.IsChecked = !Item.IsChecked">
+    <div class="info-wrapper @(IsEditting ? "edit" : "")  @(Item.IsChecked ? "checked" : "")" @onclick="() => Item.ChangeChecked(!Item.IsChecked)">
         <h1>@Item.ItemName</h1>
         <h2>@Item.AmountValueString</h2>
 

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <UserSecretsId>661f4e83-3011-434f-8bac-d978d6ef163b</UserSecretsId>
   </PropertyGroup>
@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.10.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +21,9 @@
     <ProjectReference Include="..\PunterHomeAdapters\PunterHomeAdapters.csproj" />
     <ProjectReference Include="..\PunterHomeApi.Shared\PunterHomeApi.Shared.csproj" />
     <ProjectReference Include="..\PunterHomeDomain\PunterHomeDomain.csproj" />
+    <ProjectReference Include="..\Applications\HomeApp.Frontend.View\HomeApp.Frontend.View.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
 
