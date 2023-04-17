@@ -14,8 +14,8 @@ namespace HomeAppDomain.Interfaces
 	{
 		IEnumerable<ShoppingListItem> GetAll();
         ShoppingListItem GetById(Guid id);
-        void Save(ShoppingListItem item);
-		void RemoveById(Guid id);
+        Task Save(ShoppingListItem item);
+		Task RemoveById(Guid id);
     }
 }
 

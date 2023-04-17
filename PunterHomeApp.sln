@@ -56,6 +56,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeApp.Shared", "Shared\Ho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAppDomain", "Domain\HomeAppDomain\HomeAppDomain.csproj", "{BAC111E8-FA58-430F-9E58-ACF6C54B6777}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAppRepositories", "Infrastructure\HomeAppRepositories\HomeAppRepositories.csproj", "{821EE674-F359-4BE8-84EF-ADF2819FBA22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,10 @@ Global
 		{BAC111E8-FA58-430F-9E58-ACF6C54B6777}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAC111E8-FA58-430F-9E58-ACF6C54B6777}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAC111E8-FA58-430F-9E58-ACF6C54B6777}.Release|Any CPU.Build.0 = Release|Any CPU
+		{821EE674-F359-4BE8-84EF-ADF2819FBA22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{821EE674-F359-4BE8-84EF-ADF2819FBA22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{821EE674-F359-4BE8-84EF-ADF2819FBA22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{821EE674-F359-4BE8-84EF-ADF2819FBA22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +161,7 @@ Global
 		{E7A03686-F5EA-4109-90CC-704DBF72FB2A} = {5B6B8906-24EC-4589-8353-2F5084203E8A}
 		{B118D8E7-C5CD-4022-9B59-4408146CA3CE} = {BBB0E9CC-F324-472D-AA4F-57CF81A91932}
 		{BAC111E8-FA58-430F-9E58-ACF6C54B6777} = {56B454BB-9E29-4961-BBD2-471202CDCFB6}
+		{821EE674-F359-4BE8-84EF-ADF2819FBA22} = {5FFAC35C-9DC0-4F8E-A6AF-89479F4072B9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9F91869B-8BDD-44E1-981E-7FEEF5C9017F}

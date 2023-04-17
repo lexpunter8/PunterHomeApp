@@ -83,19 +83,21 @@ namespace BlazorApp1.Server.Controllers
             return myShoppingLists.FirstOrDefault(f => f.Id == id);
         }
 
-        public void RemoveById(Guid id)
+        public Task RemoveById(Guid id)
         {
             var o = GetById(id);
             if (o != null)
             {
                 myShoppingLists.Remove(o);
             }
+            return Task.CompletedTask;
         }
 
-        public void Save(ShoppingListItem item)
+        public Task Save(ShoppingListItem item)
         {
             RemoveById(item.Id);
             myShoppingLists.Add(item);
+            return Task.CompletedTask;
         }
     }
 

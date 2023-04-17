@@ -30,21 +30,22 @@ namespace BlazorApp1.Server.Controllers
         }
 
         [HttpPatch("{itemId}")]
-        public IActionResult UpdateItem(Guid itemId, [FromBody] JsonPatchDocument<ShoppingListItemDto> patchDoc)
+        public async Task<IActionResult> UpdateItem(Guid itemId, [FromBody] JsonPatchDocument<ShoppingListItemDto> patchDoc)
         {
             if (patchDoc != null)
             {
+                var p = mapper.Map<JsonPatchDocument<ShoppingListItem>>(patchDoc);
                 var item = shoppingListItemRepository.GetById(itemId);
 
-                var mappedItem = mapper.Map<ShoppingListItemDto>(item);
 
-                patchDoc.ApplyTo(mappedItem, ModelState);
+                p.ApplyTo(item, ModelState);
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
 
-                shoppingListItemRepository.Save(mapper.Map<ShoppingListItem>(mappedItem));
+                var mappedItem = mapper.Map<ShoppingListItemDto>(item);
+                await shoppingListItemRepository.Save(item);
                 return new ObjectResult(mappedItem);
             }
             else
@@ -54,19 +55,19 @@ namespace BlazorApp1.Server.Controllers
         }
 
         [HttpDelete("{itemId}")]
-        public IActionResult DeleteItem(Guid itemId)
+        public async Task<IActionResult> DeleteItem(Guid itemId)
         {
-            shoppingListItemRepository.RemoveById(itemId);
+            await shoppingListItemRepository.RemoveById(itemId);
             return Ok();
         }
 
         [HttpPost]
-        public IActionResult AddItem([FromBody] ShoppingListItemDto item)
+        public async Task<IActionResult> AddItem([FromBody] ShoppingListItemDto item)
         {
             item.Id = Guid.NewGuid();
             item.Count = 1;
 
-            shoppingListItemRepository.Save(mapper.Map<ShoppingListItem>(item));
+            await shoppingListItemRepository.Save(mapper.Map<ShoppingListItem>(item));
             return Created("", item);
         }
 
